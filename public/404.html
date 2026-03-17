@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Halaman Tidak Ditemukan - Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body {
+            background-color: #0f192b; /* Techy dark background */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: var(--font-body);
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+            padding: var(--space-xl);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glitch effect for the 404 */
+        .glitch {
+            font-size: 8rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            margin: 0;
+            position: relative;
+            color: white;
+            text-shadow: 0.05em 0 0 rgba(229, 62, 62, 0.75), -0.025em -0.05em 0 rgba(0, 181, 216, 0.75),
+                0.025em 0.05em 0 rgba(56, 161, 105, 0.75);
+            animation: glitch 1s infinite alternate;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 rgba(229, 62, 62, 0.75), -0.05em -0.025em 0 rgba(0, 181, 216, 0.75), -0.025em 0.05em 0 rgba(56, 161, 105, 0.75); }
+            14% { text-shadow: 0.05em 0 0 rgba(229, 62, 62, 0.75), -0.05em -0.025em 0 rgba(0, 181, 216, 0.75), -0.025em 0.05em 0 rgba(56, 161, 105, 0.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(229, 62, 62, 0.75), 0.025em 0.025em 0 rgba(0, 181, 216, 0.75), -0.05em -0.05em 0 rgba(56, 161, 105, 0.75); }
+            49% { text-shadow: -0.05em -0.025em 0 rgba(229, 62, 62, 0.75), 0.025em 0.025em 0 rgba(0, 181, 216, 0.75), -0.05em -0.05em 0 rgba(56, 161, 105, 0.75); }
+            50% { text-shadow: 0.025em 0.05em 0 rgba(229, 62, 62, 0.75), 0.05em 0 0 rgba(0, 181, 216, 0.75), 0 -0.05em 0 rgba(56, 161, 105, 0.75); }
+            99% { text-shadow: 0.025em 0.05em 0 rgba(229, 62, 62, 0.75), 0.05em 0 0 rgba(0, 181, 216, 0.75), 0 -0.05em 0 rgba(56, 161, 105, 0.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(229, 62, 62, 0.75), -0.025em -0.025em 0 rgba(0, 181, 216, 0.75), -0.025em -0.05em 0 rgba(56, 161, 105, 0.75); }
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--primary-light);
+        }
+
+        .error-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Abstract Background Grid */
+        .bg-grid {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            z-index: 1;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3);
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(0) scale(3); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+
+    <div class="error-container">
+        <div style="margin-bottom: 20px;">
+            <i class="fa-solid fa-scale-balanced" style="font-size: 3rem; color: var(--primary-color);"></i>
+        </div>
+        
+        <h1 class="glitch">404</h1>
+        <h2 class="error-message">Yurisdiksi Tidak Ditemukan</h2>
+        <p class="error-desc">Alamat halaman yang Anda cari telah kedaluwarsa, dihapus oleh pengelola sistem, atau di luar jangkauan radar Legal AI kami. Objek gugatan tidak sah (Niet Ontvankelijke Verklaard).</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <button class="btn btn-outline" onclick="history.back()" style="border-color: rgba(255,255,255,0.2); color: white;">
+                <i class="fa-solid fa-arrow-left"></i> Kembali Sebelumnya
+            </button>
+            <a href="index.html" class="btn btn-primary" style="box-shadow: 0 0 20px rgba(43, 108, 176, 0.4);">
+                Ke Beranda Halaman Utama
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

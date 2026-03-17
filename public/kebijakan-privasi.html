@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kebijakan Privasi - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); }
+        .legal-doc-header {
+            padding: var(--space-3xl) 0 var(--space-xl);
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            background-color: var(--bg-alt);
+        }
+        [data-theme="dark"] .legal-doc-header { border-bottom-color: rgba(255,255,255,0.1); }
+        .legal-doc-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .legal-doc-header p { color: var(--text-muted); font-size: 1rem; }
+        
+        .legal-doc-body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-3xl) var(--space-xl);
+            line-height: 1.8;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+
+        .legal-doc-body h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-family: var(--font-body);
+        }
+
+        .legal-doc-body p { margin-bottom: 20px; color: var(--text-muted); }
+        .legal-doc-body ul { margin-bottom: 20px; color: var(--text-muted); padding-left: 20px; }
+        .legal-doc-body li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" style="position: sticky; top: 0; background-color: var(--bg-main);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+            <a href="../public/index.html" class="btn btn-outline">Kembali ke Beranda</a>
+        </div>
+    </nav>
+
+    <header class="legal-doc-header">
+        <div class="container">
+            <h1>Kebijakan Privasi</h1>
+            <p>Terakhir diperbarui: 15 Maret 2026 (Versi 2.1)</p>
+        </div>
+    </header>
+
+    <main class="legal-doc-body">
+        <p align="justify">Di PT Justice Teknologi Kecerdasan ("Justice AI", "Kami", "Milik Kami"), privasi klien serta prinsip kerahasiaan hubungan antara advokat dengan klien (<em>Attorney-Client Privilege</em>) adalah dasar yang tidak dapat ditawar dalam bisnis kami. Dokumen ini menjelaskan secara transparan bagaimana Engine AI dan infrastruktur server kami memproses, memanfaatkan, dan yang terpenting, melindungi data sensitif Anda.</p>
+
+        <h2>1. Prinsip Zero-Data Retention pada Mesin AI</h2>
+        <p align="justify">Kami memahami bahwa sengketa bisnis dan urusan keluarga Anda bukanlah konsumsi publik. Berkaitan dengan interaksi pada fitur <strong>Chatbot Resolusi AI</strong> dan <strong>Smart Contract Review</strong>:</p>
+        <ul>
+            <li>Kami <strong>TIDAK MENGGUNAKAN</strong> prompt obrolan personal Anda untuk melatih (retrain/fine-tune) fondasi asli model bahasa AI kami.</li>
+            <li>Dokumen Kontrak (PDF/DOCX) yang Anda unggah ke modul penganalisa resiko diproses di antrian memori volatile sementara (RAM). File tersebut disapu rata (purged/deleted) tepat 15 menit setelah laporan hasil resiko disajikan ke dasbor klien Anda.</li>
+        </ul>
+
+        <h2>2. Pengumpulan Data Identitas Pribadi (PII) Khusus Analisa KYC</h2>
+        <p align="justify">Dalam rangka pemenuhan kaidah hukum E-Litigasi Republik Indonesia dan standardisasi pelarangan advokat palsu, kami mengumpulkan kartu identitas pengguna dengan tegas:</p>
+        <ul>
+            <li><strong>Untuk Klien:</strong> Nama Penuh, Email, Riwayat Transaksi di Payment Gateway (Enkripsi Level PCIDSS).</li>
+            <li><strong>Untuk Advokat:</strong> KTP, Nomor Induk Advokat (NIA), SK Pengadilan, dan Hasil Verifikasi Wajah Biometrik saat pendaftaran kemitraan.</li>
+        </ul>
+
+        <h2>3. Metode Enkripsi Brankas Digital Asisten</h2>
+        <p align="justify">Area penyimpanan file berdokumen "Vault" di akun pengguna dirancang dengan arsitektur komputasi mutakhir <em>Zero-Knowledge</em>. Hal ini mengimplikasikan bahwa server kami hanya menyimpan teks tak beraturan (Ciphertext) algoritma AES-256 yang kuncinya berasal dari hash kata sandi pengguna lokal. <strong>Meskipun pihak kejaksaan/pemerintah menyita fisik *Server Log* kami, dokumen brankas Anda tetap tidak bisa diakses/dibuka wujudnya tanpa sepengetahuan sandi pribadi Anda.</strong></p>
+
+        <h2>4. Pengungkapan Kepada Penegak Hukum di Luar Persoalan Brankas</h2>
+        <p align="justify">Meskipun Dokumen Vault tertutup rapat, untuk <em>traffic history log</em> seperti alamat IP Server atau detail pembayaran, Justice AI tetap mematuhi Undang-Undang Perlindungan Data Pribadi (UU PDP) Indonesia dan hanya merilis parameter jaringan tersebut berlandaskan Surat Perintah Kepolisian/Pengadilan yang sah (Pro Justicia).</p>
+
+        <h2>5. Perubahan Kebijakan & Cara Menghubungi DPO Kami</h2>
+        <p align="justify">Kami berhak merombak kebijakan algoritmik ini seiring berkembangnya inovasi hukum terapan di tanah air. Apabila Anda memiliki kekhawatiran hak penarikan berkas utuh (Right to Erasure/Be Forgotten), silakan hubungi <em>Data Protection Officer (DPO)</em> kami secara langsung di <strong>privacy@justice-ai.id</strong>.</p>
+    </main>
+
+    <footer style="background-color: var(--bg-alt); padding: var(--space-xl) 0; margin-top: 30px;">
+        <div class="container text-center">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">&copy; 2026 PT Justice Teknologi. Indonesia.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+</body>
+</html>

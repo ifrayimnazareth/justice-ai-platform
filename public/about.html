@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - Justice AI Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .hero-about {
+            padding: calc(var(--space-3xl) * 2) 0 var(--space-3xl);
+            background: linear-gradient(135deg, var(--bg-main) 0%, rgba(43, 108, 176, 0.1) 100%);
+            text-align: center;
+        }
+
+        .hero-about h1 { font-size: 3.5rem; margin-bottom: var(--space-md); }
+        .hero-about p { font-size: 1.25rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3xl);
+            padding: var(--space-3xl) 0;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .mission-grid { grid-template-columns: 1fr; }
+            .hero-about h1 { font-size: 2.5rem; }
+        }
+
+        .mission-image {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stats-banner {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--space-2xl) 0;
+            margin: var(--space-2xl) 0;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: var(--space-xl);
+            text-align: center;
+        }
+
+        .stat-item h2 { font-size: 3rem; margin: 0 0 10px 0; color: var(--accent-color); font-family: var(--font-heading); }
+        .stat-item p { margin: 0; font-size: 1.1rem; opacity: 0.9; }
+
+        .team-section { padding: var(--space-3xl) 0; text-align: center; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-2xl);
+            margin-top: var(--space-2xl);
+        }
+
+        @media (max-width: 768px) { .team-grid { grid-template-columns: 1fr; } }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 4px solid var(--bg-alt);
+        }
+
+        .team-member h3 { font-family: var(--font-body); margin: 0 0 5px 0; }
+        .team-member p { color: var(--primary-light); font-weight: 500; font-size: 0.9rem; margin: 0 0 10px 0; }
+        .team-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Transparent Navbar Overlaying Hero -->
+    <nav class="navbar" style="position: absolute; background: transparent; box-shadow: none;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+            <div class="nav-links" style="display: flex; gap: 20px;">
+                <a href="index.html">Beranda</a>
+                <a href="harga.html">Harga</a>
+            </div>
+            <div class="nav-actions">
+                <a href="../auth/login.html" class="btn btn-primary">Mulai Ekosistem</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero-about animate-fade-in">
+        <div class="container">
+            <h1>Mendemokratisasi Keadilan dengan <span style="color: var(--primary-light);">Teknologi AI.</span></h1>
+            <p>Berawal dari keresahan sulitnya akses hukum bagi masyarakat kelas menengah, Justice Platform mengombinasikan *Large Language Model* mutakhir dengan pakar ligitasi terbaik di Indonesia.</p>
+        </div>
+    </header>
+
+    <section class="container animate-fade-in delay-1">
+        <div class="mission-grid">
+            <div>
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=1200" alt="Legal Office AI" class="mission-image">
+            </div>
+            <div>
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Visi Kami Adalah Kepastian Hukum</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 20px;" align="justify">
+                    Hukum seringkali terasa eksklusif dan mahal. Ribuan kontrak kerja merugikan karyawan, ratusan sengketa waris buntu karena biaya pengacara di muka yang mengintimidasi. 
+                </p>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7;" align="justify">
+                    Kami hadir sebagai <strong>Super App Penengah</strong>. Menggunakan AI, kami mengaudit dokumen PDF Anda untuk mencari celah penipuan dalam hitungan detik. Menggunakan infrastruktur E-Litigation, kami mempertemukan Anda dengan Advokat tersumpah via Video Call aman, dengan tarif transparan berbasis per-jam tanpa *hidden fee*.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-banner">
+        <div class="container stats-container">
+            <div class="stat-item">
+                <h2>1.2M+</h2>
+                <p>Analisa Dokumen Legal/Bulan</p>
+            </div>
+            <div class="stat-item">
+                <h2>850+</h2>
+                <p>Advokat Tersumpah (PERADI)</p>
+            </div>
+            <div class="stat-item">
+                <h2>99.9%</h2>
+                <p>Uptime & Enkripsi Server</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team -->
+    <section class="container team-section">
+        <h2>Pakar di Balik Layar</h2>
+        <p style="color: var(--text-muted);">Diperkuat oleh konsorsium ahli Rekayasa Perangkat Lunak dan Praktisi Hukum senior.</p>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400" alt="CEO">
+                <h3>DR. Andreas Wirawan, S.H., LL.M.</h3>
+                <p>Chief Executive Officer (CEO)</p>
+                <div class="team-desc">Mantan Hakim Tinggi yang beralih menjadi inovator Legal Tech. Bertekad memberantas pungutan liar dalam sistem birokrasi peradilan umum.</div>
+            </div>
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" alt="CTO">
+                <h3>Sarah Wijaya, M.Sc.</h3>
+                <p>Chief Technology Officer (CTO)</p>
+                <div class="team-desc">Arsitek AI spesialis Natural Language Processing yang merancang algoritma spesifik pembaca Pola Preseden Mahkamah Agung & KUHPerdata.</div>
+            </div>
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400" alt="Legal Head">
+                <h3>Gunawan Satria, S.H.</h3>
+                <p>Head of Legal & KYC Compliance</p>
+                <div class="team-desc">Memastikan bahwa tidak ada satupun AI bot kami yang melampaui batas etika profesi Advokat dan memfalidasi lisensi para jejaring pengacara.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer style="background-color: var(--bg-alt); border-top: 1px solid rgba(0,0,0,0.05); padding: var(--space-2xl) 0; margin-top: 50px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div class="logo">
+                <i class="fa-solid fa-scale-balanced" style="color: var(--primary-color);"></i> Justice<span>AI</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">&copy; 2026 PT Justice Teknologi Kecerdasan. Hak Cipta Dilindungi Undang-Undang.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+</body>
+</html>

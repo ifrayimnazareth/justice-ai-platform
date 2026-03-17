@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biaya Layanan & Berlangganan - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .pricing-header {
+            text-align: center;
+            padding: var(--space-3xl) 0 var(--space-xl);
+            background: linear-gradient(135deg, var(--bg-alt) 0%, rgba(0, 181, 216, 0.05) 100%);
+        }
+
+        .pricing-header h1 {
+            font-size: 3rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .pricing-header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-toggle {
+            display: inline-flex;
+            background-color: var(--bg-main);
+            padding: 5px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(0,0,0,0.1);
+            margin: var(--space-xl) auto 0;
+        }
+
+        [data-theme="dark"] .pricing-toggle { border-color: rgba(255,255,255,0.1); }
+
+        .toggle-btn {
+            padding: 10px 25px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .toggle-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-xl);
+            padding: var(--space-2xl) 0;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 500px; }
+        }
+
+        .price-card {
+            background-color: var(--bg-main);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            position: relative;
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+        }
+
+        [data-theme="dark"] .price-card { border-color: rgba(255,255,255,0.1); }
+
+        .price-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .price-card.popular {
+            border: 2px solid var(--accent-color);
+            box-shadow: var(--shadow-md);
+            transform: scale(1.05);
+        }
+
+        .price-card.popular:hover { transform: scale(1.05) translateY(-5px); }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .plan-name {
+            font-size: 1.25rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-family: var(--font-body);
+        }
+
+        .plan-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-lg);
+            min-height: 45px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: var(--space-lg);
+        }
+
+        [data-theme="dark"] .plan-desc { border-bottom-color: rgba(255,255,255,0.05); }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--space-xl) 0;
+            flex: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .feature-icon {
+            color: var(--success);
+            margin-top: 3px;
+        }
+        
+        .feature-item.disabled {
+            color: var(--text-muted);
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        .feature-item.disabled .feature-icon {
+            color: var(--text-muted);
+        }
+
+        .faq-section { background-color: var(--bg-alt); padding: var(--space-3xl) 0; }
+        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); margin-top: var(--space-xl); }
+        @media (max-width: 768px) { .faq-grid { grid-template-columns: 1fr; } }
+        .faq-item h4 { font-family: var(--font-body); margin-bottom: 10px; font-size: 1.1rem; }
+        .faq-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Transparent Navbar Overlaying Hero -->
+    <nav class="navbar" style="position: absolute; background: transparent; box-shadow: none;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+            <div class="nav-actions">
+                <a href="../auth/login.html" class="btn btn-outline" style="border-color: var(--text-main); color: var(--text-main);">Masuk Dasbor</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pricing-header">
+        <div class="container animate-fade-in">
+            <h1>Biaya Transparan. Keadilan Nyata.</h1>
+            <p>Pilih paket langganan penggunaan AI dan penyimpanan ruang sidang virtual hukum Anda tanpa biaya tersembunyi. Batalkan kapan saja.</p>
+            
+            <div class="pricing-toggle delay-1">
+                <div class="toggle-btn active" id="btn-client">Paket Klien (Individu)</div>
+                <div class="toggle-btn" id="btn-lawyer">Sistem Firma (Advokat)</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Pricing Grid -->
+    <section class="container" style="position: relative; z-index: 5;">
+        <!-- SECTION KLIEN -->
+        <div class="pricing-grid animate-fade-in delay-2" id="client-pricing">
+            
+            <!-- Basic Plan -->
+            <div class="price-card">
+                <h3 class="plan-name">Akses Publik</h3>
+                <div class="plan-price">Rp0<span>/selamanya</span></div>
+                <p class="plan-desc">Cocok untuk edukasi hukum ringan dan mencari wawasan undang-undang dasar negara.</p>
+                
+                <ul class="feature-list">
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> 10 Pertanyaan Chat AI per bulan</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Pencarian Direktori Pengadilan</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Pendaftaran Akun Klien</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Membaca Artikel / Blog Hukum</li>
+                    <li class="feature-item disabled"><i class="fa-solid fa-xmark feature-icon"></i> Upload dokumen PDF asisten</li>
+                    <li class="feature-item disabled"><i class="fa-solid fa-xmark feature-icon"></i> Brankas bukti terenkripsi AES-256</li>
+                    <li class="feature-item disabled"><i class="fa-solid fa-xmark feature-icon"></i> Kalkulator Kemenangan Kasus</li>
+                </ul>
+                
+                <a href="../auth/register-client.html" class="btn btn-outline" style="width: 100%; padding: 12px;">Daftar Gratis</a>
+            </div>
+
+            <!-- Pro Plan (Popular) -->
+            <div class="price-card popular">
+                <div class="popular-badge">Paling Sering Digunakan</div>
+                <h3 class="plan-name">Justice AI Plus</h3>
+                <div class="plan-price">Rp149.000<span>/bulan</span></div>
+                <p class="plan-desc">Akses utuh analitik mendalam. Unggah kontrak ratusan lembar dan AI akan merangkumnya detik itu juga.</p>
+                
+                <ul class="feature-list">
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> <strong>Tanpa Batas</strong> Pertanyaan AI</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Review Kontrak & Deteksi Celah (PDF/DOCX)</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Auto-Draft Pembuat Surat Somasi Otomatis</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Brankas Digital Pribadi (2GB Storage)</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Diskon 10% konsultasi pengacara pertama</li>
+                    <li class="feature-item disabled"><i class="fa-solid fa-xmark feature-icon"></i> Alat Advokat & E-meterai Massal</li>
+                </ul>
+                
+                <a href="../auth/register-client.html" class="btn btn-primary" style="width: 100%; padding: 12px; box-shadow: var(--shadow-glow);">Langganan Plus</a>
+            </div>
+
+            <!-- Retainer Plan -->
+            <div class="price-card">
+                <h3 class="plan-name">Korporat / Bisnis</h3>
+                <div class="plan-price">Rp2.500.000<span>/bulan</span></div>
+                <p class="plan-desc">Legal in-house AI Anda. Sistem pendeteksi risiko gugatan karyawan dan sengketa niaga secara massal untuk Perusahaan.</p>
+                
+                <ul class="feature-list">
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Seluruh fitur Justice Pro Plus</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Manajemen API Endpoint ke sistem Anda</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Dukungan SSO Karyawan (SAML 2.0)</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> Brankas Audit Terdistribusi (100GB Storage)</li>
+                    <li class="feature-item"><i class="fa-solid fa-check feature-icon"></i> AI Risk Management untuk ribuan kontrak</li>
+                </ul>
+                
+                <a href="kontak.html" class="btn btn-outline" style="width: 100%; padding: 12px; border-color: var(--secondary-color); color: var(--secondary-color);">Hubungi Tim Penjualan</a>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container text-center">
+            <h2>Pertanyaan yang Sering Diajukan (FAQ)</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Pelajari lebih lanjut tentang keamanan, teknis pembayaran, dan ruang lingkup AI.</p>
+            
+            <div class="faq-grid" style="text-align: left;">
+                <div class="faq-item">
+                    <h4>Apakah data sengketa yang saya ketik di AI terjamin rahasia?</h4>
+                    <p>Secara mutlak Ya. Keseluruhan modul Chatbot berjalan pada jaringan terisolasi sesuai prinsip _Attorney-Client Privilege_. Mesin kami dirancang untuk tidak mempelajari identitas asli Anda (*No Zero Data Retention on PII*). Data di Vault diamankan dengan enkripsi AES-256 militer standar ISO 27001.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Bagaimana cara kerja pembayaran untuk Sewa Pengacara via platform?</h4>
+                    <p>Paket langganan AI di halaman ini terpisah dengan pembayaran honor Advokat. Saat Anda memutuskan untuk berinteraksi langsung (Video Call/Retainer) dengan pengacara dari direktori kami, Anda membayar "Escrow" via layanan Payment Gateway Justice Platform (Virtual Account / Kartu Kredit) per kasus/jam.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Jika saya perusahaan yang ingin mendeteksi 10.000 PKWT sekaligus, mampukah AI ini?</h4>
+                    <p>Sangat mampu. Skala teknis API *Contract Review* kami di paket Korporat sanggup menganalisis resiko ribuan lembar kontrak pekerja dan merangkum celahnya hanya dalam beberapa menit saja.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Bisakah membatalkan langganan Plus bulanan?</h4>
+                    <p>Ya. Sistem "Justice AI Plus" adalah prabayar berbasis bulanan. Anda dapat memberhentikan perpanjangan otomatis kapanpun melalui halaman menu *Pengaturan Tagihan* di dasbor klien.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer style="background-color: var(--bg-main); border-top: 1px solid rgba(0,0,0,0.05); padding: var(--space-xl) 0; text-align: center;">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 PT Justice Teknologi Kecerdasan. Indonesia.</p>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+</body>
+</html>

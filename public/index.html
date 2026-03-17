@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice AI Platform | Masa Depan Bantuan Hukum</title>
+
+    <!-- SEO & Meta Tags -->
+    <meta name="description"
+        content="Platform Super App Solusi Hukum Terintegrasi. Menggabungkan Kecerdasan Buatan (AI) dengan keahlian Advokat Profesional.">
+    <meta name="keywords" content="hukum, ai, pengacara, konsultasi hukum, legal tech, justice ai">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <!-- Local override for index.html specific styles -->
+    <style>
+        /* Hero Section */
+        .hero {
+            padding-top: 150px;
+            padding-bottom: 100px;
+            background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-alt) 100%);
+            display: flex;
+            align-items: center;
+            min-height: 80vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: var(--space-lg);
+        }
+
+        .hero h1 span {
+            color: var(--secondary-color);
+            position: relative;
+        }
+
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: var(--accent-color);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        /* Abstract Shape */
+        .hero-graphics {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glow-circle {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.15;
+            position: absolute;
+            animation: pulse 4s infinite alternate;
+        }
+
+        .main-hero-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-glow);
+            z-index: 2;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: scale(1.05);
+                opacity: 0.2;
+            }
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        .feature-card {
+            background-color: var(--bg-main);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .feature-card {
+            background-color: var(--bg-dark);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--bg-alt);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--space-xs);
+            font-family: var(--font-body);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: var(--space-3xl) var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin: var(--space-xl) auto;
+            max-width: 1200px;
+        }
+
+        .cta-section h2 {
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .cta-section p {
+            max-width: 600px;
+            margin: 0 auto var(--space-xl);
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: var(--space-3xl) 0 var(--space-md);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: var(--space-md);
+            font-family: var(--font-body);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer-col a {
+            color: var(--text-muted);
+        }
+
+        .footer-col a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container container-flex">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="layanan.html">Layanan</a></li>
+                <li><a href="../ai/chatbot.html">AI Legal</a></li>
+                <li><a href="../dashboards/lawyer/dashboard.html">Untuk Pengacara</a></li>
+                <li><a href="harga.html">Biaya</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 10px; border-radius: 50%;">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="../auth/login.html" class="btn btn-outline">Masuk</a>
+                <a href="../auth/register-client.html" class="btn btn-primary">Daftar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero container">
+        <div class="hero-content">
+            <h1 class="scroll-animate">Resolusi Hukum <span>Cerdas</span> di Ujung Jari Anda.</h1>
+            <p class="scroll-animate delay-1">Platform Super App yang menggabungkan Analisis Kecerdasan Buatan tingkat
+                lanjut dengan Jaringan Advokat Terverifikasi untuk menyelesaikan masalah hukum Anda lebih cepat dan
+                efisien.</p>
+            <div class="hero-actions scroll-animate delay-2">
+                <a href="../konsultasi/chat-ai.html" class="btn btn-primary btn-lg"><i
+                        class="fa-solid fa-robot"></i>&nbsp; Konsultasi AI Gratis</a>
+                <a href="layanan.html" class="btn btn-outline btn-lg">Pelajari Platform</a>
+            </div>
+        </div>
+        <div class="hero-graphics scroll-animate delay-3">
+            <div class="glow-circle"></div>
+            <!-- Mockup Image representing the Dashboard -->
+            <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800"
+                alt="Justice AI Interface Demo" class="main-hero-img hover-lift">
+        </div>
+    </section>
+
+    <!-- Core Features Section -->
+    <section class="section section-bg-alt">
+        <div class="container text-center">
+            <h2 class="scroll-animate">Ekosistem Hukum Terpadu</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; margin-bottom: 2rem;"
+                class="scroll-animate delay-1">Semua yang Anda butuhkan untuk mitigasi risiko hukum, penyelesaian
+                sengketa, dan perizinan bisnis dalam satu aplikasi.</p>
+
+            <div class="features-grid">
+
+                <div class="feature-card hover-lift scroll-animate">
+                    <div class="feature-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <h3>AI Contract Review</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Secara otomatis memindai perjanjian dan
+                        mendeteksi celah hukum serta klausul berbahaya dalam hitungan detik.</p>
+                </div>
+
+                <div class="feature-card hover-lift scroll-animate delay-1">
+                    <div class="feature-icon"><i class="fa-solid fa-video"></i></div>
+                    <h3>E-Litigation & Video Consult</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Lakukan konsultasi tatap muka aman atau
+                        hadiri persidangan virtual melalui infrastruktur WebRTC kami yang terenkripsi.</p>
+                </div>
+
+                <div class="feature-card hover-lift scroll-animate delay-2">
+                    <div class="feature-icon"><i class="fa-solid fa-file-shield"></i></div>
+                    <h3>Digital Vault</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Brankas digital dengan enkripsi tingkat
+                        militer (AES-256) untuk menjaga kerahasiaan dokumen perkara dan bukti Anda.</p>
+                </div>
+
+                <div class="feature-card hover-lift scroll-animate">
+                    <div class="feature-icon"><i class="fa-solid fa-file-signature"></i></div>
+                    <h3>E-Meterai Terintegrasi</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Langsung bubuhkan e-Meterai resmi PERURI
+                        pada dokumen yang dihasilkan sistem untuk legalitas penuh.</p>
+                </div>
+
+                <div class="feature-card hover-lift scroll-animate delay-1">
+                    <div class="feature-icon"><i class="fa-solid fa-percent"></i></div>
+                    <h3>Win Probability Calculator</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Analisis prediktif berbasis jutaan
+                        yurisprudensi MA untuk menakar persentase kemungkinan menang perkara Anda.</p>
+                </div>
+
+                <div class="feature-card hover-lift scroll-animate delay-2">
+                    <div class="feature-icon"><i class="fa-solid fa-gavel"></i></div>
+                    <h3>Jaringan Advokat Terkurasi</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Temukan pengacara yang tepat berdasarkan
+                        spesialisasi kasus (Pidana, Perdata, HI) terdekat di kota Anda.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="container scroll-animate">
+        <div class="cta-section">
+            <h2>Keadilan Seharusnya Tidak Rumit.</h2>
+            <p>Bergabunglah dengan ribuan pencari keadilan dan korporasi yang telah mendigitalisasi proses hukum mereka
+                dengan Justice AI.</p>
+            <a href="../auth/register-client.html" class="btn btn-secondary btn-lg"
+                style="font-size: 1.1rem; padding: 15px 30px;">
+                Mulai Digitalisasi Sekarang
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3 class="logo" style="margin-bottom: 20px;">Justice<span>AI</span></h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">Platform Super App
+                        Legal-tech pertama yang mengintegrasikan kecerdasan buatan untuk mereduksi disparitas akses
+                        keadilan.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Produk</h4>
+                    <ul>
+                        <li><a href="../ai/chatbot.html">AI Legal Assistant</a></li>
+                        <li><a href="../ai/contract-review.html">Contract Review</a></li>
+                        <li><a href="../courts/daftar.html">Direktori Pengadilan</a></li>
+                        <li><a href="harga.html">Harga Berlangganan</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Perusahaan</h4>
+                    <ul>
+                        <li><a href="about.html">Tentang Kami</a></li>
+                        <li><a href="karir.html">Karir</a></li>
+                        <li><a href="blog/index.html">Blog & Publikasi</a></li>
+                        <li><a href="kontak.html">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal & Keamanan</h4>
+                    <ul>
+                        <li><a href="syarat-ketentuan.html">Syarat & Ketentuan</a></li>
+                        <li><a href="kebijakan-privasi.html">Kebijakan Privasi</a></li>
+                        <li><a href="../docs/legal-compliance.md">Kepatuhan Keamanan (ISO)</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Justice AI Platform. Seluruh hak cipta dilindungi undang-undang.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+</body>
+
+</html>

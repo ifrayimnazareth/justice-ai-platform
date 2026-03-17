@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pemberitahuan Sistem - Justice AI</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; line-height: 1.6; }
+        .email-wrapper { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .email-header { background-color: #0f172a; color: #ffffff; padding: 30px 40px; text-align: center; }
+        .email-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 1px; color: #38bdf8; }
+        
+        .email-body { padding: 40px; }
+        .greeting { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .email-content { color: #475569; font-size: 15px; }
+        
+        .action-box { background-color: #f1f5f9; border-left: 4px solid #3b82f6; padding: 20px; margin: 30px 0; border-radius: 4px; }
+        
+        .btn { display: inline-block; background-color: #3b82f6; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; margin-top: 20px; text-align: center; }
+        
+        .email-footer { background-color: #f8fafc; padding: 30px 40px; text-align: center; font-size: 13px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+        .security-badge { display: inline-block; padding: 5px 15px; border: 1px solid #22c55e; color: #16a34a; border-radius: 20px; font-size: 12px; margin-bottom: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <div class="email-wrapper">
+                    
+                    <div class="email-header">
+                        <h1>JUSTICE AI</h1>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Platform Hukum Aman & Terdesentralisasi</p>
+                    </div>
+                    
+                    <div class="email-body">
+                        <div class="greeting">Halo, {{NAMA_KLIEN}}!</div>
+                        
+                        <div class="email-content">
+                            <p>Sistem kami mendeteksi ada dokumen hukum baru yang diunggah ke dalam Brankas Enkripsi Anda (Vault) oleh <strong>{{NAMA_PENGACARA}}</strong> terkait kasus <strong>{{ID_KASUS}}</strong>.</p>
+                            
+                            <div class="action-box">
+                                <h3 style="margin: 0 0 10px 0; font-size: 16px;">Detail Pembaruan Berkas:</h3>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Jenis Dokumen: Draf Somasi (Revisi ke-2)</li>
+                                    <li>Sidik Jari Hash: <span style="font-family: monospace; font-size: 12px;">{{SHA256_HASH}}</span></li>
+                                    <li>Tenggat Waktu Persetujuan: 3 Hari Kerja</li>
+                                </ul>
+                            </div>
+                            
+                            <p>Dokumen ini telah diamankan menggunakan AES-256. Tidak ada staf Justice AI yang dapat membacanya. Anda diwajibkan untuk masuk (login) ke dalam aplikasi untuk membuka kuncinya secara lokal.</p>
+                            
+                            <center>
+                                <a href="https://justice-ai.com/dashboard/client/vault" class="btn">Masuk ke Brankas Pribadi</a>
+                            </center>
+                        </div>
+                    </div>
+                    
+                    <div class="email-footer">
+                        <div class="security-badge">
+                            Email Terenkripsi Otomatis (Anti-Phishing)
+                        </div>
+                        <p>Jika Anda tidak meminta perubahan data ini atau merasa terjadi peretasan, segera hubungi dukungan 24/7 kami di <strong>security@justice-ai.com</strong>.</p>
+                        <p>&copy; 2026 Justice AI Technologies. Menara Thamrin Lt. 15, Jakarta Pusat.</p>
+                    </div>
+                    
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Layanan Hukum - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .service-hero {
+            padding: calc(var(--space-3xl) * 1.5) 0 var(--space-3xl);
+            background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-alt) 100%);
+            text-align: center;
+        }
+
+        .service-hero h1 { font-size: 3.5rem; color: var(--text-main); margin-bottom: 20px; }
+        .service-hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; }
+
+        .app-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-2xl);
+            padding: var(--space-3xl) 0;
+        }
+
+        .feature-block {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        [data-theme="dark"] .feature-block { border-color: rgba(255,255,255,0.05); }
+
+        .feature-block:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .feature-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-block h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-family: var(--font-body);
+        }
+
+        .feature-block p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 15px;
+        }
+
+        [data-theme="dark"] .feature-list { border-top-color: rgba(255,255,255,0.05); }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .feature-list li i { color: var(--success); }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary-light);
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap var(--transition-fast);
+        }
+
+        .btn-link:hover { gap: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Transparent Navbar Overlaying Hero -->
+    <nav class="navbar" style="position: absolute; background: transparent; box-shadow: none;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+            <div class="nav-links" style="display: flex; gap: 20px;">
+                <a href="index.html">Beranda</a>
+                <a href="about.html">Tentang</a>
+                <a href="harga.html">Harga</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="service-hero">
+        <div class="container animate-fade-in">
+            <h1>Satu Platform, <span style="color: var(--primary-light);">Solusi Tanpa Batas.</span></h1>
+            <p>Eksplorasi layanan mutakhir kami yang didesain khusus bagi Klien Individu, Perusahaan Korporat, hingga operasional Firma Hukum dan Advokat Independen.</p>
+        </div>
+    </header>
+
+    <section class="container" style="margin-top: -30px;">
+        
+        <!-- Search Bar untuk Layanan -->
+        <div style="max-width: 600px; margin: 0 auto 30px; position: relative; z-index: 5;">
+            <div style="display: flex; align-items: center; background: var(--bg-main); border: 1px solid rgba(0,0,0,0.1); border-radius: 30px; padding: 10px 20px; box-shadow: var(--shadow-md);">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted); margin-right: 15px;"></i>
+                <input type="text" id="searchInput" placeholder="Cari layanan (Contoh: Chatbot, Advokat, Kontrak)..." style="border: none; outline: none; background: transparent; width: 100%; font-size: 1rem; color: var(--text-main); font-family: var(--font-body);">
+            </div>
+        </div>
+
+        <div class="app-features-grid animate-fade-in delay-1" id="servicesGrid">
+            
+            <!-- Service 1 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper"><i class="fa-solid fa-robot"></i></div>
+                <h3>Pusat Chatbot Resolusi AI</h3>
+                <p>Mesin Natural Language berpanduan KUHPer & KUHP yang siap menjawab kebingungan hukum Anda dalam bahasa yang sangat mudah dipahami awam 24/7.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Anamnesa Kasus (Deteksi)</li>
+                    <li><i class="fa-solid fa-check"></i> Pencarian Rekomendasi Pasal Hukum</li>
+                    <li><i class="fa-solid fa-check"></i> Analisa Risiko Sengketa Dini</li>
+                </ul>
+                <a href="../ai/chatbot.html" class="btn-link">Coba Chatbot <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #dd6b20 0%, #e53e3e 100%);"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                <h3>Super AI Contract Review</h3>
+                <p>Teknologi OCR canggih yang menganalisa resiko fatal di dalam kontrak, SPK, NDA atau PKWT yang hendak Anda tanda tangani untuk mencegah penipuan.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Menyorot Klausul Memberatkan</li>
+                    <li><i class="fa-solid fa-check"></i> Audit Kesesuaian Undang-Undang RI</li>
+                    <li><i class="fa-solid fa-check"></i> Skor Resiko / Win Probability Tool</li>
+                </ul>
+                <a href="../ai/contract-review.html" class="btn-link" style="color: #e53e3e;">Audit PDF Kontrak <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #38a169 0%, #fff 100%); color: #22543d; border: 1px solid #38a169;"><i class="fa-solid fa-users-viewfinder"></i></div>
+                <h3>Marketplace Sewa Pengacara</h3>
+                <p>Hubungkan masalah perdata, pidana, atau industrial Anda dengan daftar ribuan Advokat bersertifikasi KYCA (PERADI/KAI) secara transparan harga.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Filter Spesialisasi Beracara & Budget</li>
+                    <li><i class="fa-solid fa-check"></i> Sistem Ulasan Terbuka & Profil Lengkap</li>
+                    <li><i class="fa-solid fa-check"></i> Video Call E-Konsultasi Terenkripsi</li>
+                </ul>
+                <a href="../dashboards/client/konsultasi/lawyer.html" class="btn-link" style="color: #38a169;">Cari Pengacara <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper" style="background: var(--bg-alt); color: var(--text-main); border: 2px solid var(--primary-light);"><i class="fa-solid fa-file-signature"></i></div>
+                <h3>AI Legal Drafting Maker</h3>
+                <p>Bagi Pengacara atau In-House Legal: Biarkan sistem meracik surat gugatan, surat kuasa, dan Somasi dalam hitungan detik berdasarkan input variabel formalisasi.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Pembuatan Somasi / Teguran Hukum</li>
+                    <li><i class="fa-solid fa-check"></i> Draft Perjanjian Kerahasiaan Sesuai Kaidah</li>
+                    <li><i class="fa-solid fa-check"></i> Editor Teks & Ekspor Dukungan Microsoft Word</li>
+                </ul>
+                <a href="../dashboards/lawyer/cases/draft-maker.html" class="btn-link">Lihat Fitur Advokat <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper" style="background: linear-gradient(135deg, #805ad5 0%, #4c51bf 100%);"><i class="fa-solid fa-vault"></i></div>
+                <h3>Brankas Digital (Crypto-Vault)</h3>
+                <p>Mengamankan Bukti Sah (seperti Foto KTP, Chat WhatsApp Pelakor, Bukti Transfer), mengenkripsinya dengan standar AES-256 militer, dan melakukan *hash* SHA untuk diajukan ke e-Court MA.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Tidak Dapat Dibobol Walau Oleh Kami</li>
+                    <li><i class="fa-solid fa-check"></i> Sertifikasi Hash Asli (Anti-Edit Rekayasa)</li>
+                    <li><i class="fa-solid fa-check"></i> Sinkronisasi E-Court Secara Aman</li>
+                </ul>
+                <a href="../dashboards/client/vault/identitas.html" class="btn-link" style="color: #805ad5;">Masuk Brankas Pribadi <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="feature-block">
+                <div class="feature-icon-wrapper" style="background: black;"><i class="fa-solid fa-server"></i></div>
+                <h3>Pusat Komando (Firm Administrator)</h3>
+                <p>Sistem manajemen operasional canggih berskala perusahaan untuk mengatur lalu lintas advokat, mereviu persetujuan, metrik kinerja firma, dan analitik perputaran dana klien.</p>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-check"></i> Persetujuan Lisensi/Dokumen Rekan Advokat</li>
+                    <li><i class="fa-solid fa-check"></i> Tinjauan Keuangan Berjalan & Pembagian Honor</li>
+                    <li><i class="fa-solid fa-check"></i> Error-Logs Monitor pada Ekosistem AI Server</li>
+                </ul>
+                <a href="../dashboards/admin/dashboard.html" class="btn-link" style="color: var(--text-main);">Panel Root / Super Admin <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer Simple -->
+    <footer style="background-color: var(--bg-alt); border-top: 1px solid rgba(0,0,0,0.05); padding: var(--space-2xl) 0; margin-top: 50px;">
+        <div class="container text-center">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">&copy; 2026 PT Justice Teknologi. Indonesia.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+    <script>
+        // PROGRAM PENCARIAN LAYANAN (Real-time Filter)
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const servicesGrid = document.getElementById('servicesGrid');
+            const featureBlocks = servicesGrid.querySelectorAll('.feature-block');
+
+            // Logika fungsi filter
+            searchInput.addEventListener('input', function() {
+                const keyword = this.value.toLowerCase().trim();
+                let foundAny = false;
+
+                featureBlocks.forEach(block => {
+                    // Ambil teks judul dan deskripsi dari tiap card layanan
+                    const title = block.querySelector('h3').textContent.toLowerCase();
+                    const desc = block.querySelector('p').textContent.toLowerCase();
+                    const listItems = Array.from(block.querySelectorAll('li')).map(li => li.textContent.toLowerCase()).join(' ');
+                    
+                    // Cek apakah keyword ada di judul, deskripsi, atau poin-poin fitur
+                    if (title.includes(keyword) || desc.includes(keyword) || listItems.includes(keyword)) {
+                        block.style.display = 'block'; // Tampilkan card
+                        foundAny = true;
+                    } else {
+                        block.style.display = 'none'; // Sembunyikan card
+                    }
+                });
+
+                // Tampilkan pesan jika tidak ada layanan yang cocok
+                let noResultMsg = document.getElementById('noResultMsg');
+                if (!foundAny) {
+                    if (!noResultMsg) {
+                        noResultMsg = document.createElement('div');
+                        noResultMsg.id = 'noResultMsg';
+                        noResultMsg.style.textAlign = 'center';
+                        noResultMsg.style.gridColumn = '1 / -1';
+                        noResultMsg.style.padding = '40px';
+                        noResultMsg.style.color = 'var(--text-muted)';
+                        noResultMsg.innerHTML = '<i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i><br>Layanan tidak ditemukan untuk kata kunci tersebut.';
+                        servicesGrid.appendChild(noResultMsg);
+                    }
+                } else {
+                    if (noResultMsg) {
+                        noResultMsg.remove();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

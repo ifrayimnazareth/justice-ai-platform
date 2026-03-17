@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hubungi Kami - Konsultasi B2B Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .contact-header {
+            padding: calc(var(--space-3xl) * 1.5) 0 var(--space-3xl);
+            background: linear-gradient(135deg, var(--bg-alt) 0%, rgba(56, 161, 105, 0.1) 100%);
+            text-align: center;
+        }
+
+        .contact-header h1 { font-size: 3rem; margin-bottom: 15px; }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: var(--space-3xl);
+            padding: var(--space-3xl) 0;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) { .contact-container { grid-template-columns: 1fr; } }
+
+        .info-card {
+            background-color: var(--bg-main);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
+        }
+
+        [data-theme="dark"] .info-card { border-color: rgba(255,255,255,0.05); }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-item:last-child { margin-bottom: 0; }
+
+        .info-icon {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+            background-color: rgba(43, 108, 176, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-text h4 { margin: 0 0 5px 0; font-family: var(--font-body); }
+        .info-text p { margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+        .form-card {
+            background-color: var(--bg-main);
+            padding: var(--space-2xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .form-card { border-color: rgba(255,255,255,0.05); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0,0,0,0.15);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            background-color: var(--bg-alt);
+            color: var(--text-main);
+        }
+
+        [data-theme="dark"] .form-control { border-color: rgba(255,255,255,0.15); }
+        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1); }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" style="position: absolute; background: transparent; box-shadow: none;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </a>
+            <div class="nav-links" style="display: flex; gap: 20px;">
+                <a href="index.html">Beranda</a>
+                <a href="layanan.html">Semua Layanan</a>
+                <a href="harga.html">Harga</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="contact-header">
+        <div class="container animate-fade-in">
+            <h1>Butuh Konsultasi Korporat Akses API?</h1>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Tim Sales dan Engineering kami siap membantu Anda mengintegrasikan mesin pendeteksi kontrak ke sistem In-House perusahaan Anda.</p>
+        </div>
+    </header>
+
+    <section class="container contact-container animate-fade-in delay-1">
+        
+        <!-- Info Panel -->
+        <div class="info-card">
+            <h3 style="margin: 0 0 20px 0; font-family: var(--font-body);">Informasi Kantor</h3>
+            
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="info-text">
+                    <h4>Markas AI & Legal</h4>
+                    <p>Gedung Keadilan Tower, Lt. 12<br>Jl. Jend. Sudirman Kav. 99, Jakarta Pusat 10220</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="info-text">
+                    <h4>Email Resmi</h4>
+                    <p>Untuk B2B: corporate@justice-ai.id<br>Dukungan Klien: support@justice-ai.id</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="info-text">
+                    <h4>Hotline Edukasi Hukum</h4>
+                    <p>021-1500-LAW (Senin-Jumat, 09:00 - 17:00 WIB)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="form-card">
+            <h3 style="margin: 0 0 20px 0; font-family: var(--font-body);">Kirim Permintaan Demo Sistem B2B</h3>
+            <form action="#" onsubmit="alert('Pesan telah dikirim ke Tim Enterprise. Terima Kasih.'); return false;">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Perusahaan / Firma Hukum</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Perusahaan</label>
+                    <input type="email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Topik Pembahasan</label>
+                    <select class="form-control">
+                        <option>Sewa AI Contract Review API</option>
+                        <option>Kerjasama Kemitraan Firma Hukum</option>
+                        <option>Hosting Dedicated Server (Private Cloud)</option>
+                        <option>Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pesan / Kapasitas Penggunaan Dokumen (Per Bulan)</label>
+                    <textarea class="form-control" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.05rem;">
+                    Kirim Pesan ke Tim AI
+                </button>
+            </form>
+        </div>
+
+    </section>
+
+    <!-- Footer Simple -->
+    <footer style="background-color: var(--bg-alt); border-top: 1px solid rgba(0,0,0,0.05); padding: var(--space-xl) 0; margin-top: 30px;">
+        <div class="container text-center">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">&copy; 2026 PT Justice Teknologi. Indonesia.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/core/app.js"></script>
+</body>
+</html>

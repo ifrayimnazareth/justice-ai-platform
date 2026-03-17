@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Hukum & Edukasi - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        .blog-hero {
+            background-color: var(--bg-alt);
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .blog-hero { border-color: rgba(255,255,255,0.05); }
+
+        .blog-hero h1 { font-family: var(--font-heading); font-size: 3rem; margin: 0 0 20px 0; color: var(--text-main); }
+        .blog-hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px auto; line-height: 1.6; }
+
+        .blog-search-bar {
+            max-width: 500px; margin: 0 auto; display: flex; position: relative;
+        }
+
+        .blog-search-bar input {
+            width: 100%; padding: 15px 25px 15px 50px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.1); font-family: var(--font-body); font-size: 1rem; background-color: var(--bg-main); color: var(--text-main); box-shadow: var(--shadow-sm); outline: none; transition: all 0.3s;
+        }
+        
+        [data-theme="dark"] .blog-search-bar input { border-color: rgba(255,255,255,0.1); }
+        .blog-search-bar input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(43, 108, 176, 0.1); }
+
+        .blog-search-bar i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
+
+        .blog-categories {
+            display: flex; justify-content: center; gap: 15px; margin-top: 40px; flex-wrap: wrap;
+        }
+
+        .category-pill {
+            padding: 8px 20px; border-radius: 20px; background-color: var(--bg-main); border: 1px solid rgba(0,0,0,0.1); color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+
+        [data-theme="dark"] .category-pill { border-color: rgba(255,255,255,0.1); }
+        
+        .category-pill:hover, .category-pill.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        .blog-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; padding: 60px 20px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .article-card {
+            background-color: var(--bg-main); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; cursor: pointer;
+        }
+
+        [data-theme="dark"] .article-card { border-color: rgba(255,255,255,0.05); }
+        .article-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
+
+        .article-img { width: 100%; height: 220px; object-fit: cover; }
+        .article-content { padding: 25px; display: flex; flex-direction: column; flex: 1; }
+        
+        .article-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.85rem; color: var(--text-muted); }
+        .article-meta span.tag { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); padding: 4px 10px; border-radius: 4px; font-weight: 600; }
+        
+        .article-title { font-family: var(--font-heading); font-size: 1.4rem; margin: 0 0 15px 0; color: var(--text-main); line-height: 1.4; }
+        .article-excerpt { color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; flex: 1; font-size: 0.95rem; }
+
+        .article-author { display: flex; align-items: center; gap: 15px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 20px; margin-top: auto; }
+        [data-theme="dark"] .article-author { border-color: rgba(255,255,255,0.05); }
+        
+        .article-author img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .article-author .info { display: flex; flex-direction: column; }
+        .article-author .name { font-weight: 600; color: var(--text-main); font-size: 0.9rem; }
+        .article-author .date { font-size: 0.8rem; color: var(--text-muted); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Navbar Reused -->
+    <nav class="navbar" style="position: sticky;">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <i class="fa-solid fa-scale-balanced" style="color: var(--primary-color);"></i> Justice<span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html">Beranda</a>
+                <a href="../layanan.html">Layanan AI</a>
+                <a href="index.html" style="font-weight: 600; color: var(--primary-color);">Literasi Hukum</a>
+                <a href="../faq.html">Bantuan</a>
+            </div>
+            <div class="nav-auth">
+                <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="blog-hero animate-fade-in">
+        <h1>Wawasan Hukum & Teknologi AI</h1>
+        <p>Tingkatkan literasi hukum perdata Anda melalui artikel edukatif yang dirangkum langsung oleh jaringan pengacara mitra kami beserta asisten AI.</p>
+        
+        <div class="blog-search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Cari topik hukum, putusan MA, atau istilah...">
+        </div>
+
+        <div class="blog-categories">
+            <button class="category-pill active">Semua</button>
+            <button class="category-pill">Hukum Waris</button>
+            <button class="category-pill">Hukum Bisnis (PT)</button>
+            <button class="category-pill">Sengketa Tanah</button>
+            <button class="category-pill">Tren Legal Tech</button>
+            <button class="category-pill">Hak Cipta (HAKI)</button>
+        </div>
+    </header>
+
+    <main class="blog-grid animate-fade-in">
+
+        <!-- Article 1 -->
+        <article class="article-card">
+            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=600" class="article-img">
+            <div class="article-content">
+                <div class="article-meta">
+                    <span class="tag">Hukum Bisnis</span>
+                    <span><i class="fa-regular fa-clock"></i> 5 Menit Baca</span>
+                </div>
+                <h3 class="article-title">Panduan Mudah Membuat Perjanjian Pra-Nikah (Prenup) di Indonesia</h3>
+                <p class="article-excerpt">Mengapa pemisahan harta sangat penting bagi pengusaha yang akan menikah? Ketahui dasar hukum KUHPerdata tentang pembagian gono-gini pasca perceraian.</p>
+                
+                <div class="article-author">
+                    <img src="https://ui-avatars.com/api/?name=Diana+P&background=3b82f6&color=fff">
+                    <div class="info">
+                        <span class="name">Adv. Diana Pratiwi, S.H.</span>
+                        <span class="date">15 Maret 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Article 2 -->
+        <article class="article-card">
+            <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=600" class="article-img">
+            <div class="article-content">
+                <div class="article-meta">
+                    <span class="tag" style="background-color: rgba(56, 161, 105, 0.1); color: var(--success);">Tren Legal Tech</span>
+                    <span><i class="fa-regular fa-clock"></i> 3 Menit Baca</span>
+                </div>
+                <h3 class="article-title">Mengenal Fitur AI Contract Review: Deteksi Celah Kontrak Dalam Detik</h3>
+                <p class="article-excerpt">Tidak perlu lagi membaca puluhan halaman berkas. Optical Character Recognition (OCR) AI kami mencari anomali pasal yang bias sepihak secara otomatis.</p>
+                
+                <div class="article-author">
+                    <div class="info">
+                        <span class="name">Tim Edukasi Justice AI</span>
+                        <span class="date">12 Maret 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Article 3 -->
+        <article class="article-card">
+            <img src="https://images.unsplash.com/photo-1505664125541-25c672b1a624?auto=format&fit=crop&q=80&w=600" class="article-img">
+            <div class="article-content">
+                <div class="article-meta">
+                    <span class="tag" style="background-color: rgba(221, 107, 32, 0.1); color: var(--warning);">Sengketa Tanah</span>
+                    <span><i class="fa-regular fa-clock"></i> 8 Menit Baca</span>
+                </div>
+                <h3 class="article-title">Hati-Hati Beli Rumah Inden! Lindungi Hak Anda dengan PPJB</h3>
+                <p class="article-excerpt">Banyak konsumen dirugikan oleh developer perumahan bodong. Pelajari kekuatan sakti Perjanjian Pengikatan Jual Beli (PPJB) di mata Pengadilan Negeri.</p>
+                
+                <div class="article-author">
+                    <img src="https://ui-avatars.com/api/?name=Hendra+G&background=eab308&color=fff">
+                    <div class="info">
+                        <span class="name">Adv. Hendra G., M.Kn.</span>
+                        <span class="date">10 Maret 2026</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid rgba(0,0,0,0.05);">
+        &copy; 2026 Justice AI Platform. Seluruh materi bukan merupakan nasihat hukum resmi.
+    </footer>
+
+    <script src="../../assets/js/core/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Bantuan & FAQ - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background-color: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo i { color: #58a6ff; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: #58a6ff; }
+
+        .faq-header { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, transparent 100%); }
+        .faq-header h1 { font-family: var(--font-heading); font-size: 3rem; margin-bottom: 20px; color: white; }
+        .faq-header p { font-size: 1.2rem; color: #94a3b8; max-width: 600px; margin: 0 auto; }
+        
+        .search-container { max-width: 600px; margin: 40px auto 0; position: relative; }
+        .search-container i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 1.2rem; }
+        .search-container input { width: 100%; padding: 18px 20px 18px 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); background-color: #1e293b; color: white; font-size: 1rem; outline: none; transition: 0.2s; }
+        .search-container input:focus { border-color: #58a6ff; box-shadow: 0 0 15px rgba(88, 166, 255, 0.3); }
+
+        .faq-content { max-width: 800px; margin: 0 auto; padding: 60px 20px; flex: 1; }
+        
+        .faq-category { margin-bottom: 40px; }
+        .faq-category h2 { font-family: var(--font-heading); color: #58a6ff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .accordion { background-color: #1e293b; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); margin-bottom: 15px; overflow: hidden; }
+        .accordion-btn { background: none; border: none; width: 100%; text-align: left; padding: 20px; font-size: 1.1rem; color: white; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-btn i { color: #64748b; transition: transform 0.3s; }
+        .accordion-btn.active i { transform: rotate(180deg); color: #58a6ff; }
+        
+        .accordion-panel { padding: 0 20px; background-color: rgba(0,0,0,0.2); max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-panel p { color: #cbd5e1; line-height: 1.6; padding: 20px 0; margin: 0; }
+
+        .footer { background-color: #0f172a; padding: 40px 5%; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; margin-top: auto; }
+        
+        /* Highlight term */
+        .hl { color: #facc15; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo"><i class="fa-solid fa-scale-unbalanced"></i> Justice AI</a>
+        <div class="nav-links">
+            <a href="index.html">Beranda</a>
+            <a href="harga.html">Biaya & Paket</a>
+            <a href="faq.html" style="color: white; font-weight: bold;">Tanya Jawab</a>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <a href="../auth/login.html" class="btn btn-outline">Masuk</a>
+        </div>
+    </nav>
+
+    <header class="faq-header">
+        <h1>Pusat Bantuan <span style="color: #58a6ff;">Hukum</span></h1>
+        <p>Temukan jawaban untuk pertanyaan umum seputar keamanan privasi, perlindungan data, dan mekanisme Escrow dari Justice AI.</p>
+        
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Ketik kata kunci: 'Enkripsi', 'Biaya', atau 'Pengacara'...">
+        </div>
+    </header>
+
+    <main class="faq-content">
+        
+        <div class="faq-category">
+            <h2><i class="fa-solid fa-shield-halved"></i> Keamanan & Privasi Dokumen</h2>
+            
+            <div class="accordion">
+                <button class="accordion-btn">Apakah LexBot (AI) mencuri data kontrak perusahaan saya untuk dilatih? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-panel">
+                    <p><strong>Sama Sekali Tidak.</strong> Justice AI beroperasi mematuhi UU PDP (Pelindungan Data Pribadi) serta menggunakan kebijakan <span class="hl">Zero-Retention Policy</span> (Tidak Ada Perekaman) dari server OpenAI Enterprise. Setelah dokumen Anda dianalisa oleh algoritma kami, file tersebut otomatis hilang dari *cache* memori utama dan satu-satunya salinan yang ada tersimpan kembali ke *Brankas Digital (Vault)* milik Anda dengan lapisan Enkripsi AES-256 GCM.</p>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-btn">Bisakah pihak "Admin Polisi" (Super Admin) Justice AI membaca percakapan saya dengan pengacara? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-panel">
+                    <p><strong>Secara teknis tidak mungkin.</strong> Chat dan Video Call Anda menggunakan protokol <span class="hl">End-to-End Encryption (E2EE) WebRTC</span>. Artinya, kunci untuk merubah sandi kembali menjadi teks / gambar hanya dimiliki oleh perangkat komputer Anda dan pengacara Anda. Bahkan di mata database dan *server master* milik Root Admin kami, rekaman percakapan Anda hanyalah gabungan karakter acak yang tidak bermakna *(Ciphertext)*.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2><i class="fa-solid fa-money-bill-transfer"></i> Transaksi Escrow & Pembayaran Uang</h2>
+            
+            <div class="accordion">
+                <button class="accordion-btn">Bagaimana jika Pengacara kabur setelah saya bayar Lunas (Retainer)? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-panel">
+                    <p>Platform Justice AI memberlakukan sistem <span class="hl">Rekening Bersama (Escrow)</span>. Ketika Anda membayar 100% biaya penyelesaian kasus, uang tersebut tidak langsung masuk ke rekening pengacara, melainkan ditahan "diam" *(Hold)* oleh pihak ketiga Xendit Payment Gateway di dalam ekosistem Justice AI. Uang hak retensi baru akan dirilis ke pihak advokat setelah penyelesaian tugas secara sah (atau Anda mendebit rilis).</p>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <button class="accordion-btn">Bolehkah saya meminta Refund / Pengembalian Dana secara sepihak? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-panel">
+                    <p>Prosedur refund (Chargeback) dapat diajukan jika penasihat hukum terbukti tidak responsif lebih dari 7 hari atau melanggar perjanjian penugasan. Karena dana bersarang di dalam Escrow, uang dapat dikembalikan 100% setelah dilakukan mediasi kilat oleh Admin Resolusi Sengketa Justice AI.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2><i class="fa-solid fa-gavel"></i> Kredibilitas Advokat & Pengadilan (E-Court)</h2>
+            
+            <div class="accordion">
+                <button class="accordion-btn">Apakah pengacara di Justice AI kredibel dan bersertifikat Peradi? <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="accordion-panel">
+                    <p>Setiap Praktisi Hukum (Lawyer) yang bergabung di platform wajib melalui proses <span class="hl">KYC (Know Your Customer) ketat</span>. Mereka diwajibkan melakukan *Upload KTP Wajah*, swafoto (*liveness*), Bukti Sumpah Pengadilan Tinggi (BAS), dan Kartu Anggota (KTA PERADI/KAI/DLL). Kepalsuan dokumen langsung diblokir (*Banned*) oleh sistem WAF kami.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Justice AI Platform - Mendigitalisasi Keadilan Hukum di Indonesia. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Simple JS for Accordion
+        const accBtns = document.querySelectorAll(".accordion-btn");
+        accBtns.forEach(btn => {
+            btn.addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

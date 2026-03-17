@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direktori Kamus Hukum Nasional - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; font-family: var(--font-body); margin: 0; }
+
+        .directory-hero { background: linear-gradient(to right, #1e293b, #0f172a); padding: 80px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .directory-hero h1 { font-family: var(--font-heading); font-size: 3rem; margin: 0 0 15px 0; color: white; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .directory-hero p { font-size: 1.1rem; color: #94a3b8; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        .search-container { max-width: 700px; margin: 40px auto 0 auto; position: relative; }
+        .search-container input {
+            width: 100%; padding: 20px 30px 20px 60px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(0,0,0,0.3); color: white; font-size: 1.2rem; outline: none; transition: 0.3s;
+        }
+        .search-container input:focus { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+        .search-container i { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: #3b82f6; font-size: 1.5rem; }
+
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 60px 20px; display: flex; gap: 40px; }
+
+        /* Left Filter Sidebar */
+        .filter-sidebar { width: 300px; flex-shrink: 0; }
+        .filter-box { background-color: #1e293b; border-radius: var(--radius-lg); padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        .filter-box h3 { margin: 0 0 20px 0; font-size: 1.1rem; color: white; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        
+        .filter-group { display: flex; flex-direction: column; gap: 12px; }
+        .filter-label { display: flex; align-items: center; gap: 10px; cursor: pointer; color: #cbd5e1; font-size: 0.95rem; }
+        .filter-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: #3b82f6; }
+
+        /* Right Content Area */
+        .results-area { flex: 1; }
+        
+        .alphabet-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        .alphabet-nav a {
+            width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background-color: #1e293b; color: #94a3b8; text-decoration: none; border-radius: 4px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
+        }
+        .alphabet-nav a:hover, .alphabet-nav a.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+
+        .law-item { background-color: #1e293b; border-radius: var(--radius-md); padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.2s; cursor: pointer; }
+        .law-item:hover { border-color: #3b82f6; transform: translateX(5px); }
+
+        .law-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .law-header h4 { margin: 0; font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px;}
+        .type-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
+        
+        .type-kuhp { background-color: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .type-kuhperdata { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .law-desc { color: #cbd5e1; line-height: 1.6; margin: 0; font-size: 0.95rem; }
+        .law-meta { display: flex; gap: 15px; margin-top: 15px; font-size: 0.85rem; color: #64748b; }
+        .law-meta span { display: flex; align-items: center; gap: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Back Navigation Overlay -->
+    <a href="../public/layanan.html" style="position: absolute; top: 20px; left: 30px; color: #94a3b8; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px; z-index: 10;">
+        <i class="fa-solid fa-arrow-left"></i> Kembali ke Layanan
+    </a>
+
+    <header class="directory-hero animate-fade-in">
+        <h1><i class="fa-solid fa-book-journal-whills" style="color: #3b82f6;"></i> Ensiklopedia Undang-Undang</h1>
+        <p>Akses pustaka digital lengkap ribuan pasal KUHP, KUHPerdata, Yurisprudensi Mahkamah Agung, serta undang-undang khusus negara Republik Indonesia.</p>
+        
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Tanya LexBot: 'Apa hukuman pencemaran nama baik...'">
+        </div>
+    </header>
+
+    <main class="content-wrapper animate-fade-in">
+        
+        <!-- Sidebar -->
+        <aside class="filter-sidebar">
+            <div class="filter-box">
+                <h3>Kategori Peraturan</h3>
+                <div class="filter-group">
+                    <label class="filter-label"><input type="checkbox" checked> Kitab UU Hukum Pidana (KUHP)</label>
+                    <label class="filter-label"><input type="checkbox" checked> Kitab UU Hukum Perdata (BW)</label>
+                    <label class="filter-label"><input type="checkbox"> Hukum Acara (KUHAP/HIR)</label>
+                    <label class="filter-label"><input type="checkbox"> UU TI & Elektronik (ITE)</label>
+                    <label class="filter-label"><input type="checkbox"> UU Ketenagakerjaan</label>
+                </div>
+
+                <h3 style="margin-top: 30px;">Riwayat Putusan (Yurisprudensi)</h3>
+                <div class="filter-group">
+                    <label class="filter-label"><input type="checkbox"> Putusan Mahkamah Agung (MA)</label>
+                    <label class="filter-label"><input type="checkbox"> Putusan Mahkamah Konstitusi (MK)</label>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 20px; background-color: rgba(59, 130, 246, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(59, 130, 246, 0.3);">
+                <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px;"><i class="fa-solid fa-robot"></i> Ringkasan Dibuat oleh AI</div>
+                <p style="font-size: 0.85rem; color: #cbd5e1; margin: 0; line-height: 1.5;">Seluruh terjemahan KUHPerdata (Bahasa Belanda) telah disederhanakan (Parafrase) oleh AI untuk konsumsi awam tanpa mengubah esensi legalitas teks aslinya.</p>
+            </div>
+        </aside>
+
+        <!-- List Data -->
+        <section class="results-area">
+            
+            <div class="alphabet-nav">
+                <a href="#" class="active">Semua</a>
+                <a href="#">A</a> <a href="#">B</a> <a href="#">C</a> <a href="#">P</a> <a href="#">W</a>
+            </div>
+
+            <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 20px;">Menampilkan Draf Populer hari ini...</div>
+
+            <!-- Item 1 -->
+            <article class="law-item">
+                <div class="law-header">
+                    <h4><i class="fa-solid fa-file-contract" style="color: #60a5fa; font-size: 1rem;"></i> Pasal 1320 (Syarat Sahnya Perjanjian)</h4>
+                    <span class="type-badge type-kuhperdata">KUHPerdata Dasar</span>
+                </div>
+                <p class="law-desc">
+                    Terjemahan AI B. Indonesia: Untuk sahnya suatu perjanjian, diperlukan 4 syarat mutlak: (1) Kesepakatan mereka yang mengikatkan dirinya; (2) Kecakapan untuk membuat suatu perikatan; (3) Suatu pokok persoalan tertentu; (4) Suatu sebab (causa) yang tidak terlarang/halal.
+                </p>
+                <div class="law-meta">
+                    <span><i class="fa-solid fa-book"></i> Buku III: Tentang Perikatan</span>
+                    <span><i class="fa-solid fa-eye"></i> Dilihat 15.2k kali</span>
+                </div>
+            </article>
+
+            <!-- Item 2 -->
+            <article class="law-item">
+                <div class="law-header">
+                    <h4><i class="fa-solid fa-handcuffs" style="color: #f87171; font-size: 1rem;"></i> Pasal 378 (Tindak Pidana Penipuan)</h4>
+                    <span class="type-badge type-kuhp">KUHP (Pidana Umum)</span>
+                </div>
+                <p class="law-desc">
+                    Barang siapa dengan maksud untuk menguntungkan diri sendiri atau orang lain secara melawan hukum, dengan memakai nama palsu atau martabat palsu, dengan tipu muslihat, ataupun rangkaian kebohongan, menggerakkan orang lain untuk menyerahkan barang sesuatu kepadanya, diancam karena penipuan dengan pidana penjara paling lama 4 (empat) tahun.
+                </p>
+                <div class="law-meta">
+                    <span><i class="fa-solid fa-book"></i> Bab XXV: Perbuatan Curang</span>
+                    <span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Sering disalahgunakan untuk utang-piutang</span>
+                </div>
+            </article>
+            
+            <!-- Item 3 -->
+            <article class="law-item">
+                <div class="law-header">
+                    <h4><i class="fa-solid fa-building-user" style="color: #60a5fa; font-size: 1rem;"></i> Undang-Undang No. 40 Tahun 2007 (Perseroan Terbatas)</h4>
+                    <span class="type-badge" style="background-color: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">Hukum Korporasi</span>
+                </div>
+                <p class="law-desc">
+                    Hukum organik (Lex Specialis) yang mengatur mengenai badan hukum yang merupakan persekutuan modal, didirikan berdasarkan perjanjian, melakukan kegiatan usaha dengan modal dasar yang seluruhnya terbagi dalam saham...
+                </p>
+                <div class="law-meta">
+                    <span><i class="fa-solid fa-calendar"></i> Disahkan 2007</span>
+                    <span><i class="fa-solid fa-file-pdf"></i> Unduh Naskah Asli</span>
+                </div>
+            </article>
+
+            <button class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.1); color: white; padding: 15px; margin-top: 10px;">
+                <i class="fa-solid fa-spinner" style="margin-right: 5px;"></i> Muat 100 Pasal Lainnya
+            </button>
+            
+        </section>
+
+    </main>
+
+</body>
+</html>
