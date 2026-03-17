@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Integrasi Mahkamah Agung - Justice AI Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Court Search Box */
+        .search-hero { background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.5)), url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Mahkamah_Agung_RI.jpg') center/cover; border-radius: var(--radius-lg); padding: 40px; text-align: center; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+        
+        .search-hero h2 { margin: 0 0 10px 0; color: white; font-family: var(--font-heading); font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .search-hero p { margin: 0 0 25px 0; color: #cbd5e1; font-size: 0.95rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        
+        .search-bar { display: flex; max-width: 700px; margin: 0 auto; background-color: rgba(15, 23, 42, 0.9); border-radius: 30px; border: 1px solid rgba(88, 166, 255, 0.3); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .search-bar input { flex: 1; padding: 15px 25px; background: none; border: none; color: white; outline: none; font-size: 1rem; }
+        .search-bar select { padding: 0 20px; background-color: rgba(255,255,255,0.05); border: none; border-left: 1px solid rgba(255,255,255,0.1); color: white; outline: none; cursor: pointer; }
+        .search-bar button { padding: 0 30px; background-color: #58a6ff; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .search-bar button:hover { background-color: #3b82f6; }
+
+        /* Courts Grid */
+        .courts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        
+        .court-card { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; position: relative; overflow: hidden; }
+        .court-card:hover { transform: translateY(-5px); border-color: rgba(250, 204, 21, 0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .c-type { position: absolute; top: 15px; right: 15px; background-color: rgba(250, 204, 21, 0.1); color: #facc15; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(250, 204, 21, 0.3); font-size: 0.7rem; font-weight: bold; }
+        .c-type.agama { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; border-color: rgba(168, 85, 247, 0.3); }
+        .c-type.tun { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+
+        .c-icon { width: 50px; height: 50px; border-radius: 8px; background-color: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .court-card h3 { margin: 0 0 10px 0; color: white; font-size: 1.1rem; line-height: 1.4; padding-right: 60px; }
+        .court-card p { margin: 0 0 15px 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        
+        .c-stats { display: flex; gap: 15px; margin-bottom: 20px; font-size: 0.8rem; color: #cbd5e1; }
+        .c-stats div { display: flex; align-items: center; gap: 5px; background-color: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 4px; }
+        .c-stats i { color: #58a6ff; }
+        
+        .btn-act { width: 100%; border: 1px solid rgba(255,255,255,0.2); background: none; color: white; padding: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .btn-act:hover { background-color: white; color: black; }
+
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .page-btn { width: 35px; height: 35px; border-radius: 4px; display: flex; justify-content: center; align-items: center; background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; transition: 0.2s; }
+        .page-btn.active { background-color: #58a6ff; border-color: #58a6ff; color: white; }
+        .page-btn:hover:not(.active) { background-color: rgba(255,255,255,0.1); }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboards/client/dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Platform</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Direktori Publik</p>
+                <a href="daftar.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan RI</a>
+                <a href="jadwal-sidang.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-calendar-days"></i> Papan Sidang Terbuka</a>
+                <a href="maps.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-map-location-dot"></i> Peta Lokasi Yuridiksi</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Dashboard Utama</p>
+                <a href="../public/index.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Portal Justice Beranda</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-link"></i> Terkoneksi API SIPP Ditjen Badilum & Badilag (Realtime)</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="search-hero">
+                    <h2>Penelusuran Lokasi Keadilan Indonesia</h2>
+                    <p>Temukan data perkara, akses ruang sidang Virtual, dan profil Panitera lebih dari 800+ gedung Pengadilan Tingkat I & Banding.</p>
+                    
+                    <div class="search-bar">
+                        <input type="text" placeholder="Masukkan Nama Kota / Kabupaten / Nama Pengadilan...">
+                        <select>
+                            <option value="">Semua Lingkungan</option>
+                            <option value="pn">Pengadilan Umum (PN)</option>
+                            <option value="pa">Pengadilan Agama (PA)</option>
+                            <option value="ptun">Tata Usaha Negara (PTUN)</option>
+                        </select>
+                        <button><i class="fa-solid fa-search"></i> Cari</button>
+                    </div>
+                </div>
+
+                <div class="page-header">
+                    <div>
+                        <h1>Daftar Pengadilan Negeri Terakreditasi API</h1>
+                    </div>
+                </div>
+
+                <div class="courts-grid">
+                    
+                    <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type">Kelas I-A Khusus</span>
+                        <div class="c-icon" style="color: #facc15;"><i class="fa-solid fa-building-columns"></i></div>
+                        <h3>Pengadilan Negeri Jakarta Pusat</h3>
+                        <p>Membawahi perkara perdata, pidana, niaga, dan tipikor di wilayah sentral ibukota dengan volume kasus tertinggi.</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 1.2K Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 12 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                    <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type agama">Pengadilan Agama</span>
+                        <div class="c-icon" style="color: #a855f7;"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <h3>Pengadilan Agama Jakarta Selatan</h3>
+                        <p>Mengadili perkara perdata agama (perceraian, waris islam, ekonomi syari'ah) di wilayah kota administrasi Jakarta Selatan.</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 840 Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 5 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                    <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type tun">PTUN Negara</span>
+                        <div class="c-icon" style="color: #38bdf8;"><i class="fa-solid fa-landmark"></i></div>
+                        <h3>PTUN Jakarta (Tata Usaha Negara)</h3>
+                        <p>Tempat penyelesaian sengketa pejabat administrasi negara (Gugatan SK pejabat, sengketa Pilkada, dll).</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 320 Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 3 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                    <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type">Kelas I-A Khusus</span>
+                        <div class="c-icon" style="color: #facc15;"><i class="fa-solid fa-building-columns"></i></div>
+                        <h3>Pengadilan Negeri Bandung</h3>
+                        <p>Yurisdiksi peradilan umum tingkat pertama di wilayah Kota Bandung, Jawa Barat. Memiliki standar keamanan Siber Tinggi.</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 950 Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 8 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                    <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type">Kelas I-A</span>
+                        <div class="c-icon" style="color: #facc15;"><i class="fa-solid fa-building-columns"></i></div>
+                        <h3>Pengadilan Negeri Surabaya</h3>
+                        <p>Gedung sentral penanganan litigasi wilayah komersial terbesar kedua di Indonesia, terhubung API penuh ke platform Vault Justice.</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 1.1K Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 10 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                     <div class="court-card" onclick="window.location.href='detail.html';" style="cursor: pointer;">
+                        <span class="c-type">Tingkat Banding</span>
+                        <div class="c-icon" style="color: #f85149;"><i class="fa-solid fa-gavel"></i></div>
+                        <h3>Pengadilan Tinggi DKI Jakarta</h3>
+                        <p>Memeriksa kembali dan memutus perkara-perkara yang dituntut permohonan saksi Ahli dan kasasi.</p>
+                        <div class="c-stats">
+                            <div><i class="fa-solid fa-folder-open"></i> 530 Perkara</div>
+                            <div><i class="fa-solid fa-video"></i> 4 Ruang Virtual</div>
+                        </div>
+                        <button class="btn-act">Lihat Detail Gedung</button>
+                    </div>
+
+                </div>
+
+                <div class="pagination">
+                    <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn">84</button>
+                    <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

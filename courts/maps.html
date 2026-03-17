@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Sebaran Yurisdiksi - Justice AI Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow: hidden; }
+        .dashboard-container { display: flex; height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; position: absolute; top: 0; left: 0; right: 0; z-index: 10; }
+        
+        /* Map Container (Full Screen Simulation) */
+        .map-wrapper { flex: 1; width: 100%; height: 100%; position: relative; background-color: #0f172a; overflow: hidden; margin-top: 70px; }
+        
+        /* Simulated Interactive Map Background (using gradient/pattern) */
+        .map-layer { position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-image: radial-gradient(rgba(88, 166, 255, 0.1) 1px, transparent 1px); background-size: 30px 30px; background-position: center; border-style: solid; border-color: rgba(255,255,255,0.02); display: flex; justify-content: center; align-items: center; }
+        
+        /* Simulated Indonesian Archipelago Map Graphic */
+        .indonesia-shape { opacity: 0.15; position: absolute; width: 80%; height: 60%; top: 20%; left: 10%; background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Indonesia_%E2%80%94_location_map.svg/1024px-Indonesia_%E2%80%94_location_map.svg.png') no-repeat center center; background-size: contain; filter: invert(1) hue-rotate(180deg); }
+
+        /* Map Pin / Marker */
+        .map-pin { position: absolute; width: 24px; height: 24px; background-color: #facc15; border-radius: 50%; box-shadow: 0 0 15px #facc15, inset 0 0 5px rgba(0,0,0,0.5); transform: translate(-50%, -50%); cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; color: black; font-weight: bold; }
+        .map-pin:hover { transform: translate(-50%, -50%) scale(1.5); z-index: 20; }
+        
+        .map-pin.pn { background-color: #58a6ff; box-shadow: 0 0 15px #58a6ff; }
+        .map-pin.pa { background-color: #a855f7; box-shadow: 0 0 15px #a855f7; color: white; }
+
+        /* Fake Coordinates for Demo Map */
+        .p-jkt { top: 48%; left: 32%; }
+        .p-bdg { top: 51%; left: 35%; }
+        .p-sby { top: 52%; left: 45%; }
+        .p-smd { top: 40%; left: 60%; }
+        .p-mks { top: 45%; left: 63%; }
+        .p-mdn { top: 32%; left: 20%; }
+        .p-bal { top: 55%; left: 52%; }
+
+        /* Info Popup Box (Tooltip) */
+        .map-info-card { position: absolute; bottom: 40px; right: 40px; background-color: rgba(15, 23, 42, 0.95); border: 1px solid rgba(88, 166, 255, 0.5); border-radius: 12px; padding: 25px; width: 320px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 20; transform: translateY(20px); opacity: 0; pointer-events: none; transition: 0.4s; }
+        .map-info-card.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        
+        .card-close { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem; }
+        .card-close:hover { color: white; }
+        
+        .map-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; background-color: rgba(88, 166, 255, 0.2); color: #58a6ff; border: 1px solid #58a6ff; }
+        .map-info-card h3 { margin: 0 0 10px 0; color: white; font-size: 1.2rem; line-height: 1.4; }
+        .map-info-card p { margin: 0 0 15px 0; color: #cbd5e1; font-size: 0.85rem; line-height: 1.6; }
+        
+        .m-stats { display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0; margin-bottom: 15px; }
+        .m-stats div { text-align: center; }
+        .m-stats span { display: block; font-size: 1.1rem; font-weight: bold; color: white; font-family: monospace; }
+        .m-stats small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .btn-direct { display: block; width: 100%; text-align: center; background-color: #58a6ff; color: white; padding: 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
+        .btn-direct:hover { background-color: #3b82f6; }
+
+        /* Map Controls overlay */
+        .map-controls { position: absolute; top: 30px; left: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 15; }
+        .ctrl-btn { width: 45px; height: 45px; background-color: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: 0.2s; }
+        .ctrl-btn:hover { background-color: rgba(255,255,255,0.1); border-color: white; }
+
+        /* Legend */
+        .map-legend { position: absolute; bottom: 30px; left: 30px; background-color: rgba(15, 23, 42, 0.8); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); z-index: 15; backdrop-filter: blur(5px); }
+        .leg-title { margin: 0 0 10px 0; font-size: 0.8rem; color: white; font-weight: bold; text-transform: uppercase; }
+        .leg-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; color: #cbd5e1; }
+        .leg-item:last-child { margin-bottom: 0; }
+        .leg-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../public/index.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Platform</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Direktori Publik</p>
+               <a href="daftar.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan RI</a>
+                <a href="jadwal-sidang.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-calendar-days"></i> Papan Sidang Terbuka</a>
+                <a href="maps.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-map-location-dot"></i> Peta Lokasi Yuridiksi</a>
+            </div>
+
+            <div style="padding: 0 20px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; padding-bottom: 20px;">
+                <div style="background-color: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.3);">
+                    <h4 style="margin:0 0 5px 0; color:#58a6ff; font-size:0.9rem;"><i class="fa-solid fa-satellite"></i> API Integrasi GPS</h4>
+                    <p style="margin:0; font-size:0.75rem; color:#94a3b8; line-height: 1.5;">Menampilkan kepadatan server E-Court M.A. berdasarkan letak geodetik gedung operasional keadilan di seluruh Indonesia.</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-globe"></i> Sistem Informasi Tata Letak Yurisprudensi Geografis (SITG-MA)</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="color: white; font-size: 0.85rem;"><i class="fa-solid fa-location-crosshairs"></i> Geo-Lock ON</span>
+                </div>
+            </div>
+
+            <div class="map-wrapper">
+                
+                <div class="map-layer">
+                    <!-- Base Map image placeholder -->
+                    <div class="indonesia-shape"></div>
+                    
+                    <!-- Interactive Markers -->
+                    <div class="map-pin pn p-jkt" onclick="showMapInfo('Pengadilan Negeri Jakarta Pusat', 'PN', '1.240', '12', 'Jl. Bungur Besar Raya No.24, Kemayoran.', 'pn')" title="PN Jkt Pusat">PN</div>
+                    
+                    <div class="map-pin pn p-bdg" onclick="showMapInfo('Pengadilan Negeri Bandung Kelas I-A', 'PN', '980', '8', 'Jl. LLRE Martadinata No.74, Citarum.', 'pn')" title="PN Bandung">PN</div>
+                    
+                    <div class="map-pin p-sby" onclick="showMapInfo('Pengadilan Tata Usaha Negara Surabaya', 'PTUN', '310', '4', 'Jl. Ir. H. Juanda No.89, Sidoarjo.', 'tun')" title="PTUN Jatim">TUN</div>
+                    
+                    <div class="map-pin p-smd" onclick="showMapInfo('Pengadilan Tinggi Samarinda', 'PT', '450', '3', 'Jl. M. Yamin No.1, Gn. Kelua, Samarinda.', 'pt')" title="PT Kaltim">PT</div>
+                    
+                    <div class="map-pin p-mks" onclick="showMapInfo('Pengadilan Agama Makassar', 'PA', '830', '6', 'Jl. Perintis Kemerdekaan KM.14, Makassar.', 'pa')" style="background-color: #a855f7; box-shadow: 0 0 15px #a855f7; color: white;" title="PA Sulsel">PA</div>
+                    
+                    <div class="map-pin pn p-mdn" onclick="showMapInfo('Pengadilan Negeri Medan', 'PN', '1.100', '10', 'Jl. Pengadilan No.8, Petisah Tengah, Medan.', 'pn')" title="PN Sumut">PN</div>
+                    
+                    <div class="map-pin pa p-bal" onclick="showMapInfo('Pengadilan Agama Denpasar', 'PA', '420', '3', 'Jl. Cokroaminoto No.158, Ubung, Denpasar.', 'pa')" title="PA Bali">PA</div>
+
+                </div>
+
+                <!-- Floating Controls -->
+                <div class="map-controls">
+                    <button class="ctrl-btn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                    <button class="ctrl-btn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                    <button class="ctrl-btn" title="Pusatkan Radar Lokasi Saat Ini (GPS)"><i class="fa-solid fa-location-arrow"></i></button>
+                    <button class="ctrl-btn" title="Filter Klasifikasi Pengadilan"><i class="fa-solid fa-layer-group"></i></button>
+                </div>
+
+                <div class="map-legend">
+                    <p class="leg-title">Indeks Warna Yurisdiksi</p>
+                    <div class="leg-item"><div class="leg-dot" style="background-color: #58a6ff; box-shadow: 0 0 5px #58a6ff;"></div> Pengadilan Umum (PN)</div>
+                    <div class="leg-item"><div class="leg-dot" style="background-color: #a855f7; box-shadow: 0 0 5px #a855f7;"></div> Pengadilan Agama (PA)</div>
+                    <div class="leg-item"><div class="leg-dot" style="background-color: #facc15; box-shadow: 0 0 5px #facc15;"></div> PTUN & Niaga Khusus</div>
+                    <div class="leg-item"><div class="leg-dot" style="background-color: #f85149; box-shadow: 0 0 5px #f85149;"></div> Tingkat Banding / Kasasi</div>
+                </div>
+
+                <!-- Detail Panel Popup Tooltip -->
+                <div class="map-info-card" id="mapPopup">
+                    <button class="card-close" onclick="closeMapInfo()"><i class="fa-solid fa-xmark"></i></button>
+                    <span class="map-badge" id="pu_badge">PN - Umum</span>
+                    <h3 id="pu_title">Pengadilan Negeri Jakarta Pusat</h3>
+                    <p id="pu_addr"><i class="fa-solid fa-location-dot" style="color: #94a3b8;"></i> Jl. Bungur Besar Raya No.24, Kemayoran, Kota Jakarta Pusat.</p>
+                    
+                    <div class="m-stats">
+                        <div>
+                            <span id="pu_cases">1,240</span>
+                            <small>Perkara Aktif</small>
+                        </div>
+                        <div style="border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); padding: 0 15px;">
+                            <span id="pu_rooms" style="color:#58a6ff;">12</span>
+                            <small>Ruang V-RTC</small>
+                        </div>
+                        <div>
+                            <span style="color:#4ade80;">98%</span>
+                            <small>Sistem SIPP UP</small>
+                        </div>
+                    </div>
+
+                    <a href="detail.html" class="btn-direct"><i class="fa-solid fa-door-open"></i> Masuk Lobby Pengadilan</a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showMapInfo(title, typeName, cases, rooms, address, colorCode) {
+            document.getElementById('pu_title').innerText = title;
+            document.getElementById('pu_addr').innerHTML = '<i class="fa-solid fa-location-dot" style="color: #94a3b8; margin-right:5px;"></i> ' + address;
+            document.getElementById('pu_cases').innerText = cases;
+            document.getElementById('pu_rooms').innerText = rooms;
+            
+            let badge = document.getElementById('pu_badge');
+            badge.innerText = typeName;
+            
+            if(colorCode === 'pn') { badge.style.color = '#58a6ff'; badge.style.borderColor = '#58a6ff'; badge.style.backgroundColor = 'rgba(88, 166, 255, 0.2)'; }
+            else if(colorCode === 'pa') { badge.style.color = '#a855f7'; badge.style.borderColor = '#a855f7'; badge.style.backgroundColor = 'rgba(168, 85, 247, 0.2)'; }
+            else { badge.style.color = '#facc15'; badge.style.borderColor = '#facc15'; badge.style.backgroundColor = 'rgba(250, 204, 21, 0.2)'; }
+
+            document.getElementById('mapPopup').classList.add('visible');
+        }
+
+        function closeMapInfo() {
+            document.getElementById('mapPopup').classList.remove('visible');
+        }
+        
+        // Auto open Jkt on load
+        setTimeout(() => { showMapInfo('Pengadilan Negeri Jakarta Pusat', 'Kelas IA (PN)', '1.240', '12', 'Jl. Bungur Besar Raya No.24, Kemayoran.', 'pn'); }, 1000);
+    </script>
+</body>
+</html>

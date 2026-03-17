@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Sidang SIPP - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Filter Section */
+        .filter-panel { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .filter-group label { font-size: 0.8rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
+        .filter-group input, .filter-group select { padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background-color: var(--bg-main); color: white; outline: none; }
+        .filter-group input:focus, .filter-group select:focus { border-color: #58a6ff; }
+        
+        /* Jadwal Table */
+        .schedule-table { width: 100%; border-collapse: collapse; margin-top: 10px; background-color: var(--bg-alt); border-radius: var(--radius-md); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .schedule-table th { background-color: rgba(0,0,0,0.3); padding: 15px 20px; text-align: left; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .schedule-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; vertical-align: middle; }
+        .schedule-table tbody tr:hover { background-color: rgba(255,255,255,0.02); }
+        
+        .s-time { font-family: monospace; font-size: 1.1rem; color: #58a6ff; font-weight: bold; display: block; margin-bottom: 5px; }
+        .s-date { font-size: 0.75rem; color: #64748b; }
+        
+        .s-case { color: white; font-weight: bold; margin-bottom: 5px; }
+        .s-nomor { color: #58a6ff; font-family: monospace; font-size: 0.8rem; background-color: rgba(88, 166, 255, 0.1); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        
+        .s-room { display: flex; align-items: center; gap: 8px; color: #facc15; font-weight: bold; font-size: 0.9rem; }
+        .s-room.online { color: #4ade80; }
+        
+        .btn-live { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; white-space: nowrap; }
+        .btn-live:hover { background-color: #f85149; color: white; }
+        
+        .btn-closed { background: none; border: 1px dashed rgba(255,255,255,0.2); color: rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: not-allowed; }
+
+        .agenda-txt { display: block; margin-top: 5px; font-size: 0.85rem; color: #cbd5e1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../public/index.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Platform</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Direktori Publik</p>
+                <a href="daftar.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan RI</a>
+                <a href="jadwal-sidang.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-calendar-days"></i> Papan Sidang Terbuka</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Sistem Terpadu</p>
+                <a href="../auth/login.html" style="display: block; color: #58a6ff; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-right-to-bracket"></i> Login ke Dashboard Klien</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-broadcast-tower"></i> Rekapitulasi Sinkronasi Nasional via API Mahkamah Agung (Asli)</div>
+                <div style="font-family: monospace; color: #4ade80;">Total Sidang Hari Ini: 8,421</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tabel Kalender Sidang Harian / Bulanan</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Masyarakat dapat menonton sidang peradilan TINGKAT TERBUKA (Virtual) secara langsung dari website.</p>
+                    </div>
+                </div>
+
+                <div class="filter-panel">
+                    <div class="filter-group">
+                        <label>Pilih Lokasi Instansi Peradilan</label>
+                        <select>
+                            <option>PN Jakarta Pusat</option>
+                            <option>PN Surabaya</option>
+                            <option>PA Jakarta Selatan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Tanggal Pelaksanaan</label>
+                        <input type="date" value="2026-03-17">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Cari Nomor Pekara / Nama Hakim</label>
+                        <input type="text" placeholder="Misal: SG-2026/XI/109...">
+                    </div>
+                    
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button class="btn btn-primary" style="height: 42px; padding: 0 25px;"><i class="fa-solid fa-filter"></i> Saring Data</button>
+                    </div>
+                </div>
+
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu & Tanggal</th>
+                            <th>Identitas Berkas Perkara</th>
+                            <th>Materi Sidang (Agenda)</th>
+                            <th>Ruangan / Majelis</th>
+                            <th>Akses Publik</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>
+                                <span class="s-time">09:00 WIB</span>
+                                <span class="s-date">17 Maret 2026</span>
+                            </td>
+                            <td>
+                                <div class="s-case">Pdt.G (Perbuatan Melawan Hukum)</div>
+                                <span class="s-nomor">No. 11/Pdt.G/2026/PN.Jkt.Pst</span>
+                            </td>
+                            <td>
+                                <span class="agenda-txt"><i class="fa-regular fa-comment-dots" style="color: #58a6ff;"></i> Pembacaan Replik oleh Kuasa Penggugat.</span>
+                            </td>
+                            <td>
+                                <div class="s-room online"><i class="fa-solid fa-video"></i> WebRTC Channel 4</div>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">Hakim: M. Yudha S.H., M.H.</span>
+                            </td>
+                            <td>
+                                <button class="btn-live" onclick="alert('Membuka Akses Video Player untuk Masyarakat (Tamu Tanpa Akun).');"><i class="fa-solid fa-satellite-dish"></i> Live Stream</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="s-time">09:30 WIB</span>
+                                <span class="s-date">17 Maret 2026</span>
+                            </td>
+                            <td>
+                                <div class="s-case">Pdt.Sus-PHI (Sengketa PHK Industrial)</div>
+                                <span class="s-nomor">No. 45/Pdt.Sus-PHI/2026/PN.Jkt.Pst</span>
+                            </td>
+                            <td>
+                                <span class="agenda-txt"><i class="fa-solid fa-file-contract" style="color: #facc15;"></i> Mediasi/Bedah Surat Peringatan SP3</span>
+                            </td>
+                            <td>
+                                <div class="s-room"><i class="fa-solid fa-building"></i> Ruang Sidang Kusuma Atmaja</div>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">Hakim: Siti Zahra, S.H.</span>
+                            </td>
+                            <td>
+                                <button class="btn-closed" title="Sidang dilakukan di gedung pengadilan secara Luring (Offline)."><i class="fa-solid fa-users-slash"></i> Offline Only</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="s-time">11:00 WIB</span>
+                                <span class="s-date">17 Maret 2026</span>
+                            </td>
+                            <td>
+                                <div class="s-case">Tipikor (Tindak Pidana Korupsi)</div>
+                                <span class="s-nomor">No. 08/Pid.Sus-TPK/2026/PN.Jkt.Pst</span>
+                            </td>
+                            <td>
+                                <span class="agenda-txt" style="color: #f85149;"><i class="fa-solid fa-microphone-lines"></i> Keterangan Saksi Ahli BPK JPU</span>
+                            </td>
+                            <td>
+                                <div class="s-room online"><i class="fa-solid fa-video"></i> WebRTC Mega Channel A</div>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">Hakim Ketua: Andreas K., S.H.</span>
+                            </td>
+                            <td>
+                                <button class="btn-live"><i class="fa-solid fa-satellite-dish"></i> Live Stream</button>
+                            </td>
+                        </tr>
+
+                         <tr>
+                            <td>
+                                <span class="s-time">14:00 WIB</span>
+                                <span class="s-date">17 Maret 2026</span>
+                            </td>
+                            <td>
+                                <div class="s-case">Pdt.G (Hak Asuh Anak & Gono Gini)</div>
+                                <span class="s-nomor">No. 112/Pdt.G/2026/PA.Jkt.Sel</span>
+                            </td>
+                            <td>
+                                <span class="agenda-txt" style="color: #94a3b8;"><i class="fa-solid fa-file-signature"></i> Pembacaan Putusan Akhir Agama</span>
+                            </td>
+                            <td>
+                                <div class="s-room online"><i class="fa-solid fa-video"></i> E-Court PA CH-2</div>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">Hakim: Ahmad Fatih, S.Ag.</span>
+                            </td>
+                            <td>
+                                <div style="display:flex; flex-direction:column; align-items:center;">
+                                    <button class="btn-closed" title="Sidang tertutup demi hukum (Perkara Keluarga)."><i class="fa-solid fa-lock"></i> Sidang Tertutup</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

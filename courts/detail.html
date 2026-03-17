@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Lobby Pengadilan - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 2rem; color: #58a6ff; display: flex; align-items: center; gap: 15px; }
+        .ph-subtitle { color: #94a3b8; font-family: monospace; font-size: 0.9rem; margin-top: 10px; display: flex; gap: 20px; }
+        .ph-subtitle span { display: flex; align-items: center; gap: 8px; }
+
+        /* Cover Image / Hero Section */
+        .court-hero { height: 280px; background: linear-gradient(to top, var(--bg-main) 0%, transparent 100%), url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Mahkamah_Agung_RI.jpg') center/cover; border-radius: var(--radius-lg); position: relative; border: 1px solid rgba(255,255,255,0.05); margin-bottom: -15px; }
+        .badge-type { position: absolute; bottom: 30px; left: 30px; background-color: rgba(250, 204, 21, 0.9); color: black; padding: 8px 15px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        
+        /* Layanan Grid */
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .srv-card { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); text-align: center; cursor: pointer; transition: 0.2s; text-decoration: none; color: white; display: block; }
+        .srv-card:hover { transform: translateY(-5px); border-color: #58a6ff; background-color: rgba(88, 166, 255, 0.05); }
+        .srv-card i { font-size: 2.5rem; color: #58a6ff; margin-bottom: 15px; }
+        .srv-card.virtual i { color: #a855f7; }
+        .srv-card h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
+        .srv-card p { margin: 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+
+        /* Today's Dockets / Antrian Sidang */
+        .docket-section { background-color: var(--bg-alt); border-radius: var(--radius-lg); padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .docket-section h2 { margin: 0 0 20px 0; color: white; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        
+        .docket-list { display: flex; flex-direction: column; gap: 15px; }
+        .d-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: rgba(0,0,0,0.3); border-radius: 8px; border-left: 3px solid transparent; }
+        .d-item.live { border-left-color: #f85149; background-color: rgba(248, 81, 73, 0.05); }
+        .d-item.wait { border-left-color: #facc15; }
+        
+        .di-info { flex: 1; }
+        .di-info h4 { margin: 0 0 5px 0; color: white; font-size: 1rem; }
+        .di-info p { margin: 0; color: #94a3b8; font-size: 0.85rem; font-family: monospace; }
+        
+        .di-status { text-align: right; margin-right: 20px; }
+        .di-time { font-size: 1.2rem; font-weight: bold; color: white; font-family: monospace; display: block; }
+        .di-label { font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 5px; }
+        .lbl-live { background-color: rgba(248, 81, 73, 0.2); color: #f85149; }
+        .lbl-wait { background-color: rgba(250, 204, 21, 0.2); color: #facc15; }
+        
+        .btn-masuk { background-color: #58a6ff; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-masuk:hover { background-color: #3b82f6; }
+        .btn-masuk.disabled { background-color: rgba(255,255,255,0.1); color: #64748b; cursor: not-allowed; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 30px; }
+        .stat-box { background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.02); }
+        .stat-box span { display: block; font-size: 1.5rem; font-weight: bold; color: white; font-family: monospace; }
+        .stat-box small { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../public/index.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Platform</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Direktori Publik</p>
+                <a href="daftar.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan RI</a>
+                <a href="jadwal-sidang.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-calendar-days"></i> Papan Sidang Terbuka</a>
+                <a href="maps.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-map-location-dot"></i> Peta Lokasi Yuridiksi</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Navigasi</p>
+                <a href="daftar.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-building-flag"></i> Profil Resmi Kepaniteraan / Mahkamah Wilayah</div>
+                <button class="btn btn-outline"><i class="fa-solid fa-share-nodes"></i> Bagikan Yurisdiksi</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="court-hero">
+                    <span class="badge-type"><i class="fa-solid fa-award"></i> Kelas I-A Khusus (Peradilan Umum)</span>
+                </div>
+
+                <div class="page-header">
+                    <div>
+                        <h1><i class="fa-solid fa-building-columns" style="color: #facc15;"></i> Pengadilan Negeri Jakarta Pusat</h1>
+                        <div class="ph-subtitle">
+                            <span><i class="fa-solid fa-map-pin"></i> Jl. Bungur Besar Raya No.24, Kemayoran.</span>
+                            <span><i class="fa-solid fa-phone"></i> (021) 4244432</span>
+                            <span><i class="fa-solid fa-envelope"></i> kepaniteraan@pn-jakartapusat.go.id</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 2rem; font-weight: bold; color: #4ade80; display: block;">SIPP AKTIF</span>
+                        <div style="color: #94a3b8; font-size: 0.8rem;">Update Data Terakhir: 1 Menit Lalu</div>
+                    </div>
+                </div>
+
+                <div class="services-grid">
+                    <a href="virtual-tour.html" class="srv-card virtual">
+                        <i class="fa-solid fa-vr-cardboard"></i>
+                        <h3>Virtual Tour Interaktif 360&deg;</h3>
+                        <p>Jelajahi lorong pengadilan, ruang loby registrasi, hingga kursi mediasi tanpa harus datang ke lokasi fisik menggunakan Engine 3D Justice.</p>
+                    </a>
+                    <a href="../dashboards/client/dashboard.html" class="srv-card">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <h3>Layanan E-Court (E-Filing)</h3>
+                        <p>Akses fitur pembayaran Panjar Perkara (E-Payment), pemanggilan pihak tergugat (E-Summons), dan pendaftaran gugatan daring.</p>
+                    </a>
+                    <a href="jadwal-sidang.html" class="srv-card">
+                        <i class="fa-solid fa-gavel"></i>
+                        <h3>Papan Register Jadwal</h3>
+                        <p>Sistem Informasi Penelusuran Perkara (SIPP) realtime, melihat nomor docket, hakim ketua, serta jadwal WebRTC hari ini.</p>
+                    </a>
+                </div>
+
+                <div class="docket-section">
+                    <h2><i class="fa-solid fa-video" style="color: #58a6ff;"></i> Live Streaming Ruang Sidang Terbuka HARI INI</h2>
+                    
+                    <div class="docket-list">
+                        
+                        <div class="d-item live">
+                            <div class="di-info">
+                                <h4>Sidang Putusan TPK (Tindak Pidana Korupsi)</h4>
+                                <p>No: 08/Pid.Sus-TPK/2026/PN.Jkt.Pst &bull; Ruang: Kusuma Atmaja V-Room A</p>
+                            </div>
+                            <div class="di-status">
+                                <span class="di-time">SEKARANG</span>
+                                <span class="di-label lbl-live"><i class="fa-solid fa-tower-broadcast"></i> SEDANG BERLANGSUNG</span>
+                            </div>
+                            <button class="btn-masuk" onclick="alert('Mengalihkan Anda ke ruang tonton Publik M.A (Read Only Video)...');"><i class="fa-brands fa-youtube"></i> Tonton Publik</button>
+                        </div>
+
+                        <div class="d-item wait">
+                            <div class="di-info">
+                                <h4>Pembacaan Eksepsi Perbuatan Melawan Hukum (PMH)</h4>
+                                <p>No: 11/Pdt.G/2026/PN.Jkt.Pst &bull; Ruang: WebRTC Mediasi Channel 4</p>
+                            </div>
+                            <div class="di-status">
+                                <span class="di-time">13:30 WIB</span>
+                                <span class="di-label lbl-wait"><i class="fa-solid fa-clock"></i> SEGERA DIMULAI</span>
+                            </div>
+                            <button class="btn-masuk disabled" title="Ruang belum dibuka Hakim."><i class="fa-solid fa-door-closed"></i> Lobby Terkunci</button>
+                        </div>
+
+                        <div class="d-item" style="border-left-color: rgba(255,255,255,0.1);">
+                            <div class="di-info">
+                                <h4>Sidang Perdana Sengketa Merek Dagang Nasional</h4>
+                                <p>No: 55/Pdt.Sus-HKI/Merek/2026/PN.Niaga.Jkt.Pst &bull; Ruang: V-Room Niaga 1</p>
+                            </div>
+                            <div class="di-status">
+                                <span class="di-time">15:00 WIB</span>
+                                <span class="di-label" style="background-color: rgba(255,255,255,0.1); color: #cbd5e1;">PANGGILAN PARA PIHAK</span>
+                            </div>
+                            <button class="btn-masuk disabled"><i class="fa-solid fa-door-closed"></i> Lobby Terkunci</button>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <span>1,240</span>
+                            <small>Sisa Perkara Aktif</small>
+                        </div>
+                        <div class="stat-box">
+                            <span style="color: #4ade80;">5,312</span>
+                            <small>Perkara Diputus (Tahun Ini)</small>
+                        </div>
+                        <div class="stat-box">
+                            <span style="color: #58a6ff;">48</span>
+                            <small>Hakim / Panitera</small>
+                        </div>
+                        <div class="stat-box">
+                            <span style="color: #a855f7;">12</span>
+                            <small>Saluran E-Court WSS</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
