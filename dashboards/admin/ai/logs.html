@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pemantauan Perilaku AI - Justice Admin</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Log terminal view */
+        .terminal-panel { background-color: #0d1117; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; height: 600px; }
+        .t-header { background-color: #161b22; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .t-header h3 { margin: 0; font-size: 1rem; color: #c9d1d9; font-family: monospace; display: flex; align-items: center; gap: 10px; }
+        .t-actions select { padding: 6px 12px; border-radius: 4px; border: 1px solid #30363d; background-color: #0d1117; color: #c9d1d9; outline: none; font-size: 0.8rem; }
+        
+        .t-body { padding: 20px; overflow-y: auto; flex: 1; font-family: monospace; font-size: 0.85rem; line-height: 1.6; }
+        
+        /* Log Line formatting */
+        .log-line { display: flex; gap: 15px; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 8px; transition: 0.2s; }
+        .log-line:hover { background-color: rgba(255,255,255,0.02); }
+        
+        .l-time { color: #8b949e; white-space: nowrap; }
+        .l-lvl { font-weight: bold; width: 60px; text-align: center; border-radius: 3px; padding: 2px 0; }
+        .l-lvl.info { color: #58a6ff; background-color: rgba(88, 166, 255, 0.1); }
+        .l-lvl.warn { color: #d29922; background-color: rgba(210, 153, 34, 0.1); }
+        .l-lvl.err { color: #f85149; background-color: rgba(248, 81, 73, 0.1); }
+        .l-lvl.sec { color: #4ade80; background-color: rgba(34, 197, 94, 0.1); }
+
+        .l-actor { color: #c9d1d9; font-weight: bold; }
+        .l-user { color: #a855f7; }
+        .l-model { color: #58a6ff; }
+        
+        .l-msg { flex: 1; color: #c9d1d9; word-break: break-all; }
+        .l-msg .highlight { color: #d29922; background-color: rgba(210, 153, 34, 0.1); padding: 0 4px; border-radius: 3px; }
+
+        /* Fake Code Scrollbar */
+        .t-body::-webkit-scrollbar { width: 8px; }
+        .t-body::-webkit-scrollbar-track { background: #0d1117; }
+        .t-body::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        .t-body::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Admin</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Kendali Model AI</p>
+                <a href="logs.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-terminal"></i> Console Log Interaksi AI</a>
+                <a href="model-metrics.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-chart-network"></i> Metrik Kinerja (Latency)</a>
+                <a href="moderation.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-shield-halved"></i> Penyesuaian Moderasi Prompt</a>
+                <a href="training.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-brain"></i> Basis Pengetahuan Hukum (Vector DB)</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Akses Root</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-robot"></i> Pusat Diagnostik LLM Hukum (LexBrain API)</div>
+                <div style="display: flex; gap: 15px; font-size: 0.85rem; color: #94a3b8; font-family: monospace;">
+                    <span><i class="fa-solid fa-circle" style="color: #4ade80; font-size: 0.6rem;"></i> Stream: WSS Active</span>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Pengawasan Prompt Injection (Real-time)</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Mendeteksi pengguna yang mencoba memanipulasi parameter rahasia sistem Justice.</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline" style="border-color: #f85149; color: #f85149;"><i class="fa-solid fa-power-off"></i> Force Kill AI Instance</button>
+                    </div>
+                </div>
+
+                <div class="terminal-panel">
+                    <div class="t-header">
+                        <h3><i class="fa-solid fa-terminal"></i> tail -f /var/log/justice-ai/prompt-gateway.log</h3>
+                        <div class="t-actions">
+                            <select>
+                                <option>Level: ALL (Trace)</option>
+                                <option>Level: WARNING & ERROR</option>
+                                <option>Level: SECURITY ALERT</option>
+                            </select>
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem; margin-left: 10px;"><i class="fa-solid fa-download"></i> Ekspor CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div class="t-body" id="logFeed">
+                        
+                        <div class="log-line">
+                            <span class="l-time">10:41:22.015</span>
+                            <span class="l-lvl info">INFO</span>
+                            <span class="l-actor">[LEX_ROUTER]</span>
+                            <span class="l-msg">Incoming request (UUID: 8f2a) assigned to node <span class="l-model">LexBrain-v2.1-70B-Chat</span></span>
+                        </div>
+
+                        <div class="log-line">
+                            <span class="l-time">10:41:22.310</span>
+                            <span class="l-lvl info">INFO</span>
+                            <span class="l-actor">[ANALYZE_TXT]</span>
+                            <span class="l-msg">Client ID <span class="l-user">usr_9481</span> requesting summary for document (E-Court Putusan 12 Lembar). Token count: 8524.</span>
+                        </div>
+
+                        <div class="log-line">
+                            <span class="l-time">10:41:25.842</span>
+                            <span class="l-lvl info">INFO</span>
+                            <span class="l-actor">[LEX_RESPONSE]</span>
+                            <span class="l-msg">Generated output (UUID: 8f2a). Latency: 3.53s. Output tokens: 412. Status: SUCCESS.</span>
+                        </div>
+
+                        <div class="log-line">
+                            <span class="l-time">10:42:01.112</span>
+                            <span class="l-lvl warn">WARN</span>
+                            <span class="l-actor">[MODERATOR_Hate]</span>
+                            <span class="l-msg">Flagged interaction from <span class="l-user">usr_7718</span>. Category: <span class="highlight">Profanity/Aggressive</span> towards AI. Proceeding with standard response block.</span>
+                        </div>
+
+                        <div class="log-line">
+                            <span class="l-time">10:42:45.990</span>
+                            <span class="l-lvl sec">SEC</span>
+                            <span class="l-actor">[GUARDRAIL_X1]</span>
+                            <span class="l-msg">Intercepted potential <span class="highlight">prompt injection</span> from <span class="l-user">usr_1029</span>. Pattern matched: "Ignore all previous instructions...". <span style="color: #4ade80;">[BLOCKED]</span></span>
+                        </div>
+                        
+                        <div class="log-line">
+                            <span class="l-time">10:43:10.551</span>
+                            <span class="l-lvl err">ERR</span>
+                            <span class="l-actor">[DB_VECTOR_SEARCH]</span>
+                            <span class="l-msg">Connection timeout while querying Pinecone Index for context embedding. Fallback to basic keyword search mode triggered.</span>
+                        </div>
+
+                        <div class="log-line">
+                            <span class="l-time">10:43:15.220</span>
+                            <span class="l-lvl info">INFO</span>
+                            <span class="l-actor">[PAYMENT_GATE]</span>
+                            <span class="l-msg">Escrow hold released for consultation session CS_841. AI transcription saved to Vault.</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script to simulate live terminal feed -->
+    <script>
+        const feed = document.getElementById('logFeed');
+        
+        function addLogLine(level, actor, message) {
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+            
+            let lvlClass = 'info';
+            if (level === 'WARN') lvlClass = 'warn';
+            if (level === 'ERR') lvlClass = 'err';
+            if (level === 'SEC') lvlClass = 'sec';
+
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            div.innerHTML = `
+                <span class="l-time">${timeStr}</span>
+                <span class="l-lvl ${lvlClass}">${level}</span>
+                <span class="l-actor">${actor}</span>
+                <span class="l-msg">${message}</span>
+            `;
+            feed.appendChild(div);
+            // Auto scroll to bottom
+            feed.scrollTop = feed.scrollHeight;
+            
+            // Limit log lines
+            if(feed.children.length > 50) { feed.removeChild(feed.firstChild); }
+        }
+
+        // Simulate random incoming logs
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                addLogLine('INFO', '[LEX_ROUTER]', `Processing inbound request UUID: ${Math.floor(Math.random() * 9000) + 1000} (Lawyer API Socket)`);
+            }
+        }, 1500);
+
+    </script>
+
+</body>
+</html>

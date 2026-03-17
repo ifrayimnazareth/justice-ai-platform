@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Konsultasi - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+    <style>
+        .consult-row { display: grid; grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr 100px; gap: var(--space-md); padding: 14px 16px; background: var(--bg-main); border-radius: var(--radius-md); margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.06); font-size: 0.87rem; align-items: center; transition: all var(--transition-fast); }
+        .consult-row:hover { box-shadow: var(--shadow-sm); background: var(--bg-alt); }
+        .consult-header { display: grid; grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr 100px; gap: var(--space-md); padding: 10px 16px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Manajemen</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <div class="menu-label">Konsultasi</div>
+            <a href="list.html" class="menu-item active"><i class="fa-solid fa-comments"></i><span>Daftar Konsultasi</span></a>
+            <a href="analytics.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Analitik</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari konsultasi..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">4</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Daftar Konsultasi</h1><p>Monitor semua sesi konsultasi hukum di platform.</p></div>
+                <a href="analytics.html" class="btn btn-primary"><i class="fa-solid fa-chart-line"></i> &nbsp; Lihat Analitik</a>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-comments"></i></div><div class="stat-details"><h3>8,412</h3><p>Total Konsultasi</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div><div class="stat-details"><h3>7,891</h3><p>Selesai</p></div></div>
+                <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-details"><h3>47</h3><p>Sedang Berlangsung</p></div></div>
+                <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-ban"></i></div><div class="stat-details"><h3>474</h3><p>Dibatalkan</p></div></div>
+            </div>
+
+            <div style="display:flex;gap:var(--space-sm);margin:var(--space-xl) 0 var(--space-lg);">
+                <select class="form-select" style="width:160px;"><option>Semua Status</option><option>Berlangsung</option><option>Selesai</option><option>Dibatalkan</option></select>
+                <select class="form-select" style="width:160px;"><option>Semua Jenis</option><option>Chat</option><option>Video Call</option></select>
+                <input type="date" class="form-input" style="width:180px;" value="2026-03-17">
+                <button class="btn btn-outline"><i class="fa-solid fa-filter"></i> Filter</button>
+                <button class="btn btn-outline" style="margin-left:auto;"><i class="fa-solid fa-download"></i> Export</button>
+            </div>
+
+            <div class="consult-header">
+                <div>Klien</div><div>Advokat</div><div>Topik</div><div>Jenis</div><div>Status</div><div>Aksi</div>
+            </div>
+
+            <div class="consult-row">
+                <div><div style="font-weight:600;">Bapak Ahmad Fauzi</div><div style="font-size:0.75rem;color:var(--text-muted);">ID: CLI-0234 · Jakarta</div></div>
+                <div><div style="font-weight:600;">Adv. Budi Santoso, S.H.</div><div style="font-size:0.75rem;color:var(--text-muted);">Perdata</div></div>
+                <div style="color:var(--text-muted);">Sengketa tanah warisan</div>
+                <div><span style="background:rgba(0,181,216,0.1);color:var(--accent-color);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;"><i class="fa-solid fa-video"></i> Video</span></div>
+                <div><span style="background:rgba(56,161,105,0.1);color:var(--success);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Selesai</span></div>
+                <div><button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Detail</button></div>
+            </div>
+            <div class="consult-row">
+                <div><div style="font-weight:600;">Ibu Sari Dewi</div><div style="font-size:0.75rem;color:var(--text-muted);">ID: CLI-0189 · Bandung</div></div>
+                <div><div style="font-weight:600;">Adv. Siti Rahma, S.H.</div><div style="font-size:0.75rem;color:var(--text-muted);">Korporat</div></div>
+                <div style="color:var(--text-muted);">Review kontrak kerja sama</div>
+                <div><span style="background:rgba(49,130,206,0.1);color:var(--info);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;"><i class="fa-solid fa-comments"></i> Chat</span></div>
+                <div><span style="background:rgba(214,158,46,0.1);color:var(--secondary-dark);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Berlangsung</span></div>
+                <div><button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Detail</button></div>
+            </div>
+            <div class="consult-row">
+                <div><div style="font-weight:600;">PT. Global Nusantara</div><div style="font-size:0.75rem;color:var(--text-muted);">ID: CLI-0445 · Jakarta</div></div>
+                <div><div style="font-weight:600;">Adv. Rizky Hidayat, S.H.</div><div style="font-size:0.75rem;color:var(--text-muted);">Pidana</div></div>
+                <div style="color:var(--text-muted);">Legal opinion anti-monopoli</div>
+                <div><span style="background:rgba(0,181,216,0.1);color:var(--accent-color);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;"><i class="fa-solid fa-video"></i> Video</span></div>
+                <div><span style="background:rgba(229,62,62,0.1);color:var(--danger);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Dibatalkan</span></div>
+                <div><button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Detail</button></div>
+            </div>
+
+            <div style="text-align:center;padding:var(--space-xl) 0;">
+                <button class="btn btn-outline"><i class="fa-solid fa-rotate"></i> Muat Lebih Banyak</button>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

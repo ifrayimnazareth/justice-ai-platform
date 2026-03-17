@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saluran Chat Sidang E-Court - Justice Judge</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        
+        /* Layout Chat E-Court */
+        .court-wrapper { flex: 1; display: flex; background-color: #0f172a; }
+        
+        .chat-area { flex: 1; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); }
+        
+        .c-header { background-color: rgba(250, 204, 21, 0.05); padding: 15px 30px; border-bottom: 1px solid rgba(250, 204, 21, 0.2); display: flex; justify-content: space-between; align-items: center; }
+        .c-header h3 { margin: 0 0 5px 0; color: #facc15; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .c-header p { margin: 0; font-family: monospace; color: #94a3b8; font-size: 0.85rem; }
+        
+        .c-messages { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .msg-box { max-width: 70%; display: flex; flex-direction: column; }
+        .msg-box.judge { align-self: flex-end; align-items: flex-end; }
+        
+        .msg-sender { font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #cbd5e1; }
+        .msg-box.judge .msg-sender { color: #facc15; }
+        .msg-box.penggugat .msg-sender { color: #58a6ff; }
+        .msg-box.tergugat .msg-sender { color: #f85149; }
+
+        .msg-content { padding: 15px 20px; border-radius: 8px; font-size: 0.95rem; line-height: 1.5; color: white; border: 1px solid rgba(255,255,255,0.05); }
+        .msg-box.judge .msg-content { background-color: rgba(250, 204, 21, 0.1); border-color: rgba(250, 204, 21, 0.3); }
+        .msg-box.penggugat .msg-content { background-color: rgba(88, 166, 255, 0.1); }
+        .msg-box.tergugat .msg-content { background-color: rgba(248, 81, 73, 0.1); }
+        
+        .msg-time { font-size: 0.7rem; color: #64748b; margin-top: 5px; font-family: monospace; }
+        
+        .system-notif { align-self: center; background-color: rgba(0,0,0,0.4); border: 1px dashed rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 15px; font-size: 0.75rem; color: #94a3b8; margin: 10px 0; }
+
+        .c-input { padding: 20px 30px; background-color: var(--bg-alt); border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 15px; align-items: center; }
+        .c-input input { flex: 1; height: 50px; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 0 20px; color: white; outline: none; }
+        .c-input input:focus { border-color: #facc15; }
+        .btn-send { width: 50px; height: 50px; border-radius: 50%; background-color: #facc15; color: black; border: none; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .btn-send:hover { transform: scale(1.05); }
+
+        /* Panel Putus Sela (Right Sidebar) */
+        .panel-hakim { width: 350px; background-color: var(--bg-alt); padding: 30px; overflow-y: auto; }
+        .panel-hakim h4 { margin: 0 0 20px 0; color: white; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        
+        .action-card { background-color: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 15px; margin-bottom: 15px; cursor: pointer; transition: 0.2s; }
+        .action-card:hover { border-color: #facc15; background-color: rgba(250, 204, 21, 0.05); }
+        .action-card i { color: #facc15; font-size: 1.5rem; margin-bottom: 10px; }
+        .action-card div { color: white; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .action-card p { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+        
+        .btn-skor { width: 100%; border: 1px solid rgba(248, 81, 73, 0.4); background-color: rgba(248, 81, 73, 0.1); color: #f85149; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-skor:hover { background-color: #f85149; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Hakim MA-RI</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Ruang Sidang Virtual</p>
+                <a href="ruang.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-gavel"></i> Forum Sidang Teks (Chat)</a>
+                <a href="teleconference.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-video"></i> Video Sidang Terbuka</a>
+                <a href="berita-acara.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-file-signature"></i> Ketok Palu Putusan (BAP)</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Keluar Sidang</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor SIPP Saya</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-shield-halved"></i> Tercatat Resmi dalam Log Server Mahkamah Agung</div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="width: 10px; height: 10px; background-color: #f85149; border-radius: 50%; box-shadow: 0 0 10px #f85149;"></div>
+                    <span style="color: white; font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;">RECORDING ACTIVE</span>
+                </div>
+            </div>
+
+            <div class="court-wrapper">
+                
+                <div class="chat-area">
+                    <div class="c-header">
+                        <div>
+                            <h3>Sidang Mediasi / Replik: PT Maju & CV Abadi</h3>
+                            <p>Register: SG-2026/XI/109 &bull; Sifat: E-Court Tertutup</p>
+                        </div>
+                        <div style="color: #4ade80; font-size: 0.85rem;"><i class="fa-solid fa-users"></i> 3 Pihak Hadir (Log in via SSO)</div>
+                    </div>
+
+                    <div class="c-messages">
+                        
+                        <div class="system-notif"><i class="fa-solid fa-clock"></i> Majelis Hakim (Anda) membuka ruang sidang Elektronik pada pukul 10:00 WIB.</div>
+
+                        <div class="msg-box judge">
+                            <span class="msg-sender">M. Yudha, S.H. (Hakim Ketua)</span>
+                            <div class="msg-content">Selamat pagi, persidangan perkara Nomor SG-2026/XI/109 yang dilakukan secara tertutup pada Sistem e-Court Mahkamah Agung saya nyatakan dibuka. Silakan Kuasa Hukum Penggugat jika ada yang ingin ditambahkan ke resume?</div>
+                            <span class="msg-time">10:02 WIB</span>
+                        </div>
+
+                        <div class="msg-box penggugat">
+                            <span class="msg-sender"><i class="fa-solid fa-user-shield"></i> Adv. Farhan (Pihak Penggugat)</span>
+                            <div class="msg-content">Terima kasih Yang Mulia. Sesuai Replik yang kami unggah via sistem SIPP semalam, argumen Tergugat mengenai Force Majeure batal demi hukum karena krisis inflasi tidak masuk syarat Kontrak di Pasal 12. Alat Bukti P-3 sudah di Vault.</div>
+                            <span class="msg-time">10:05 WIB</span>
+                        </div>
+
+                        <div class="msg-box tergugat">
+                            <span class="msg-sender"><i class="fa-solid fa-user-shield"></i> Adv. Budi Kusuma (Pihak Tergugat)</span>
+                            <div class="msg-content">Keberatan Yang Mulia, kondisi pasar saat ini merupakan eksepsi valid karena di luar kemampuan kontrol klien (Debiturnya). Kami mohon waktu untuk mendatangkan ahli.</div>
+                            <span class="msg-time">10:08 WIB</span>
+                        </div>
+
+                        <div class="system-notif"><i class="fa-solid fa-brain" style="color: #a855f7;"></i> LexBot AI merekomendasikan Hakim melihat Yurisprudensi No.23K/Pdt/2009 (Panel Kanan).</div>
+
+                    </div>
+
+                    <div class="c-input">
+                        <button class="btn btn-outline" style="border-radius: 50%; width: 50px; height: 50px; padding: 0;" title="Buka LexBrain Dokumen Lintas Pihak"><i class="fa-solid fa-folder-open"></i></button>
+                        <input type="text" placeholder="Ketik Teguran Hukum, Perintah, atau Putusan Sela sebagai Hakim...">
+                        <button class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <div class="panel-hakim">
+                    <h4><i class="fa-solid fa-bolt" style="color: #facc15;"></i> Tindakan Keadilan Interaktif</h4>
+                    
+                    <div class="action-card" onclick="alert('LexBrain menampilkan Dokumen Bukti P-3. AI medeteksi e-Meterai Asli dari pihak PENGGUGAT.'); window.location.href='cases/review.html';">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <div>Verifikasi Bukti P-3 Penggugat</div>
+                        <p>Akses brankas file dari sistem Justice AI Klien & Advokat (Pledoi).</p>
+                    </div>
+
+                    <div class="action-card" style="border-color: rgba(168, 85, 247, 0.3);">
+                        <i class="fa-solid fa-book-journal-whills" style="color: #a855f7;"></i>
+                        <div style="color: #d8b4fe;">Panggil LexBot Yurisprudensi</div>
+                        <p>Cek korelasi Pasal 12 Force Majeure dan Yurisprudensi 2009 Mahkamah Agung.</p>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <h4 style="border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px; color: #94a3b8;">Kendali Sidang (Moderator)</h4>
+                        <button class="btn-skor"><i class="fa-solid fa-stopwatch"></i> Menskor / Tunda Sidang 1 Jam</button>
+                        <button class="btn-skor" style="background-color: transparent; margin-top: 10px;" onclick="window.location.href='berita-acara.html';"><i class="fa-solid fa-gavel"></i> Tutup & Ekstrak Berita Acara AI</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

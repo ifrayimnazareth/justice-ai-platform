@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Katalog Firma Hukum & Partner - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Stats row */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .stat-card h3 { margin: 0 0 10px 0; font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; }
+        .stat-card p { margin: 0; font-family: monospace; font-size: 2rem; color: white; font-weight: bold; }
+        .stat-card i { font-size: 2.5rem; color: rgba(88, 166, 255, 0.2); }
+
+        /* Members Grid */
+        .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        
+        .member-card { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: 0.2s; }
+        .member-card:hover { transform: translateY(-5px); border-color: rgba(88, 166, 255, 0.3); }
+        
+        .m-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .m-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #58a6ff; object-fit: cover; }
+        .m-info h4 { margin: 0 0 5px 0; color: white; font-size: 1.1rem; }
+        .m-info p { margin: 0; font-size: 0.8rem; color: #64748b; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-top: 5px; }
+        .badge-founder { background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .badge-senior { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .badge-junior { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+        .m-details { margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        .m-detail-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; }
+        .m-detail-row span:first-child { color: #94a3b8; }
+        .m-detail-row span:last-child { color: white; font-weight: bold; }
+
+        .m-actions { margin-top: 20px; display: flex; gap: 10px; }
+        .btn-act { flex: 1; padding: 8px; border-radius: 4px; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 0.8rem; cursor: pointer; transition: 0.2s; text-align: center; }
+        .btn-act:hover { background-color: white; color: black; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Firma</p>
+                <a href="members.html" style="display: block; color: #58a6ff; text-decoration: none; padding: 10px 0; border-left: 3px solid #58a6ff; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-users"></i> Anggota Penasihat</a>
+                <a href="shared-cases.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-briefcase"></i> Delegasi Kasus Bersama</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Akses Cepat</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-building"></i> Struktur Organisasi Firma Hukum Digital</div>
+                <button class="btn btn-primary" style="padding: 6px 15px; font-size: 0.85rem;"><i class="fa-solid fa-user-plus"></i> Rekrut Anggota</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Kolega & Mitra Praktik</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Kelola advokat di dalam naungan firma Anda untuk berbagi akses Escrow & dokumen persidangan.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>
+                            <h3>Total Advokat</h3>
+                            <p>12 <span style="font-size: 0.9rem; font-weight: normal; color: #64748b;">Personel</span></p>
+                        </div>
+                        <i class="fa-solid fa-user-group"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <h3>Pekerjaan Berjalan</h3>
+                            <p>38 <span style="font-size: 0.9rem; font-weight: normal; color: #64748b;">Kasus Aktif</span></p>
+                        </div>
+                        <i class="fa-solid fa-scale-balanced" style="color: rgba(250, 204, 21, 0.2);"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <h3>Pendapatan Firma</h3>
+                            <p>Rp 1.2 <span style="font-size: 0.9rem; font-weight: normal; color: #64748b;">Milyar (Bulan Ini)</span></p>
+                        </div>
+                        <i class="fa-solid fa-arrow-trend-up" style="color: rgba(74, 222, 128, 0.2);"></i>
+                    </div>
+                </div>
+
+                <div class="members-grid">
+                    
+                    <div class="member-card">
+                        <div class="m-header">
+                            <img src="https://ui-avatars.com/api/?name=Adv+Farhan&background=1e293b&color=58a6ff" class="m-avatar" alt="Avatar">
+                            <div class="m-info">
+                                <h4>Adv. Farhan, S.H.</h4>
+                                <p>NI. 88201-PERADI</p>
+                                <span class="badge badge-founder">Managing Partner (Anda)</span>
+                            </div>
+                        </div>
+                        <div class="m-details">
+                            <div class="m-detail-row"><span>Spesialisasi</span> <span>Hukum Bisnis</span></div>
+                            <div class="m-detail-row"><span>Kasus Ditangani</span> <span>15 Aktif</span></div>
+                            <div class="m-detail-row"><span>Rate Klien</span> <span style="color: #facc15;"><i class="fa-solid fa-star"></i> 4.9</span></div>
+                        </div>
+                        <div class="m-actions">
+                            <button class="btn-act"><i class="fa-solid fa-gear"></i> Kelola Hak Akses</button>
+                        </div>
+                    </div>
+
+                    <div class="member-card">
+                        <div class="m-header">
+                            <img src="https://ui-avatars.com/api/?name=Diana+P&background=1e293b&color=a855f7" class="m-avatar" style="border-color: #a855f7;" alt="Avatar">
+                            <div class="m-info">
+                                <h4>Diana Prameswari, S.H., LL.M.</h4>
+                                <p>NI. 77312-PERADI</p>
+                                <span class="badge badge-senior">Senior Associate</span>
+                            </div>
+                        </div>
+                        <div class="m-details">
+                            <div class="m-detail-row"><span>Spesialisasi</span> <span>Keluarga & Waris</span></div>
+                            <div class="m-detail-row"><span>Kasus Ditangani</span> <span>8 Aktif</span></div>
+                            <div class="m-detail-row"><span>Rate Klien</span> <span style="color: #facc15;"><i class="fa-solid fa-star"></i> 4.8</span></div>
+                        </div>
+                        <div class="m-actions">
+                            <button class="btn-act"><i class="fa-solid fa-chart-pie"></i> Lihat Kinerja</button>
+                            <button class="btn-act"><i class="fa-solid fa-briefcase"></i> Oper Kasus</button>
+                        </div>
+                    </div>
+
+                    <div class="member-card">
+                        <div class="m-header">
+                            <img src="https://ui-avatars.com/api/?name=Bagas+K&background=1e293b&color=38bdf8" class="m-avatar" style="border-color: #38bdf8;" alt="Avatar">
+                            <div class="m-info">
+                                <h4>Bagas Kurniawan, S.H.</h4>
+                                <p>NI. 99120-PERADI</p>
+                                <span class="badge badge-junior">Junior Litigator</span>
+                            </div>
+                        </div>
+                        <div class="m-details">
+                            <div class="m-detail-row"><span>Spesialisasi</span> <span>Hukum Pidana Umum</span></div>
+                            <div class="m-detail-row"><span>Kasus Ditangani</span> <span>5 Aktif</span></div>
+                            <div class="m-detail-row"><span>Rate Klien</span> <span style="color: #facc15;"><i class="fa-solid fa-star"></i> 4.5</span></div>
+                        </div>
+                        <div class="m-actions">
+                            <button class="btn-act"><i class="fa-solid fa-chart-pie"></i> Lihat Kinerja</button>
+                            <button class="btn-act"><i class="fa-solid fa-briefcase"></i> Oper Kasus</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

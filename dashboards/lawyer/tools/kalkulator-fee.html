@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Fee Advokat - Justice AI Platform</title>
+    <meta name="description" content="Hitung estimasi biaya jasa hukum berdasarkan jenis perkara, kompleksitas, dan durasi.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/lawyer.css">
+    <style>
+        .calculator-card { background: var(--bg-main); border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-md); border: 1px solid rgba(0,0,0,0.08); }
+        .fee-result { background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); color: white; border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; margin-top: var(--space-xl); }
+        .fee-result h2 { font-size: 2.5rem; font-family: var(--font-heading); margin: 10px 0; }
+        .fee-breakdown { background: var(--bg-alt); border-radius: var(--radius-md); padding: var(--space-lg); margin-top: var(--space-md); }
+        .fee-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .fee-row:last-child { border-bottom: none; font-weight: 700; color: var(--primary-color); }
+        .fee-tag { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; margin: 4px; cursor: pointer; border: 2px solid transparent; transition: all var(--transition-fast); }
+        .fee-tag.active, .fee-tag:hover { border-color: var(--primary-color); background: var(--primary-color); color: white; }
+        .fee-tag { background: var(--bg-alt); color: var(--text-muted); }
+        .slider-container { position: relative; }
+        .slider-container input[type="range"] { width: 100%; accent-color: var(--primary-color); }
+        .slider-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .template-card { background: var(--bg-alt); border-radius: var(--radius-md); padding: var(--space-md); cursor: pointer; border: 2px solid transparent; transition: all var(--transition-fast); margin-bottom: var(--space-sm); }
+        .template-card:hover, .template-card.selected { border-color: var(--primary-color); background: rgba(26,54,93,0.05); }
+        .template-card h4 { margin-bottom: 4px; font-size: 0.95rem; }
+        .template-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header" style="background-color: var(--primary-color);">
+                <a href="../../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-label">Workspace</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Ringkasan Kinerja</span></a>
+                <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Tugas Perkara</span></a>
+                <a href="../consultations/list.html" class="menu-item"><i class="fa-solid fa-comments"></i><span>Permintaan Konsultasi</span></a>
+                <a href="../schedule/calendar.html" class="menu-item"><i class="fa-regular fa-calendar-days"></i><span>Jadwal</span></a>
+                <div class="menu-label">AI Legal Tools</div>
+                <a href="../cases/draft-maker.html" class="menu-item"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Pembuat Draft Pintar</span></a>
+                <a href="../../../ai/win-probability.html" class="menu-item"><i class="fa-solid fa-percent"></i><span>Prediksi Kasus</span></a>
+                <a href="yurisprudensi.html" class="menu-item"><i class="fa-solid fa-book-bookmark"></i><span>Yurisprudensi</span></a>
+                <a href="search-pasal.html" class="menu-item"><i class="fa-solid fa-search"></i><span>Pencarian Pasal</span></a>
+                <a href="kalkulator-fee.html" class="menu-item active"><i class="fa-solid fa-calculator"></i><span>Kalkulator Fee</span></a>
+                <div class="menu-label">Keuangan</div>
+                <a href="../earnings/income.html" class="menu-item"><i class="fa-solid fa-money-bill-trend-up"></i><span>Pendapatan & Komisi</span></a>
+                <a href="../firm/members.html" class="menu-item"><i class="fa-solid fa-users-gear"></i><span>Manajemen Firma</span></a>
+            </div>
+            <div style="padding: 20px;">
+                <a href="../../../auth/login.html" class="btn btn-outline" style="width: 100%; border-color: var(--danger); color: var(--danger);">Keluar Sesi</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari...">
+                </div>
+                <div class="topbar-actions">
+                    <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Profile" class="avatar">
+                        <div class="user-info">
+                            <span class="user-name">Adv. Budi Santoso, S.H.</span>
+                            <span class="user-role">Litigasi Perdata & Bisnis</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area animate-fade-in">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Kalkulator Fee Advokat</h1>
+                        <p>Estimasi biaya jasa hukum sesuai Peraturan PERADI dan kompleksitas perkara.</p>
+                    </div>
+                    <button class="btn btn-primary" id="btnGeneratePDF" onclick="generatePDF()">
+                        <i class="fa-solid fa-file-pdf"></i> &nbsp; Buat Proposal Fee
+                    </button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+                    <!-- LEFT: Form -->
+                    <div>
+                        <div class="calculator-card">
+                            <h3 style="margin-bottom: var(--space-lg); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-file-contract" style="color: var(--primary-color);"></i> Detail Perkara
+                            </h3>
+
+                            <div class="form-group">
+                                <label class="form-label">Jenis Perkara</label>
+                                <div>
+                                    <span class="fee-tag active" onclick="selectTag(this, 'type')" data-value="pidana">Pidana</span>
+                                    <span class="fee-tag" onclick="selectTag(this, 'type')" data-value="perdata">Perdata</span>
+                                    <span class="fee-tag" onclick="selectTag(this, 'type')" data-value="korporat">Korporat</span>
+                                    <span class="fee-tag" onclick="selectTag(this, 'type')" data-value="tun">TUN</span>
+                                    <span class="fee-tag" onclick="selectTag(this, 'type')" data-value="niaga">Niaga</span>
+                                    <span class="fee-tag" onclick="selectTag(this, 'type')" data-value="ketenagakerjaan">Ketenagakerjaan</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: var(--space-lg);">
+                                <label class="form-label">Tingkat Pengadilan</label>
+                                <select class="form-select" id="courtLevel" onchange="calculate()">
+                                    <option value="pn">Pengadilan Negeri (PN)</option>
+                                    <option value="pt">Pengadilan Tinggi (PT) – Banding</option>
+                                    <option value="ma">Mahkamah Agung (MA) – Kasasi</option>
+                                    <option value="mk">Mahkamah Konstitusi (MK)</option>
+                                    <option value="ptun">PTUN</option>
+                                    <option value="arbitrase">Arbitrase (BANI/SIAC)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-top: var(--space-lg);">
+                                <label class="form-label">Kompleksitas Perkara</label>
+                                <div class="slider-container">
+                                    <input type="range" id="complexity" min="1" max="5" value="3" oninput="calculate()">
+                                    <div class="slider-labels">
+                                        <span>Sederhana</span><span>Sedang</span><span>Tinggi</span><span>Sangat Tinggi</span><span>Ekstrem</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: var(--space-lg);">
+                                <label class="form-label">Estimasi Durasi (bulan)</label>
+                                <div class="slider-container">
+                                    <input type="range" id="duration" min="1" max="36" value="6" oninput="updateDurationLabel(); calculate()">
+                                    <div class="slider-labels">
+                                        <span>1 bln</span><span id="durationLabel">6 bln</span><span>36 bln</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: var(--space-lg);">
+                                <label class="form-label">Nilai Objek Sengketa (Rp)</label>
+                                <input type="number" class="form-input" id="objectValue" placeholder="Contoh: 500000000" value="500000000" oninput="calculate()">
+                            </div>
+                        </div>
+
+                        <div class="calculator-card" style="margin-top: var(--space-lg);">
+                            <h3 style="margin-bottom: var(--space-md); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-puzzle-piece" style="color: var(--accent-color);"></i> Template Cepat
+                            </h3>
+                            <div class="template-card" onclick="loadTemplate('sengketa-tanah')">
+                                <h4>Sengketa Tanah & Properti</h4>
+                                <p>Perdata – PN/PT – Kompleksitas Tinggi – Est. 12 bln</p>
+                            </div>
+                            <div class="template-card" onclick="loadTemplate('korupsi')">
+                                <h4>Perkara Korupsi (Tipikor)</h4>
+                                <p>Pidana Khusus – MA – Kompleksitas Ekstrem – Est. 24 bln</p>
+                            </div>
+                            <div class="template-card" onclick="loadTemplate('korporat-merger')">
+                                <h4>Due Diligence & Merger</h4>
+                                <p>Korporat – Arbitrase – Kompleksitas Sangat Tinggi – Est. 6 bln</p>
+                            </div>
+                            <div class="template-card" onclick="loadTemplate('phk')">
+                                <h4>Sengketa PHK</h4>
+                                <p>Ketenagakerjaan – PTUN – Kompleksitas Sedang – Est. 4 bln</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Result -->
+                    <div>
+                        <div class="fee-result">
+                            <p style="opacity:0.7; margin:0; font-size: 0.9rem;">Estimasi Total Fee Advokat</p>
+                            <h2 id="totalFee">Rp 45.000.000</h2>
+                            <p style="opacity:0.7; margin:0; font-size: 0.85rem;">Belum termasuk PPN 11% dan biaya eksternal</p>
+                        </div>
+
+                        <div class="fee-breakdown" style="margin-top: var(--space-md);">
+                            <h4 style="margin-bottom: var(--space-md);">Rincian Biaya</h4>
+                            <div class="fee-row">
+                                <span>Retainer Awal (Onboarding)</span>
+                                <span id="retainer">Rp 10.000.000</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>Biaya Bulanan (<span id="monthLabel">6</span> bln)</span>
+                                <span id="monthly">Rp 25.000.000</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>Biaya Sidang & Representasi</span>
+                                <span id="hearing">Rp 5.000.000</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>Success Fee (% dari Nilai Objek)</span>
+                                <span id="success">Rp 5.000.000</span>
+                            </div>
+                            <div class="fee-row" style="margin-top: 10px; padding-top: 10px; border-top: 2px solid rgba(0,0,0,0.1);">
+                                <span>TOTAL NETO</span>
+                                <span id="totalNeto">Rp 45.000.000</span>
+                            </div>
+                            <div class="fee-row">
+                                <span>PPN 11%</span>
+                                <span id="ppn">Rp 4.950.000</span>
+                            </div>
+                            <div class="fee-row">
+                                <strong>TOTAL BRUTO</strong>
+                                <strong id="totalBruto">Rp 49.950.000</strong>
+                            </div>
+                        </div>
+
+                        <div class="calculator-card" style="margin-top: var(--space-lg);">
+                            <h4 style="margin-bottom: var(--space-md); display: flex; align-items: center; gap: 8px; color: var(--primary-color);">
+                                <i class="fa-solid fa-circle-info"></i> Acuan Hukum
+                            </h4>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.8;">
+                                <li><i class="fa-solid fa-check" style="color: var(--success); margin-right: 8px;"></i> Peraturan PERADI No. 1/2006 tentang Honorarium Advokat</li>
+                                <li><i class="fa-solid fa-check" style="color: var(--success); margin-right: 8px;"></i> UU No. 18 Tahun 2003 tentang Advokat</li>
+                                <li><i class="fa-solid fa-check" style="color: var(--success); margin-right: 8px;"></i> Success fee tidak boleh melebihi 20% dari nilai objek</li>
+                                <li><i class="fa-solid fa-check" style="color: var(--success); margin-right: 8px;"></i> Biaya ini bersifat estimasi dan dapat dinegosiasikan</li>
+                            </ul>
+                        </div>
+
+                        <div class="calculator-card" style="margin-top: var(--space-lg); background: linear-gradient(135deg, rgba(0,181,216,0.08), rgba(26,54,93,0.05));">
+                            <h4 style="margin-bottom: var(--space-sm);"><i class="fa-solid fa-robot" style="color: var(--accent-color);"></i> Saran AI</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;" id="aiSuggestion">
+                                Untuk perkara perdata dengan nilai objek Rp 500 juta di tingkat PN, fee yang Anda tetapkan sudah kompetitif. Pertimbangkan klausul success fee progresif (15% dari nilai recovery) untuk meningkatkan potensi pendapatan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let selectedType = 'pidana';
+
+        function selectTag(el, group) {
+            document.querySelectorAll(`.fee-tag`).forEach(t => {
+                if (t.dataset.value && t.onclick.toString().includes(group)) t.classList.remove('active');
+            });
+            // simpler approach: remove active from siblings
+            el.parentElement.querySelectorAll('.fee-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            selectedType = el.dataset.value;
+            calculate();
+        }
+
+        function updateDurationLabel() {
+            const d = document.getElementById('duration').value;
+            document.getElementById('durationLabel').textContent = d + ' bln';
+            document.getElementById('monthLabel').textContent = d;
+        }
+
+        function formatRp(n) {
+            return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+        }
+
+        function calculate() {
+            const complexity = parseInt(document.getElementById('complexity').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            const objVal = parseFloat(document.getElementById('objectValue').value) || 0;
+            const level = document.getElementById('courtLevel').value;
+
+            const levelMultiplier = { pn: 1, pt: 1.3, ma: 1.6, mk: 2, ptun: 1.2, arbitrase: 1.8 };
+            const typeBase = { pidana: 8, perdata: 5, korporat: 10, tun: 4, niaga: 7, ketenagakerjaan: 3 };
+
+            const base = (typeBase[selectedType] || 5) * 1_000_000;
+            const multiplier = levelMultiplier[level] || 1;
+            const complexMultiplier = 1 + (complexity - 1) * 0.4;
+
+            const retainer = base * multiplier * complexMultiplier;
+            const monthlyRate = base * 0.8 * multiplier * complexMultiplier;
+            const monthly = monthlyRate * duration;
+            const hearing = base * 0.5 * multiplier * Math.ceil(duration / 2);
+            const successPct = Math.min(0.05 + (complexity - 1) * 0.02, 0.15);
+            const success = objVal * successPct;
+
+            const total = retainer + monthly + hearing + success;
+            const ppn = total * 0.11;
+            const bruto = total + ppn;
+
+            document.getElementById('retainer').textContent = formatRp(retainer);
+            document.getElementById('monthly').textContent = formatRp(monthly);
+            document.getElementById('hearing').textContent = formatRp(hearing);
+            document.getElementById('success').textContent = formatRp(success);
+            document.getElementById('totalNeto').textContent = formatRp(total);
+            document.getElementById('ppn').textContent = formatRp(ppn);
+            document.getElementById('totalBruto').textContent = formatRp(bruto);
+            document.getElementById('totalFee').textContent = formatRp(total);
+            document.getElementById('durationLabel').textContent = duration + ' bln';
+            document.getElementById('monthLabel').textContent = duration;
+        }
+
+        function loadTemplate(type) {
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            const templates = {
+                'sengketa-tanah': { type: 'perdata', level: 'pt', complexity: 4, duration: 12, value: 2000000000 },
+                'korupsi': { type: 'pidana', level: 'ma', complexity: 5, duration: 24, value: 10000000000 },
+                'korporat-merger': { type: 'korporat', level: 'arbitrase', complexity: 4, duration: 6, value: 50000000000 },
+                'phk': { type: 'ketenagakerjaan', level: 'ptun', complexity: 3, duration: 4, value: 300000000 },
+            };
+            const t = templates[type];
+            document.getElementById('courtLevel').value = t.level;
+            document.getElementById('complexity').value = t.complexity;
+            document.getElementById('duration').value = t.duration;
+            document.getElementById('objectValue').value = t.value;
+            document.querySelectorAll('.fee-tag').forEach(tag => {
+                tag.classList.toggle('active', tag.dataset.value === t.type);
+            });
+            selectedType = t.type;
+            calculate();
+        }
+
+        function generatePDF() {
+            alert('Proposal Fee sedang dibuat dan akan diunduh segera...');
+        }
+
+        calculate();
+    </script>
+</body>
+</html>

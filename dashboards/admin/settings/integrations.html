@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrasi API Pihak Ketiga - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand { font-family: var(--font-heading); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--primary-color); }
+
+        .menu-group { margin-top: 20px; }
+        .menu-title { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--text-main); text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.02); color: white; }
+        .menu-item.active { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); border-right: 3px solid var(--primary-color); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Integration Grid */
+        .integration-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        
+        .setup-card { background-color: var(--bg-alt); border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); padding: 30px; position: relative; overflow: hidden; }
+        .setup-card h3 { margin: 0 0 15px 0; font-family: var(--font-heading); color: white; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .setup-card h3 img { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; }
+        
+        .api-badge { position: absolute; top: 30px; right: 30px; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .badge-live { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-dev { background-color: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .badge-err { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .input-secret { display: flex; align-items: center; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+        .input-secret input { flex: 1; background: transparent; border: none; padding: 12px 15px; color: white; font-family: monospace; letter-spacing: 2px; outline: none; }
+        .input-secret .btn-toggle { background: none; border: none; color: var(--text-muted); padding: 0 15px; cursor: pointer; border-left: 1px solid rgba(255,255,255,0.05); }
+        
+        .webhook-box { background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; color: var(--primary-color); word-break: break-all; margin-bottom: 20px; border: 1px dashed rgba(255,255,255,0.1); }
+        
+        .action-row { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i class="fa-solid fa-shield-halved"></i> Justice Root</div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Master Data</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i> Ikhtisar</a>
+                <a href="../users/list.html" class="menu-item"><i class="fa-solid fa-users"></i> Direktori Pengguna</a>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Konfigurasi Inti</div>
+                <a href="system.html" class="menu-item"><i class="fa-solid fa-microchip"></i> Sistem Dasar (Engine)</a>
+                <a href="integrations.html" class="menu-item active"><i class="fa-solid fa-plug"></i> Integrasi API / Gateway</a>
+                <a href="audit-logs.html" class="menu-item"><i class="fa-solid fa-fingerprint"></i> Log Audit Keamanan</a>
+            </div>
+            
+            <div class="menu-group">
+                <div class="menu-title">Integrasi Sistem Eksternal</div>
+                <a href="../courts/list.html" class="menu-item"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;">Level Akses: SUPER_ADMIN (Danger Zone)</div>
+                <button class="btn btn-outline" style="border-color: rgba(248, 81, 73, 0.4); color: #f85149;"><i class="fa-solid fa-power-off"></i> Lockdown Mode</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Integrasi API Eksternal & Gateway Pihak Ketiga</h1>
+                        <p style="color: var(--text-muted); margin-top: 5px;">Kunci akses kredensial ke lembaga eksternal (Verifikasi KTP, Pembayaran, Sertifikasi BSSN).</p>
+                    </div>
+                </div>
+
+                <div class="integration-grid">
+                    
+                    <!-- Dukcapil API -->
+                    <div class="setup-card">
+                        <span class="api-badge badge-live"><i class="fa-solid fa-wifi"></i> Online</span>
+                        <h3>
+                            <i class="fa-solid fa-id-card-clip" style="color: #4ade80; font-size: 1.5rem;"></i>
+                            Integrasi Dukcapil (Verifikasi KTP)
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>API Key (Biometrik Wajah & NIK)</label>
+                            <div class="input-secret">
+                                <input type="password" value="DKC-2026-LIVE-991A-XXXXXXXXXXXX" readonly>
+                                <button class="btn-toggle"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Endpoint Tujuan</label>
+                            <div class="webhook-box">https://api.dukcapil.kemendagri.go.id/veri-face-v2/</div>
+                        </div>
+
+                        <div class="action-row">
+                            <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-rotate"></i> Ping</button>
+                            <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Kunci</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Xendit -->
+                    <div class="setup-card">
+                        <span class="api-badge badge-live"><i class="fa-solid fa-wifi"></i> Online</span>
+                        <h3>
+                            <i class="fa-solid fa-money-bill-transfer" style="color: #3b82f6; font-size: 1.5rem;"></i>
+                            Xendit Payment Gateway (Escrow)
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Secret API Key</label>
+                            <div class="input-secret">
+                                <input type="password" value="xnd_production_xyz123abc456" readonly>
+                                <button class="btn-toggle"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Webhook Callback URL (Arahkan dari Dashboard Xendit)</label>
+                            <div class="webhook-box">https://api.justice-ai.com/v1/webhooks/xendit-invoice</div>
+                        </div>
+
+                        <div class="action-row">
+                            <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Kunci</button>
+                        </div>
+                    </div>
+
+                    <!-- PERURI E-Meterai -->
+                    <div class="setup-card">
+                        <span class="api-badge badge-err"><i class="fa-solid fa-triangle-exclamation"></i> Kredensial Kedaluwarsa</span>
+                        <h3>
+                            <i class="fa-solid fa-stamp" style="color: #facc15; font-size: 1.5rem;"></i>
+                            PERURI (Sertifikat E-Meterai Digital)
+                        </h3>
+                        <p style="font-size: 0.8rem; color: #f85149; margin-top: -10px; margin-bottom: 20px;">Lisensi B2B Token telah habis masa berlakunya pada 16 Maret 2026. Advokat tidak dapat menempelkan materai elektronik pada draf Gugatan.</p>
+                        
+                        <div class="form-group">
+                            <label>Oauth2 Bearer Token (Production)</label>
+                            <div class="input-secret" style="border-color: rgba(248, 81, 73, 0.4);">
+                                <input type="password" value="Bearer eyJhbGci... [EXPIRED_821]">
+                                <button class="btn-toggle"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="action-row">
+                            <button class="btn btn-primary" style="background-color: transparent; border: 1px solid #f85149; color: #f85149;"><i class="fa-solid fa-arrows-rotate"></i> Request Token Baru API Peruri</button>
+                        </div>
+                    </div>
+
+                    <!-- AI LLM -->
+                    <div class="setup-card">
+                        <span class="api-badge badge-dev"><i class="fa-solid fa-vial"></i> Mode Sandbox (Testing)</span>
+                        <h3>
+                            <i class="fa-solid fa-brain" style="color: #a855f7; font-size: 1.5rem;"></i>
+                            OpenAI GPT-4 / Claude (Mesin Otak LexBot)
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Model Engine (HLLM)</label>
+                            <select style="width: 100%; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 6px; color: white; outline: none;">
+                                <option>LexBot V2 (Fine-Tuned GPT-4 Legal Indo)</option>
+                                <option>Claude 3 Opus (Drafting Kompleks)</option>
+                                <option>LLaMA 3 70B (On-Premise Private Server)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>OpenAI Bearer Key</label>
+                            <div class="input-secret">
+                                <input type="password" value="sk-legal-justice-xyz..." readonly>
+                                <button class="btn-toggle"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="action-row">
+                            <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Mesin</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

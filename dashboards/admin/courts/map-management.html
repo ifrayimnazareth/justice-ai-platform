@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Yurisdiksi Hakim - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand { font-family: var(--font-heading); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--primary-color); }
+
+        .menu-group { margin-top: 20px; }
+        .menu-title { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--text-main); text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.02); color: white; }
+        .menu-item.active { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); border-right: 3px solid var(--primary-color); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 0; display: flex; flex: 1; }
+
+        .map-section { flex: 2; position: relative; background-color: #0d1117; display: flex; flex-direction: column; }
+        .map-header { padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); background-color: rgba(0,0,0,0.4); backdrop-filter: blur(10px); position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+        .map-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.5rem; }
+        
+        .map-canvas { flex: 1; background-image: radial-gradient(circle at center, rgba(88, 166, 255, 0.05) 0%, transparent 80%), url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0 0 L100 0 L100 100 L0 100 Z" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/></svg>'); background-size: cover, 100px 100px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        /* Map UI Mockup Elements */
+        .indo-map-silhouette { width: 80%; height: 60%; opacity: 0.2; object-fit: contain; }
+        
+        .map-pin { position: absolute; width: 40px; height: 40px; background-color: rgba(43, 108, 176, 0.8); border: 2px solid #58a6ff; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transform: translate(-50%, -50%); transition: 0.2s; box-shadow: 0 0 15px rgba(88, 166, 255, 0.4); }
+        .map-pin i { color: white; font-size: 1rem; }
+        .map-pin:hover { transform: translate(-50%, -50%) scale(1.2); z-index: 20; background-color: #58a6ff; }
+        
+        .map-pin.hq { background-color: rgba(234, 179, 8, 0.8); border-color: #facc15; box-shadow: 0 0 20px rgba(250, 204, 21, 0.5); }
+        
+        .pin-label { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background-color: white; color: black; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; white-space: nowrap; pointer-events: none; opacity: 0; transition: 0.2s; }
+        .map-pin:hover .pin-label { opacity: 1; top: -35px; }
+        
+        /* Map Positioning (Approximate Indonesia Math) */
+        .pin-jkt { top: 60%; left: 35%; }
+        .pin-bdg { top: 62%; left: 37%; }
+        .pin-sby { top: 63%; left: 45%; }
+        .pin-medan { top: 35%; left: 20%; }
+        .pin-makassar { top: 55%; left: 60%; }
+
+        /* Zoom controls */
+        .map-controls { position: absolute; bottom: 30px; right: 30px; background-color: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .zoom-btn { background: none; border: none; padding: 12px; color: white; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        .zoom-btn:hover { background-color: rgba(255,255,255,0.1); }
+        .zoom-btn:last-child { border-bottom: none; }
+
+        .detail-panel { flex: 1; background-color: var(--bg-alt); border-left: 1px solid rgba(255,255,255,0.05); min-width: 350px; display: flex; flex-direction: column; overflow-y: auto; }
+        .detail-header { padding: 30px; background: linear-gradient(135deg, rgba(43, 108, 176, 0.2), transparent); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .detail-header h2 { margin: 0 0 5px 0; color: white; font-family: var(--font-heading); }
+        .detail-body { padding: 30px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .stat-line { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid var(--text-muted); }
+        .stat-val { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: white; }
+
+        .action-btns { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i class="fa-solid fa-shield-halved"></i> Justice Root</div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Integrasi Sistem</div>
+                <a href="list.html" class="menu-item"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan</a>
+                <a href="map-management.html" class="menu-item active"><i class="fa-solid fa-map-location-dot"></i> Yurisdiksi Geografis</a>
+                <a href="../settings/integrations.html" class="menu-item"><i class="fa-solid fa-plug"></i> API Mahkamah Agung</a>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Manajemen Platform</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-arrow-left"></i> Kembali ke Pusat</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-satellite"></i> Visualisasi Titik Koneksi Server Mahkamah</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="map-section">
+                    <div class="map-header">
+                        <div>
+                            <h1>GIS Server Pengadilan RI</h1>
+                            <p style="color: var(--text-muted); margin: 0; font-size: 0.85rem;">Sistem Informasi Geografis Tata Letak Server Hukum.</p>
+                        </div>
+                    </div>
+
+                    <div class="map-canvas">
+                        <!-- Simulated Map Abstract Silhouette -->
+                        <svg class="indo-map-silhouette" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+                            <path d="M100,200 Q150,150 200,250 T300,300 T400,200 C450,100 500,150 550,250 C600,350 700,300 800,250 Q850,220 900,280" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M200,250 Q250,300 350,350 T500,400" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20" stroke-linecap="round"/>
+                        </svg>
+
+                        <!-- Coordinate Pins -->
+                        <div class="map-pin pin-jkt hq">
+                            <i class="fa-solid fa-star"></i>
+                            <div class="pin-label">DKI Jakarta (Pusat MA)</div>
+                        </div>
+
+                        <div class="map-pin pin-bdg">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div class="pin-label">Bandung / Cibinong</div>
+                        </div>
+
+                        <div class="map-pin pin-medan">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div class="pin-label">PN Medan Kelas IA</div>
+                        </div>
+
+                        <div class="map-pin pin-sby">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div class="pin-label">PN Surabaya</div>
+                        </div>
+
+                        <div class="map-pin pin-makassar">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <div class="pin-label">PN Makassar Raya</div>
+                        </div>
+
+                        <div class="map-controls">
+                            <button class="zoom-btn"><i class="fa-solid fa-plus"></i></button>
+                            <button class="zoom-btn"><i class="fa-solid fa-minus"></i></button>
+                            <button class="zoom-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <h2>Pulau Jawa Bagian Barat</h2>
+                        <div style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-tower-broadcast"></i> Koneksi Aktif: WSS-JKT-PRIMARY</div>
+                    </div>
+
+                    <div class="detail-body">
+                        
+                        <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">Mencakup Wilayah:</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                            <div style="display: flex; gap: 10px; align-items: center;"><i class="fa-solid fa-check" style="color: #4ade80;"></i> PN Jakarta Pusat (Niaga/Tipikor/HAM)</div>
+                            <div style="display: flex; gap: 10px; align-items: center;"><i class="fa-solid fa-check" style="color: #4ade80;"></i> PN Jakarta Selatan</div>
+                            <div style="display: flex; gap: 10px; align-items: center;"><i class="fa-solid fa-check" style="color: #4ade80;"></i> PN Cibinong Kelas IA</div>
+                        </div>
+
+                        <div class="stat-line" style="border-left-color: #58a6ff;">
+                            <div style="font-size: 0.9rem; color: #cbd5e1;">Hakim Aktif di Zona ini</div>
+                            <div class="stat-val" style="color: #58a6ff;">154 Orang</div>
+                        </div>
+
+                        <div class="stat-line" style="border-left-color: #facc15;">
+                            <div style="font-size: 0.9rem; color: #cbd5e1;">Arus Sidang (Live)</div>
+                            <div class="stat-val" style="color: #facc15;">28 Ruang Video</div>
+                        </div>
+
+                        <div class="stat-line" style="border-left-color: #4ade80;">
+                            <div style="font-size: 0.9rem; color: #cbd5e1;">Ping Jaringan Ke MA</div>
+                            <div class="stat-val" style="color: #4ade80;">14 ms (Sehat)</div>
+                        </div>
+
+                        <div class="action-btns">
+                            <button class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.2); justify-content: center;"><i class="fa-solid fa-pen-map"></i> Edit Pemetaan</button>
+                            <button class="btn btn-outline" style="width: 100%; background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.4); color: #f85149; justify-content: center;"><i class="fa-solid fa-link-slash"></i> Isolasi Koneksi Zona Ini</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

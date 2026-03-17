@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Sinkron - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Time Matrix Setup */
+        .time-matrix { background-color: var(--bg-alt); border-radius: var(--radius-lg); padding: 40px; border: 1px solid rgba(255,255,255,0.05); display: flex; gap: 40px; }
+        
+        .t-left { flex: 1; }
+        .t-left h2 { margin: 0 0 20px 0; font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        
+        .t-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .day-lbl { font-weight: bold; width: 80px; color: #cbd5e1; }
+        
+        /* Toggle Switch */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.2); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #58a6ff; border-color: #58a6ff; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .time-inputs { display: flex; gap: 10px; align-items: center; font-family: monospace; color: #94a3b8; }
+        .time-inputs input { width: 90px; padding: 8px; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; text-align: center; }
+        .time-inputs.disabled { opacity: 0.3; pointer-events: none; }
+        
+        .t-right { width: 350px; flex-shrink: 0; background-color: #0f172a; padding: 25px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .info-card { background-color: rgba(56, 189, 248, 0.05); border-left: 3px solid #58a6ff; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .info-card h4 { margin: 0 0 5px 0; color: #58a6ff; font-size: 0.95rem; }
+        .info-card p { margin: 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        
+        .opt-group { margin-bottom: 20px; }
+        .opt-group label { display: block; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; color: white; }
+        .opt-group select, .opt-group input { width: 100%; padding: 12px; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; outline: none; }
+        .opt-group select:focus, .opt-group input:focus { border-color: #58a6ff; }
+        
+        .btn-sync { width: 100%; padding: 12px; font-weight: bold; background-color: white; color: black; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; margin-top: 20px; }
+        .btn-sync:hover { background-color: #cbd5e1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Waktu</p>
+                <a href="calendar.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-calendar-days"></i> Kalender Sidang & Klien</a>
+                <a href="availability.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-clock"></i> Parameter Janji Temu</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-business-time"></i> Blokir Slot Waktu Agar Klien Tidak Bisa Booking Escrow</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Pengaturan Ketersediaan Konsultasi</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Tentukan waktu kerja Anda. Klien Marketplace hanya akan dapat menyewa/booking pada jam aktif.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('Jadwal diperbarui. Sinkronisasi dengan Booking Portal marketplace sukses.');"><i class="fa-solid fa-save"></i> Terapkan Matriks</button>
+                </div>
+
+                <div class="time-matrix">
+                    
+                    <div class="t-left">
+                        <h2><i class="fa-solid fa-stopwatch-20" style="color: #58a6ff;"></i> Roster Jam Operasional Firma / Pribadi</h2>
+                        
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                            <span class="day-lbl">Senin</span>
+                            <div class="time-inputs">
+                                <input type="time" value="09:00"> <span>sd</span> <input type="time" value="17:00">
+                            </div>
+                        </div>
+                        
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                            <span class="day-lbl">Selasa</span>
+                            <div class="time-inputs">
+                                <input type="time" value="09:00"> <span>sd</span> <input type="time" value="17:00">
+                            </div>
+                        </div>
+
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                            <span class="day-lbl">Rabu</span>
+                            <div class="time-inputs">
+                                <input type="time" value="09:00"> <span>sd</span> <input type="time" value="17:00">
+                            </div>
+                        </div>
+
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                            <span class="day-lbl">Kamis</span>
+                            <div class="time-inputs">
+                                <input type="time" value="09:00"> <span>sd</span> <input type="time" value="17:00">
+                            </div>
+                        </div>
+
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox" checked><span class="slider"></span></label>
+                            <span class="day-lbl">Jumat</span>
+                            <div class="time-inputs">
+                                <input type="time" value="09:00"> <span>sd</span> <input type="time" value="15:00">
+                            </div>
+                        </div>
+
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+                            <span class="day-lbl" style="color: #64748b;">Sabtu</span>
+                            <div class="time-inputs disabled">
+                                <input type="time" value="00:00"> <span>sd</span> <input type="time" value="00:00">
+                            </div>
+                        </div>
+
+                        <div class="t-row">
+                            <label class="toggle-switch"><input type="checkbox"><span class="slider"></span></label>
+                            <span class="day-lbl" style="color: #64748b;">Minggu</span>
+                            <div class="time-inputs disabled">
+                                <input type="time" value="00:00"> <span>sd</span> <input type="time" value="00:00">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="t-right">
+                        <div class="info-card">
+                            <h4><i class="fa-solid fa-calendar-check"></i> Blokir Sidang Otomatis</h4>
+                            <p>Justice App mendeteksi jadwal E-Court dari <b>SIPP Mahkamah Agung</b>. Pada hari 17 Maret, slot 09:30 ditutup otomatis.</p>
+                        </div>
+
+                        <div class="opt-group">
+                            <label>Durasi per Sesi Konsul / V-Call</label>
+                            <select>
+                                <option>30 Menit (Rapid)</option>
+                                <option selected>60 Menit (Standar 1 Jam)</option>
+                                <option>120 Menit (Review Penuh)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="opt-group">
+                            <label>Jeda Tarik Nafas Antar Sesi Klien</label>
+                            <select>
+                                <option>Tanpa Jeda</option>
+                                <option selected>15 Menit Istirahat</option>
+                                <option>30 Menit Istirahat PC</option>
+                            </select>
+                        </div>
+
+                        <div class="opt-group">
+                            <label>Notifikasi Minimal Booking Klien</label>
+                            <select>
+                                <option>Bisa Booking Dadakan</option>
+                                <option selected>Maksimal H-1 Jadwal (+24 Jam)</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-sync"><i class="fa-brands fa-google"></i> Sinkronisasi Google Calendar</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

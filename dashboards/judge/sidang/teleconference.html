@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidang Terbuka Virtual - Hakim Arbiter E-Court</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: var(--font-body); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        .header-sidang { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #1e293b; border-bottom: 2px solid #58a6ff; }
+        
+        .sidang-info h1 { font-family: var(--font-heading); margin: 0 0 5px 0; font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .sidang-info p { color: #8b949e; margin: 0; font-size: 0.9rem; font-family: monospace; }
+        .badge-live { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.4); padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; letter-spacing: 1px; animation: blink 2s infinite; display: inline-flex; align-items: center; gap: 5px; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .main-stage { display: flex; flex: 1; overflow: hidden; }
+
+        /* Left Split: Video Grid */
+        .video-grid { flex: 3; display: grid; grid-template-rows: 2fr 1fr; gap: 15px; padding: 20px; background-color: #06090f; }
+        
+        .main-participant { position: relative; border-radius: var(--radius-lg); overflow: hidden; background-color: #161b22; display: flex; align-items: center; justify-content: center; border: 2px solid #30363d; }
+        .main-participant img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        
+        .sub-participants { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .sub-participant { position: relative; border-radius: var(--radius-md); overflow: hidden; background-color: #161b22; display: flex; align-items: center; justify-content: center; border: 1px solid #30363d; transition: border-color 0.2s; }
+        .sub-participant:hover { border-color: #facc15; cursor: pointer; }
+        .sub-participant img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+
+        .name-tag { position: absolute; bottom: 15px; left: 15px; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; color: white; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .name-tag.speaker { border-color: #58a6ff; color: #58a6ff; }
+        .role { font-weight: bold; font-size: 0.75rem; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+
+        /* Right Split: Side Panel */
+        .side-panel { flex: 1; background-color: #1e293b; border-left: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; min-width: 350px; }
+
+        .panel-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tab { flex: 1; text-align: center; padding: 15px; cursor: pointer; font-weight: bold; color: #8b949e; border-bottom: 2px solid transparent; transition: 0.2s; }
+        .tab:hover { background-color: rgba(255,255,255,0.05); }
+        .tab.active { color: #facc15; border-bottom-color: #facc15; background-color: rgba(234, 179, 8, 0.05); }
+
+        .tab-content { padding: 20px; flex: 1; overflow-y: auto; }
+        
+        /* Bukti Presentasi */
+        .evidence-card { background-color: #0d1117; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s; }
+        .evidence-card:hover { border-color: #58a6ff; background-color: rgba(88, 166, 255, 0.05); }
+        .evidence-icon { width: 50px; height: 50px; background-color: rgba(59, 130, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #58a6ff; flex-shrink: 0; }
+        .evidence-info h4 { margin: 0 0 5px 0; font-size: 0.95rem; color: #e2e8f0; }
+        .evidence-info p { margin: 0; font-size: 0.8rem; color: #8b949e; }
+        
+        .ai-verdict { background-color: rgba(63, 185, 80, 0.1); border: 1px solid rgba(63, 185, 80, 0.3); border-radius: var(--radius-sm); padding: 5px 10px; font-size: 0.75rem; color: #3fb950; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; font-weight: bold; }
+
+        .controls-bottom { padding: 20px; background-color: #1e293b; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; gap: 15px; z-index: 100; }
+        
+        .btn-vid { width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; background-color: rgba(255,255,255,0.1); color: white; }
+        .btn-vid:hover { background-color: rgba(255,255,255,0.2); transform: translateY(-3px); }
+        .btn-danger { background-color: #f85149; border: 1px solid #f85149; color: white; }
+        .btn-danger:hover { background-color: #da3633; transform: translateY(-3px); }
+        
+        .judge-action { flex: 1; border-radius: 30px; font-family: var(--font-heading); font-size: 1rem; font-weight: bold; background-color: rgba(234, 179, 8, 0.1); border: 1px solid #facc15; color: #facc15; }
+        .judge-action:hover { background-color: #facc15; color: black; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header-sidang">
+        <div class="sidang-info">
+            <span class="badge-live"><i class="fa-solid fa-satellite-dish"></i> LIVE E-COURT</span>
+            <h1>Sengketa Hak Cipta Perangkat Lunak #HAKI-2026-B9</h1>
+            <p>Agenda: Penyerahan dan Pemeriksaan Alat Bukti Berbasis Digital</p>
+        </div>
+        <div>
+            <span style="background-color: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 20px; font-family: monospace; border: 1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-clock"></i> 01:14:02 elapsed</span>
+            <a href="dashboard.html" class="btn btn-outline" style="margin-left: 15px; border-color: rgba(255,255,255,0.2); padding: 8px 15px; font-size: 0.85rem;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Izin Tinggalkan Ruang </a>
+        </div>
+    </header>
+
+    <div class="main-stage animate-fade-in">
+        
+        <!-- Video Grid Area -->
+        <main class="video-grid">
+            <div class="main-participant">
+                <img src="https://images.unsplash.com/photo-1556157382-97eda2cf1be5?auto=format&fit=crop&q=80">
+                <div class="name-tag speaker">
+                    <i class="fa-solid fa-microphone"></i> Adv. Farhan (Hak Basa) <span class="role">Penggugat</span>
+                </div>
+                <!-- Transcript Overlay -->
+                <div style="position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); background-color: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 8px; color: #facc15; max-width: 80%; text-align: center; font-size: 1.1rem; border: 1px solid rgba(234, 179, 8, 0.3);">
+                    "Yang Mulia, bukti P-1 dengan sangat jelas menuntaskan identifikasi Git Protocol dari repositori Klien Kami..."
+                </div>
+            </div>
+
+            <div class="sub-participants">
+                <div class="sub-participant" style="border-color: #facc15;">
+                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80">
+                    <div class="name-tag" style="color: #facc15; border-color: #facc15;">
+                        <i class="fa-solid fa-microphone-lines-slash"></i> Hakim H. Rahmat <span class="role" style="background-color: #facc15; color: black;">Pimpinan</span>
+                    </div>
+                </div>
+                <div class="sub-participant">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80">
+                    <div class="name-tag">
+                        <i class="fa-solid fa-microphone-lines-slash"></i> Adv. Rina <span class="role">Tergugat</span>
+                    </div>
+                </div>
+                <div class="sub-participant">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80">
+                    <div class="name-tag">
+                        <i class="fa-solid fa-microphone-lines-slash"></i> Budi S. <span class="role">Saksi Prinsipal</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar / AI Dashboard untuk Hakim -->
+        <aside class="side-panel">
+            <div class="panel-tabs">
+                <div class="tab active"><i class="fa-solid fa-folder-open"></i> Laci Bukti E-Court</div>
+                <div class="tab"><i class="fa-solid fa-pen-nib"></i> Ketuk Palu (BAP)</div>
+            </div>
+
+            <div class="tab-content">
+                <p style="color: #8b949e; font-size: 0.85rem; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved"></i> Hanya Hakim yang dapat melihat metrik Integritas Hash AI (Anti Pemalsuan Alat Bukti) dengan algoritma SHA-256 Validated.</p>
+
+                <div class="evidence-card">
+                    <div class="evidence-icon"><i class="fa-brands fa-github"></i></div>
+                    <div class="evidence-info">
+                        <h4>Bukti P-1: Log Commit GitHub</h4>
+                        <p>Format: .CSV Ekstraksi | Diunggah 12 Mar 2026</p>
+                        <div class="ai-verdict"><i class="fa-solid fa-circle-check"></i> Hash Valid (Original Data Center)</div>
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="evidence-icon" style="background-color: rgba(248, 81, 73, 0.1); color: #f85149;"><i class="fa-solid fa-file-pdf"></i></div>
+                    <div class="evidence-info">
+                        <h4>Bukti T-1: PDF Surat NDA Pengembang</h4>
+                        <p>Format: Pemindaian (Scan) | Diunggah Oleh Tergugat</p>
+                        <div class="ai-verdict" style="color: #facc15; border-color: rgba(234, 179, 8, 0.3); background-color: rgba(234, 179, 8, 0.1);"><i class="fa-solid fa-triangle-exclamation"></i> Anomali Terdeteksi: Metadata Tanda Tangan Palsu (Copy-Paste)</div>
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="evidence-icon" style="color: #a855f7; background-color: rgba(168, 85, 247, 0.1);"><i class="fa-solid fa-file-contract"></i></div>
+                    <div class="evidence-info">
+                        <h4>Pledoi (Nota Pembelaan Tertulis)</h4>
+                        <p>Dianalisis secara presisi oleh Lex AI.</p>
+                        <button class="btn btn-primary" style="margin-top: 10px; font-size: 0.75rem; padding: 4px 10px;"><i class="fa-solid fa-magnifying-glass"></i> Telaah Klausul</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-bottom">
+                <button class="btn-vid" title="Nonaktifkan Kamera (Video)"><i class="fa-solid fa-video"></i></button>
+                <button class="btn-vid btn-danger" title="Nonaktifkan Mik (Mute / Interupsi)"><i class="fa-solid fa-microphone-slash"></i></button>
+                <button class="btn-vid judge-action"><i class="fa-solid fa-gavel"></i> Interupsi Palu</button>
+            </div>
+        </aside>
+    </div>
+
+</body>
+</html>

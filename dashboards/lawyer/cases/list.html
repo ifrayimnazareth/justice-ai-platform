@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Perkara Aktif - Advokat Dashboard</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../../assets/css/lawyer.css">
+    <style>
+        .cases-header-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-case {
+            position: relative;
+            width: 350px;
+        }
+
+        .search-case input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--bg-alt);
+            color: white;
+            font-family: var(--font-body);
+        }
+
+        .search-case i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .dropdown-filter {
+            background-color: var(--bg-alt);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Case Cards Container */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .advocate-case-card {
+            background-color: var(--bg-main);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .advocate-case-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .advocate-case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0px;
+            width: 6px;
+            height: 100%;
+            background-color: transparent;
+            border-top-left-radius: var(--radius-lg);
+            border-bottom-left-radius: var(--radius-lg);
+        }
+
+        .status-litigasi::before { background-color: var(--primary-color); }
+        .status-mediasi::before { background-color: var(--warning); }
+        .status-selesai::before { background-color: var(--success); }
+
+        .case-meta-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        .case-reg-id {
+            font-family: monospace;
+            background-color: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .case-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .case-badge.litigasi { background-color: rgba(43, 108, 176, 0.2); color: var(--primary-light); }
+        .case-badge.mediasi { background-color: rgba(221, 107, 32, 0.2); color: var(--warning); }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        .client-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .client-details h4 { margin: 0 0 3px 0; font-size: 1.1rem; color: white; }
+        .client-details p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+        .case-title {
+            font-size: 1.25rem;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: white;
+            font-family: var(--font-heading);
+        }
+
+        .case-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .case-details-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .case-details-list li i { color: var(--primary-color); width: 15px; margin-top: 3px; }
+
+        .ai-assist-box {
+            background-color: rgba(56, 161, 105, 0.05);
+            border: 1px solid rgba(56, 161, 105, 0.2);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .ai-assist-box i { color: var(--success); font-size: 1.2rem; }
+
+        .task-progress { margin-bottom: 20px; }
+        .task-progress-head { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; color: var(--text-main); }
+        .progress-bar-bg { height: 6px; background-color: rgba(255,255,255,0.1); border-radius: var(--radius-full); }
+        .progress-bar-fill { height: 100%; border-radius: var(--radius-full); }
+
+        .case-actions-bottom {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-flex { flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout animate-fade-in">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-balanced" style="color: var(--primary-color);"></i> Justice<span>Firm</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Overview Kinerja</span></a>
+                
+                <div class="menu-label">Pekerjaan Aktif</div>
+                <a href="list.html" class="menu-item active">
+                    <i class="fa-solid fa-folder-open"></i><span>Manajemen Perkara</span>
+                    <span style="background: var(--primary-color); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; position: absolute; right: 20px;">3</span>
+                </a>
+                <a href="draft-maker.html" class="menu-item"><i class="fa-solid fa-file-signature"></i><span>AI Legal Drafter</span></a>
+                
+                <div class="menu-label">Analitik & Alat</div>
+                <a href="../../../ai/win-probability.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Win Probability Kalkulator</span></a>
+                <a href="../../../ai/contract-review.html" class="menu-item"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Contract Reviewer (OCR)</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div style="font-weight: 600; font-family: var(--font-heading); color: var(--text-muted);">Sistem Manajemen Dokumen Pengacara Terpadu</div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <button class="icon-btn" style="color: white; position: relative;"><i class="fa-regular fa-bell"></i><span style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: red; border-radius: 50%;"></span></button>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <span style="font-weight: 600; font-size: 0.9rem; display: block; line-height: 1;">Adv. Farhan, S.H.</span>
+                            <span style="font-size: 0.75rem; color: var(--success);">Online / Bersiap</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                
+                <div class="cases-header-action">
+                    <div>
+                        <h2 style="margin: 0 0 5px 0; font-family: var(--font-heading); font-size: 1.8rem;">Daftar Klien Eksekutif</h2>
+                        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Sinkronisasi kalender pengadilan (E-Court MA) otomatis dengan memo jadwal sidang.</p>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="search-case">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Cari nama klien, objek sengketa, ID...">
+                        </div>
+                        <select class="dropdown-filter">
+                            <option>Semua Status</option>
+                            <option>Litigasi (Pengadilan)</option>
+                            <option>Non-Litigasi (Mediasi)</option>
+                        </select>
+                        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Kasus Baru</button>
+                    </div>
+                </div>
+
+                <div class="workspace-grid">
+                    
+                    <!-- Case 1 -->
+                    <div class="advocate-case-card status-litigasi">
+                        <div class="case-meta-top">
+                            <span class="case-reg-id">ID: SENG-2026-X1</span>
+                            <span class="case-badge litigasi">Litigasi PN Jaksel</span>
+                        </div>
+
+                        <div class="client-info">
+                            <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=3b82f6&color=fff" class="client-avatar">
+                            <div class="client-details">
+                                <h4>Budi Santoso</h4>
+                                <p>Sengketa Properti & Bangunan</p>
+                            </div>
+                            <div style="margin-left: auto;">
+                                <a href="../../client/konsultasi/video-call.html" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fa-solid fa-video"></i> Diskusi</a>
+                            </div>
+                        </div>
+
+                        <h3 class="case-title">Gugatan Wanprestasi Terhadap PT. Pembangunan Maju Konstruksi</h3>
+
+                        <ul class="case-details-list">
+                            <li><i class="fa-solid fa-calendar-gavel"></i> <span><strong>Sidang Berikutnya:</strong> 20 Mar 2026 (Tahap Pembuktian Duplik)</span></li>
+                            <li><i class="fa-solid fa-file-invoice-dollar"></i> <span><strong>Nilai Gugatan:</strong> Rp 1.500.000.000</span></li>
+                            <li><i class="fa-solid fa-gavel"></i> <span><strong>Majelis Hakim:</strong> H. Ahmad S., S.H. (Anggota)</span></li>
+                        </ul>
+
+                        <div class="ai-assist-box">
+                            <i class="fa-solid fa-robot"></i>
+                            <div>
+                                <strong style="color: var(--success); display: block; margin-bottom: 3px;">Win Probabilitas Diperbarui: 78%</strong>
+                                <span>AI menyarankan melampirkan Dokumen "Adendum II.pdf" dari Client Vault sebelum tanggal pengiriman berkas *softcopy* ke SIPP besok.</span>
+                            </div>
+                        </div>
+
+                        <div class="task-progress">
+                            <div class="task-progress-head">
+                                <span>Progres Berkas (7/10 Selesai)</span>
+                                <span>70%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: 70%; background-color: var(--primary-color);"></div>
+                            </div>
+                        </div>
+
+                        <div class="case-actions-bottom">
+                            <button class="btn btn-outline btn-flex" style="border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-vault"></i> Buka Vault Klien</button>
+                            <button class="btn btn-primary btn-flex" style="background-color: var(--primary-alt); border-color: var(--primary-alt);"><i class="fa-solid fa-pen-to-square"></i> Buat Draft Draft</button>
+                        </div>
+                    </div>
+
+                    <!-- Case 2 -->
+                    <div class="advocate-case-card status-mediasi">
+                        <div class="case-meta-top">
+                            <span class="case-reg-id">ID: CER-2026-A2</span>
+                            <span class="case-badge mediasi">Mediasi PA Pusat</span>
+                        </div>
+
+                        <div class="client-info">
+                            <img src="https://ui-avatars.com/api/?name=Rina+Amalia&background=eab308&color=fff" class="client-avatar">
+                            <div class="client-details">
+                                <h4>Rina Amalia, S.E.</h4>
+                                <p>Hukum Tata Keluarga / Gono-Gini</p>
+                            </div>
+                        </div>
+
+                        <h3 class="case-title">Sengketa Hak Asuh Anak & Pembagian Harta Bersama (Rumah Tebet)</h3>
+
+                        <ul class="case-details-list">
+                            <li><i class="fa-solid fa-calendar-gavel"></i> <span><strong>Jadwal Mediasi:</strong> 25 Mar 2026 (Mediasi Hakim Bipartit)</span></li>
+                            <li><i class="fa-solid fa-handshake-angle"></i> <span><strong>Tuntutan:</strong> Hak Asuh Anak di Bawah Umur & Kompensasi Pendidikan</span></li>
+                        </ul>
+
+                        <div class="ai-assist-box" style="background-color: rgba(234, 179, 8, 0.05); border-color: rgba(234, 179, 8, 0.2);">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i>
+                            <div>
+                                <strong style="color: var(--warning); display: block; margin-bottom: 3px;">Peringatan Kalender!</strong>
+                                <span>Klien belum memberikan "Draft Persetujuan Damai TTD Asli" yang Anda *request* dari Vault pada minggu lalu. Segera ingatkan.</span>
+                            </div>
+                        </div>
+
+                        <div class="task-progress">
+                            <div class="task-progress-head">
+                                <span>Progres Berkas Mediasi (2/5 Selesai)</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: 40%; background-color: var(--warning);"></div>
+                            </div>
+                        </div>
+
+                        <div class="case-actions-bottom">
+                            <button class="btn btn-outline btn-flex" style="border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-bell"></i> Ping Klien</button>
+                            <button class="btn btn-primary btn-flex" style="background-color: var(--bg-alt); color: white; border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-folder-open"></i> Manajemen File</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penyaringan Identitas (KYC) - Justice Admin</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 10px; }
+        .stat-card { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; border-top: 3px solid #58a6ff; }
+        .stat-card.warn { border-top-color: #facc15; }
+        .stat-card.danger { border-top-color: #f85149; }
+        .stat-card.success { border-top-color: #4ade80; }
+        .stat-card span { font-size: 2rem; font-weight: bold; color: white; font-family: monospace; display: block; margin-bottom: 5px; }
+        .stat-card small { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
+
+        /* KYC Queues */
+        .queue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        
+        .q-card { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); overflow: hidden; }
+        .q-header { padding: 15px 20px; background-color: rgba(250, 204, 21, 0.05); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .q-header h3 { margin: 0; color: white; font-size: 1rem; }
+        .q-header .badge { background-color: rgba(250, 204, 21, 0.2); color: #facc15; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        
+        .q-body { padding: 20px; }
+        .q-img-wrap { width: 100%; height: 160px; background-color: #000; border-radius: 6px; margin-bottom: 15px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        .q-img-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        
+        .ai-overlay { position: absolute; top: 10px; right: 10px; background-color: rgba(0,0,0,0.8); border: 1px solid #4ade80; color: #4ade80; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-family: monospace; font-weight: bold; z-index: 2; backdrop-filter: blur(5px); }
+        .ai-overlay.fail { border-color: #f85149; color: #f85149; }
+
+        .q-info p { margin: 0 0 8px 0; font-size: 0.85rem; color: #cbd5e1; display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 5px; }
+        .q-info p:last-child { border: none; }
+        .q-info p span:first-child { color: #94a3b8; }
+        .q-info p span:last-child { font-weight: bold; color: white; font-family: monospace; }
+        
+        .q-actions { padding: 15px 20px; background-color: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 10px; }
+        .q-actions button { flex: 1; padding: 10px; border-radius: 4px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+        .btn-approve { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .btn-approve:hover { background-color: #4ade80; color: #000; }
+        .btn-reject { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+        .btn-reject:hover { background-color: #f85149; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Admin</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Aktivitas Pengguna</p>
+                <a href="list.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-users"></i> Daftar Semua Entitas</a>
+                <a href="kyc-verifications.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-id-card-clip"></i> Persetujuan KYC / ID</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Akses Root</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-eye"></i> Moderasi Pencegahan Penipuan Identitas (Fraud AI)</div>
+                <div class="time-inputs" style="color: white; font-family: monospace; font-size: 0.9rem;">API Dukcapil: <span style="color: #4ade80;">ONLINE</span></div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Antrian Validasi Silang Advokat</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Periksa kecocokan KTP, Kartu PERADI, & wajah (Selfie Liveness) sebelum membuka blokir Escrow.</p>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-card warn">
+                        <span>42</span>
+                        <small>Antrian Pending Hari Ini</small>
+                    </div>
+                    <div class="stat-card danger">
+                        <span>5</span>
+                        <small>Potensi Fraud (AI Flagged)</small>
+                    </div>
+                    <div class="stat-card success">
+                        <span>128</span>
+                        <small>Akun Disetujui Kemarin</small>
+                    </div>
+                    <div class="stat-card">
+                        <span>320ms</span>
+                        <small>Latensi Server Dukcapil</small>
+                    </div>
+                </div>
+
+                <div class="queue-grid">
+                    
+                    <div class="q-card">
+                        <div class="q-header">
+                            <h3><i class="fa-regular fa-user"></i> Adv. Farhan, S.H.</h3>
+                            <span class="badge">#Q-8112</span>
+                        </div>
+                        <div class="q-body">
+                            <div class="q-img-wrap">
+                                <div class="ai-overlay"><i class="fa-solid fa-check"></i> OCR MATCH 98%</div>
+                                <img src="https://images.unsplash.com/photo-1549737328-8b9f32528c47?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="ID Card Simulasi">
+                            </div>
+                            <div class="q-info">
+                                <p><span>Nomor ID (PERADI):</span> <span>88201-1992</span></p>
+                                <p><span>NIK Dukcapil:</span> <span>317********002</span></p>
+                                <p><span>Liveness Detection:</span> <span style="color: #4ade80;">TRUE (Real Person)</span></p>
+                            </div>
+                        </div>
+                        <div class="q-actions">
+                            <button class="btn-reject"><i class="fa-solid fa-xmark"></i> Tolak Dokumen</button>
+                            <button class="btn-approve" onclick="alert('Identitas Advokat disahkan. Lencana Centang Biru Diberikan.'); this.closest('.q-card').style.display='none';"><i class="fa-solid fa-check-double"></i> Verifikasi Sah</button>
+                        </div>
+                    </div>
+
+                    <div class="q-card">
+                        <div class="q-header">
+                            <h3><i class="fa-regular fa-user"></i> Reza Firmansyah</h3>
+                            <span class="badge">#Q-8115</span>
+                        </div>
+                        <div class="q-body">
+                            <div class="q-img-wrap" style="border-color: rgba(248, 81, 73, 0.4);">
+                                <div class="ai-overlay fail"><i class="fa-solid fa-triangle-exclamation"></i> DEEPFAKE ALERT</div>
+                                <img src="https://images.unsplash.com/photo-1549737328-8b9f32528c47?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" alt="ID Card Simulasi" style="filter: grayscale(1);">
+                            </div>
+                            <div class="q-info">
+                                <p><span>Nomor ID (PERADI):</span> <span>TAK TERBACA (BLUR)</span></p>
+                                <p><span>NIK Dukcapil:</span> <span>TIDAK DITEMUKAN</span></p>
+                                <p><span>Liveness Detection:</span> <span style="color: #f85149;">AI / MASK DETECTED</span></p>
+                            </div>
+                        </div>
+                        <div class="q-actions">
+                            <button class="btn-reject" style="flex: 2" onclick="alert('Peringatan: Upaya Penipuan. Akun ini akan di-BANNED & IP masuk Blacklist.'); this.closest('.q-card').style.display='none';"><i class="fa-solid fa-ban"></i> Blokir Akun Tersangka</button>
+                            <button class="btn-approve" style="flex: 1; opacity: 0.3; cursor: not-allowed;"><i class="fa-solid fa-check"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="q-card">
+                        <div class="q-header">
+                            <h3><i class="fa-regular fa-user"></i> Diana P. (Klien Korporat)</h3>
+                            <span class="badge">#Q-8120</span>
+                        </div>
+                        <div class="q-body">
+                            <div class="q-img-wrap">
+                                <div class="ai-overlay" style="border-color: #facc15; color:#facc15;"><i class="fa-solid fa-magnifying-glass"></i> MANUAL REVIEW</div>
+                                <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: rgba(255,255,255,0.05); color: #94a3b8; font-size: 3rem;"><i class="fa-solid fa-file-contract"></i></div>
+                            </div>
+                            <div class="q-info">
+                                <p><span>Akta Perusahaan Kemenkumham:</span> <span>PT-19283-A</span></p>
+                                <p><span>NPWP Badan:</span> <span>TERVERIFIKASI DJP</span></p>
+                                <p><span>Jenis Dokumen:</span> <span style="color: #facc15;">Non-Standar (Bisnis)</span></p>
+                            </div>
+                        </div>
+                        <div class="q-actions">
+                            <button class="btn-reject"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                            <button class="btn-approve" onclick="alert('Korporasi diizinkan.'); this.closest('.q-card').style.display='none';"><i class="fa-solid fa-check-double"></i> Izinkan Vault Akses</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

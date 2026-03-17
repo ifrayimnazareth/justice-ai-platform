@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Profil Klien - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; }
+
+        .dashboard-layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 280px; background-color: #1e293b; border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+        }
+
+        .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar-menu { padding: 20px 0; overflow-y: auto; }
+        .menu-label { padding: 10px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
+
+        .menu-item { display: flex; align-items: center; padding: 12px 24px; color: #cbd5e1; text-decoration: none; gap: 15px; transition: all 0.2s ease; position: relative; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.03); color: white; }
+        .menu-item.active { background-color: rgba(56, 161, 105, 0.1); color: #4ade80; border-right: 3px solid #4ade80; }
+
+        .main-content { flex: 1; margin-left: 280px; display: flex; flex-direction: column; }
+
+        .topbar {
+            height: 70px; background-color: #1e293b; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 40px; position: sticky; top: 0; z-index: 90;
+        }
+
+        .content-area { padding: 40px; }
+
+        .profile-header {
+            display: flex; gap: 30px; align-items: center; background-color: #1e293b;
+            padding: 30px; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .profile-avatar {
+            width: 100px; height: 100px; border-radius: 50%; border: 3px solid #3b82f6; display: flex; align-items: center; justify-content: center;
+            background-color: #0f172a; font-size: 2.5rem; color: #3b82f6; font-weight: bold; flex-shrink: 0;
+        }
+
+        .profile-info h2 { margin: 0 0 5px 0; font-family: var(--font-heading); font-size: 2rem; }
+        .profile-info p { color: #94a3b8; margin: 0 0 15px 0; }
+
+        .badge-status { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+        .badge-active { background-color: rgba(34, 197, 94, 0.2); color: #4ade80; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        
+        .stat-card {
+            background-color: #1e293b; padding: 25px; border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-card h4 { margin: 0 0 10px 0; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .val { font-size: 2rem; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; }
+        .stat-card .val i { color: #3b82f6; font-size: 1.5rem; }
+
+        .log-section {
+            background-color: #1e293b; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); padding: 25px;
+        }
+
+        .log-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .log-table th { padding: 12px 15px; background-color: rgba(0,0,0,0.2); color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
+        .log-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.02); color: #cbd5e1; font-size: 0.9rem; }
+        .log-table tr:hover { background-color: rgba(255,255,255,0.02); }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout animate-fade-in">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-server" style="color: #4ade80;"></i> Root<span>Admin</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Overview System</span></a>
+                <div class="menu-label">Verifikasi Data (KYC)</div>
+                <a href="../lawyers/approval.html" class="menu-item"><i class="fa-solid fa-id-card-clip"></i><span>Validasi Advokat</span></a>
+                <a href="list.html" class="menu-item active"><i class="fa-solid fa-users"></i><span>Manajemen Klien</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><a href="list.html" style="color: #38bdf8; text-decoration: none;">&larr; Kembali ke Tabel Klien</a></div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="profile-header">
+                    <div class="profile-avatar">BS</div>
+                    <div class="profile-info">
+                        <h2>Budi Santoso</h2>
+                        <p>UID: CLI-26019A8 | Email: budi.santoso@gmail.com | Phone: 0812-9999-XXXX</p>
+                        <span class="badge-status badge-active">Akun Terverifikasi & Aktif</span>
+                        <a href="edit.html" class="btn btn-outline" style="margin-left: 10px; padding: 5px 15px; font-size: 0.85rem; color: #3b82f6; border-color: #3b82f6;">Edit Metadata</a>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Aktivitas AI Tools</h4>
+                        <div class="val"><i class="fa-solid fa-microchip"></i> 142 Hit</div>
+                        <p style="margin: 10px 0 0 0; font-size: 0.8rem; color: #64748b;">(Chatbot & Contract Check)</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Sewa Pengacara</h4>
+                        <div class="val"><i class="fa-solid fa-briefcase"></i> 2 Kasus</div>
+                        <p style="margin: 10px 0 0 0; font-size: 0.8rem; color: #64748b;">Total transaksi IDR 8.500.000</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Storage Vault Digunakan</h4>
+                        <div class="val"><i class="fa-solid fa-vault"></i> 1.2 GB</div>
+                        <p style="margin: 10px 0 0 0; font-size: 0.8rem; color: #64748b;">Kapasitas maks: 5 GB</p>
+                    </div>
+                </div>
+
+                <div class="log-section">
+                    <h3 style="margin: 0 0 20px 0; font-family: var(--font-heading);">Log Aktivitas Sistem (Terakhir)</h3>
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Modul / Fitur</th>
+                                <th>Jenis Log Akses</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026-03-20 14:22:01</td>
+                                <td><span style="color: #3b82f6;">Konsultasi Video Call</span></td>
+                                <td>Memulai Sesi dengan Adv. Farhan (ID: SENG-2026-X1)</td>
+                                <td><span style="font-family: monospace; color: #94a3b8;">114.122.10.8</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-20 14:15:30</td>
+                                <td><span style="color: #10b981;">Digital Vault</span></td>
+                                <td>Auth Berhasil: Membuka Kunci Enkripsi AES</td>
+                                <td><span style="font-family: monospace; color: #94a3b8;">114.122.10.8</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-18 09:10:00</td>
+                                <td><span style="color: #a855f7;">AI Chatbot</span></td>
+                                <td>Query Hukum Tanah (NLP Engine Triggered)</td>
+                                <td><span style="font-family: monospace; color: #94a3b8;">114.122.50.12</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-01 10:00:22</td>
+                                <td><span style="color: #cbd5e1;">Akses Akun</span></td>
+                                <td>Berhasil Login (Google OAuth)</td>
+                                <td><span style="font-family: monospace; color: #94a3b8;">180.252.88.92</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

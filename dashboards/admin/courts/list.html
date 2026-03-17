@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Mahkamah & Pengadilan - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand { font-family: var(--font-heading); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--primary-color); }
+
+        .menu-group { margin-top: 20px; }
+        .menu-title { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--text-main); text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.02); color: white; }
+        .menu-item.active { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); border-right: 3px solid var(--primary-color); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        .filters { display: flex; gap: 15px; margin-bottom: 30px; background-color: var(--bg-alt); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); }
+        .search-box { flex: 1; position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-box input { width: 100%; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px 10px 40px; border-radius: 6px; color: white; }
+        
+        table { width: 100%; border-collapse: collapse; background-color: var(--bg-alt); border-radius: var(--radius-md); overflow: hidden; }
+        th { text-align: left; padding: 15px 20px; background-color: rgba(0,0,0,0.2); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        tr:hover td { background-color: rgba(255,255,255,0.02); }
+
+        .badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .badge-active { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-sync { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+        .btn-act { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); width: 32px; height: 32px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .btn-act:hover { background-color: var(--primary-color); border-color: var(--primary-color); color: white; }
+
+        .court-icon { width: 40px; height: 40px; border-radius: 8px; background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i class="fa-solid fa-shield-halved"></i> Justice Root</div>
+            </div>
+            
+            <div class="menu-group">
+                <div class="menu-title">Master Data</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i> Ikhtisar</a>
+                <a href="../users/list.html" class="menu-item"><i class="fa-solid fa-users"></i> Direktori Klien</a>
+                <a href="../lawyers/approval.html" class="menu-item"><i class="fa-solid fa-user-tie"></i> Verifikasi Advokat</a>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Integrasi Sistem</div>
+                <a href="list.html" class="menu-item active"><i class="fa-solid fa-building-columns"></i> Direktori Pengadilan</a>
+                <a href="map-management.html" class="menu-item"><i class="fa-solid fa-map-location-dot"></i> Yurisdiksi Peta</a>
+                <a href="../settings/integrations.html" class="menu-item"><i class="fa-solid fa-plug"></i> API Mahkamah Agung</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-server"></i> Node: JKT-CORE-1 | Latency: 12ms ke MA RI</div>
+            </div>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <div>
+                        <h1>Daftar Pengadilan & Endpoint Integrasi</h1>
+                        <p style="color: var(--text-muted); margin-top: 5px;">Manajemen titik hubung E-Litigasi ke server Mahkamah Agung seluruh Indonesia.</p>
+                    </div>
+                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Node Pengadilan</button>
+                </div>
+
+                <div class="filters">
+                    <div class="search-bar search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Cari Kode PN, Nama Kota, atau IP Address...">
+                    </div>
+                    <select class="btn btn-outline" style="background-color: var(--bg-main); color: white; border-color: rgba(255,255,255,0.1);">
+                        <option>Semua Tingkat (PN/PT/MA)</option>
+                        <option>Pengadilan Negeri (Tingkat I)</option>
+                        <option>Pengadilan Tinggi (Banding)</option>
+                        <option>Mahkamah Agung (Kasasi)</option>
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Identitas Institusi</th>
+                            <th>Kode Wilayah / Endpoint URI</th>
+                            <th>Status API Mahkamah</th>
+                            <th>Hakim Terdaftar</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <div class="court-icon"><i class="fa-solid fa-building-columns"></i></div>
+                                    <div>
+                                        <div style="font-weight: bold; color: white;">Pengadilan Negeri Jakarta Pusat</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Tingkat Pertama - Kls IA Khusus</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-family: monospace; color: #94a3b8;">PN-JKTP-01</div>
+                                <div style="font-size: 0.8rem; color: #3b82f6;">WSS://api.mahkamah.go.id/jkt-pusat</div>
+                            </td>
+                            <td><span class="badge-status badge-active"><i class="fa-solid fa-check"></i> E-Court Online</span></td>
+                            <td><div style="font-weight: bold;">42 Hakim</div><div style="font-size: 0.75rem; color: var(--text-muted);">Di Platform</div></td>
+                            <td>
+                                <button class="btn-act" title="Edit Pengaturan URL"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-act" title="Uji Sinkronisasi (Ping)"><i class="fa-solid fa-satellite-dish"></i></button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <div class="court-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                                    <div>
+                                        <div style="font-weight: bold; color: white;">Pengadilan Niaga Jakarta Pusat</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Kamar Khusus Sengketa HAKI/Pailit</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-family: monospace; color: #94a3b8;">PNG-JKTP-01</div>
+                                <div style="font-size: 0.8rem; color: #3b82f6;">WSS://api.mahkamah.go.id/niaga/jkt</div>
+                            </td>
+                            <td><span class="badge-status badge-sync"><i class="fa-solid fa-rotate"></i> Sinkronisasi E-Litigasi</span></td>
+                            <td><div style="font-weight: bold;">15 Hakim</div><div style="font-size: 0.75rem; color: var(--text-muted);">Di Platform</div></td>
+                            <td>
+                                <button class="btn-act" title="Edit Pengaturan URL"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-act" title="Uji Sinkronisasi (Ping)"><i class="fa-solid fa-satellite-dish"></i></button>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <div class="court-icon"><i class="fa-solid fa-building-columns"></i></div>
+                                    <div>
+                                        <div style="font-weight: bold; color: white;">Pengadilan Negeri Cibinong</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">Tingkat Pertama - Kls IA</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-family: monospace; color: #94a3b8;">PN-CBN-32</div>
+                                <div style="font-size: 0.8rem; color: #3b82f6;">WSS://api.mahkamah.go.id/cibinong</div>
+                            </td>
+                            <td><span class="badge-status badge-active"><i class="fa-solid fa-check"></i> E-Court Online</span></td>
+                            <td><div style="font-weight: bold;">28 Hakim</div><div style="font-size: 0.75rem; color: var(--text-muted);">Di Platform</div></td>
+                            <td>
+                                <button class="btn-act" title="Edit Pengaturan URL"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-act" title="Uji Sinkronisasi (Ping)"><i class="fa-solid fa-satellite-dish"></i></button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Kerja Advokat - Justice AI Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/client.css"> <!-- Reusing sidebar/topbar layout -->
+    <link rel="stylesheet" href="../../assets/css/lawyer.css">
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header" style="background-color: var(--primary-color);">
+                <a href="../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+                </a>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-label">Workspace</div>
+                <a href="dashboard.html" class="menu-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Ringkasan Kinerja</span>
+                </a>
+                <a href="cases/list.html" class="menu-item">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span>Tugas Perkara (Active)</span>
+                </a>
+                <a href="consultations/list.html" class="menu-item">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Permintaan Konsultasi</span>
+                </a>
+                <a href="schedule/calendar.html" class="menu-item">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span>Jadwal Sidang & Rapat</span>
+                </a>
+                
+                <div class="menu-label">AI Legal Tools</div>
+                <a href="cases/draft-maker.html" class="menu-item">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Pembuat Draft Pintar</span>
+                </a>
+                <a href="../../ai/win-probability.html" class="menu-item">
+                    <i class="fa-solid fa-percent"></i>
+                    <span>Prediksi Kasus (Analitik)</span>
+                </a>
+                <a href="tools/yurisprudensi.html" class="menu-item">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>Pencarian Yurisprudensi</span>
+                </a>
+
+                <div class="menu-label">Keuangan</div>
+                <a href="earnings/income.html" class="menu-item">
+                    <i class="fa-solid fa-money-bill-trend-up"></i>
+                    <span>Pendapatan & Komisi</span>
+                </a>
+                <a href="firm/members.html" class="menu-item">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Manajemen Firma</span>
+                </a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <a href="../../auth/login.html" class="btn btn-outline" style="width: 100%; border-color: var(--danger); color: var(--danger);">
+                    Keluar Sesi
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari klien, dokumen, putusan Mahkamah Agung...">
+                </div>
+
+                <div class="topbar-actions">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-right: 15px;">
+                        <span style="color: var(--success);"><i class="fa-solid fa-circle"></i></span> Status: Tersedia
+                    </label>
+                    <button class="icon-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Profile" class="avatar" id="userAvatar">
+                        <div class="user-info">
+                            <span class="user-name" id="userNameLabel">Adv. Budi Santoso, S.H.</span>
+                            <span class="user-role">Litigasi Perdata & Bisnis</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area animate-fade-in">
+                
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Dashboard Advokat</h1>
+                        <p>Tinjauan performa bulanan dan daftar prioritas harian Anda.</p>
+                    </div>
+                    <a href="schedule/calendar.html" class="btn btn-primary">
+                        <i class="fa-regular fa-calendar-plus"></i> &nbsp; Sinkronisasi Kalender
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-gavel"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>12</h3>
+                            <p>Kasus Sedang Berjalan</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>94%</h3>
+                            <p>Tingkat Kemenangan</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>4.9/5</h3>
+                            <p>Rating Retensi Klien</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold">
+                            <i class="fa-solid fa-rupiah-sign"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Rp45M</h3>
+                            <p>Pencairan Tertunda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grids -->
+                <div class="lawyer-dashboard-grid">
+                    <!-- Prioritas Hari Ini -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Tugas & Deadline Hari Ini</h3>
+                            <span class="status-badge" style="background-color: var(--danger); color: white;">3 Mendesak</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="task-list">
+                                <div class="task-item task-urgent">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <h4>Konfirmasi Draft Gugatan Sengketa Merek PT. XYZ</h4>
+                                        <p><i class="fa-regular fa-clock"></i> Tenggat batas e-Litigation MA: Pukul 15:00 WIB</p>
+                                    </div>
+                                    <div class="ai-assist-btn">
+                                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.75rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Review AI</button>
+                                    </div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <h4>Video Conference Mediasi Bpk. Ahmad</h4>
+                                        <p><i class="fa-solid fa-video"></i> Dimulai pukul 10:30 WIB</p>
+                                    </div>
+                                    <a href="../../konsultasi/video-call.html" class="btn btn-primary" style="padding: 5px 10px; font-size: 0.75rem;">Gabung</a>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <h4>Pelajari Putusan Kasasi No. 45/K/Pdt/2026</h4>
+                                        <p><i class="fa-solid fa-book"></i> Bahan persiapan sidang besok.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kinerja Firm -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Statistik Advokasi</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="performance-metric">
+                                <span class="metric-label">Perdata Umum</span>
+                                <span class="metric-value">45 Kasus</span>
+                            </div>
+                            <div class="win-rate-bar"><div class="win-rate-fill" style="width: 85%;"></div></div>
+                            
+                            <div class="performance-metric" style="margin-top: 15px;">
+                                <span class="metric-label">Hukum Perusahaan (Korporat)</span>
+                                <span class="metric-value">28 Kasus</span>
+                            </div>
+                            <div class="win-rate-bar"><div class="win-rate-fill" style="width: 95%;"></div></div>
+
+                            <div class="performance-metric" style="margin-top: 15px;">
+                                <span class="metric-label">Pidana Khusus</span>
+                                <span class="metric-value">12 Kasus</span>
+                            </div>
+                            <div class="win-rate-bar"><div class="win-rate-fill" style="width: 60%; background-color: var(--warning);"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Tools Showcase -->
+                <div class="card" style="margin-top: var(--space-xl); background: linear-gradient(135deg, var(--bg-main) 0%, rgba(0, 181, 216, 0.1) 100%);">
+                    <div class="card-body" style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">Akses Database Putusan Mahkamah Agung via AI</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 0;">Cari celah hukum dan persentase kemenangan berdasarkan histori ribuan putusan hakim sebelumnya.</p>
+                        </div>
+                        <a href="../../ai/win-probability.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-chart-pie"></i> Gunakan Analitik Kasus</a>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/app.js"></script>
+
+    <!-- Script Integrasi Sinkronisasi Sesi Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Konfigurasi Web Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIYkKAlRLu5kTUiB9yICRDaR5UNAVPKXg",
+            authDomain: "justice-ai-b0fd0.firebaseapp.com",
+            projectId: "justice-ai-b0fd0",
+            storageBucket: "justice-ai-b0fd0.firebasestorage.app",
+            messagingSenderId: "762124315437",
+            appId: "1:762124315437:web:eb6ef47c2aeeaef10041a4",
+            measurementId: "G-6S9KY8X3R3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Pantau Status Autentikasi secara Realtime
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Ganti Nama dan Avatar dengan Data SSO Google
+                const userNameLabel = document.getElementById('userNameLabel');
+                const userAvatar = document.getElementById('userAvatar');
+                
+                if (userNameLabel) {
+                    // Tambahkan gelar Adv. di depan nama asli akun Google
+                    const displayName = user.displayName || user.email.split('@')[0];
+                    userNameLabel.textContent = "Adv. " + displayName; 
+                }
+                
+                if (userAvatar && user.photoURL) {
+                    // Ubah foto avatarnya menjadi resolusi yang lebih tajam
+                    userAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
+                }
+
+                console.log("Sesi SSO Aktif:", user.displayName);
+            } else {
+                console.log("Tidak ada Sesi Pengguna Aktif. (Menggunakan Dummy Profile)");
+            }
+        });
+    </script>
+</body>
+</html>

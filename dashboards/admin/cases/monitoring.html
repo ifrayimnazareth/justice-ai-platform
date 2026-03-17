@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kasus - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+    <style>
+        .monitor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
+        .heat-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-alt); border-radius: var(--radius-md); margin-bottom: 8px; }
+        .heat-bar-wrap { flex: 1; margin: 0 12px; }
+        .heat-bar { height: 8px; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); }
+        .activity-feed { display: flex; flex-direction: column; gap: 2px; }
+        .activity-item { display: flex; gap: 12px; padding: 12px; border-radius: var(--radius-sm); transition: background var(--transition-fast); }
+        .activity-item:hover { background: var(--bg-alt); }
+        .activity-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+        .ai-new { background: rgba(0,181,216,0.1); color: var(--accent-color); }
+        .ai-update { background: rgba(56,161,105,0.1); color: var(--success); }
+        .ai-alert { background: rgba(229,62,62,0.1); color: var(--danger); }
+        .map-card { background: var(--bg-main); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); }
+        .region-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.88rem; }
+        .region-row:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Manajemen</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <a href="../users/list.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Manajemen Pengguna</span></a>
+            <a href="list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Daftar Kasus</span></a>
+            <a href="monitoring.html" class="menu-item active"><i class="fa-solid fa-satellite-dish"></i><span>Monitoring Kasus</span></a>
+            <a href="assign-judge.html" class="menu-item"><i class="fa-solid fa-gavel"></i><span>Assign Hakim</span></a>
+            <a href="assign-lawyer.html" class="menu-item"><i class="fa-solid fa-user-tie"></i><span>Assign Advokat</span></a>
+            <a href="disputes.html" class="menu-item"><i class="fa-solid fa-triangle-exclamation"></i><span>Sengketa</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari kasus..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">7</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Monitoring Kasus Real-Time</h1><p>Pantau status semua perkara aktif di seluruh wilayah hukum Indonesia.</p></div>
+                <button class="btn btn-primary"><i class="fa-solid fa-arrows-rotate"></i> &nbsp; Refresh</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-briefcase"></i></div><div class="stat-details"><h3>1,247</h3><p>Total Kasus Aktif</p></div></div>
+                <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-details"><h3>89</h3><p>Menunggu Hakim</p></div></div>
+                <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-fire"></i></div><div class="stat-details"><h3>23</h3><p>Deadline Hari Ini</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-check-circle"></i></div><div class="stat-details"><h3>456</h3><p>Selesai Bulan Ini</p></div></div>
+            </div>
+
+            <div class="monitor-grid" style="margin-top: var(--space-xl);">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Volume Kasus per Kategori</h3></div>
+                    <div class="card-body">
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">Perdata Umum</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:85%;"></div></div><span style="font-size:0.85rem;font-weight:600;">412</span></div>
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">Pidana Umum</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:70%;background:linear-gradient(90deg,var(--danger),var(--warning));"></div></div><span style="font-size:0.85rem;font-weight:600;">338</span></div>
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">Korporat</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:55%;background:linear-gradient(90deg,var(--secondary-color),var(--secondary-light));"></div></div><span style="font-size:0.85rem;font-weight:600;">261</span></div>
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">TUN</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:40%;"></div></div><span style="font-size:0.85rem;font-weight:600;">194</span></div>
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">Ketenagakerjaan</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:20%;"></div></div><span style="font-size:0.85rem;font-weight:600;">97</span></div>
+                        <div class="heat-item"><span style="width:120px;font-size:0.85rem;">Pidana Khusus</span><div class="heat-bar-wrap"><div class="heat-bar" style="width:30%;background:linear-gradient(90deg,var(--danger),#fc8181);"></div></div><span style="font-size:0.85rem;font-weight:600;">145</span></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">Aktivitas Terbaru</h3></div>
+                    <div class="card-body">
+                        <div class="activity-feed">
+                            <div class="activity-item"><div class="activity-icon ai-new"><i class="fa-solid fa-plus"></i></div><div><div style="font-size:0.88rem;font-weight:600;">Kasus baru didaftarkan</div><div style="font-size:0.78rem;color:var(--text-muted);">PT. Abadi vs PT. Jaya – 2 menit lalu</div></div></div>
+                            <div class="activity-item"><div class="activity-icon ai-update"><i class="fa-solid fa-gavel"></i></div><div><div style="font-size:0.88rem;font-weight:600;">Hakim berhasil di-assign</div><div style="font-size:0.78rem;color:var(--text-muted);">Kasus No.567/Pdt/2025 – 15 menit lalu</div></div></div>
+                            <div class="activity-item"><div class="activity-icon ai-alert"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div style="font-size:0.88rem;font-weight:600;">Deadline terlewat</div><div style="font-size:0.78rem;color:var(--text-muted);">Kasus No.234/Pid/2025 – 1 jam lalu</div></div></div>
+                            <div class="activity-item"><div class="activity-icon ai-update"><i class="fa-solid fa-file-check"></i></div><div><div style="font-size:0.88rem;font-weight:600;">Dokumen putusan diunggah</div><div style="font-size:0.78rem;color:var(--text-muted);">Kasus No.123/TUN/2025 – 2 jam lalu</div></div></div>
+                            <div class="activity-item"><div class="activity-icon ai-new"><i class="fa-solid fa-user-tie"></i></div><div><div style="font-size:0.88rem;font-weight:600;">Advokat Pro Bono ditugaskan</div><div style="font-size:0.78rem;color:var(--text-muted);">Adv. Wahyu – Kasus Pidana #89 – 3 jam lalu</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: var(--space-xl);">
+                <div class="card-header"><h3 class="card-title">Distribusi Kasus per Wilayah</h3></div>
+                <div class="card-body">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-lg);">
+                        <div>
+                            <div class="region-row"><span>DKI Jakarta</span><span style="font-weight:700;color:var(--primary-color);">287 kasus</span></div>
+                            <div class="region-row"><span>Jawa Barat</span><span style="font-weight:700;color:var(--primary-color);">198 kasus</span></div>
+                            <div class="region-row"><span>Jawa Timur</span><span style="font-weight:700;color:var(--primary-color);">176 kasus</span></div>
+                            <div class="region-row"><span>Sumatera Utara</span><span style="font-weight:700;color:var(--primary-color);">134 kasus</span></div>
+                            <div class="region-row"><span>Kalimantan Timur</span><span style="font-weight:700;color:var(--primary-color);">112 kasus</span></div>
+                        </div>
+                        <div>
+                            <div class="region-row"><span>Sulawesi Selatan</span><span style="font-weight:700;color:var(--primary-color);">98 kasus</span></div>
+                            <div class="region-row"><span>Bali</span><span style="font-weight:700;color:var(--primary-color);">87 kasus</span></div>
+                            <div class="region-row"><span>Jawa Tengah</span><span style="font-weight:700;color:var(--primary-color);">82 kasus</span></div>
+                            <div class="region-row"><span>Riau</span><span style="font-weight:700;color:var(--primary-color);">67 kasus</span></div>
+                            <div class="region-row"><span>Papua</span><span style="font-weight:700;color:var(--primary-color);">56 kasus</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

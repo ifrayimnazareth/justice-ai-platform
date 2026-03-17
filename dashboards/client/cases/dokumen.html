@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumen Perkara - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .doc-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); display: flex; align-items: center; gap: var(--space-md); cursor: pointer; transition: all var(--transition-fast); margin-bottom: 10px; }
+        .doc-card:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+        .doc-icon { width: 50px; height: 60px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .pdf-icon { background: rgba(229,62,62,0.1); color: var(--danger); }
+        .doc-body { flex: 1; }
+        .doc-name { font-weight: 600; margin-bottom: 3px; }
+        .doc-meta { font-size: 0.78rem; color: var(--text-muted); }
+        .upload-zone { border: 2px dashed rgba(0,0,0,0.15); border-radius: var(--radius-lg); padding: var(--space-2xl); text-align: center; cursor: pointer; transition: all var(--transition-fast); }
+        .upload-zone:hover { border-color: var(--primary-color); background: rgba(26,54,93,0.02); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">AI</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Perkara Saya</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+            <a href="list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Daftar Perkara</span></a>
+            <a href="dokumen.html" class="menu-item active"><i class="fa-solid fa-folder-open"></i><span>Dokumen Perkara</span></a>
+            <a href="timeline.html" class="menu-item"><i class="fa-solid fa-timeline"></i><span>Timeline</span></a>
+            <div class="menu-label">Layanan</div>
+            <a href="../konsultasi/lawyer.html" class="menu-item"><i class="fa-solid fa-user-tie"></i><span>Cari Advokat</span></a>
+            <a href="../payments/checkout.html" class="menu-item"><i class="fa-solid fa-credit-card"></i><span>Pembayaran</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari dokumen..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">2</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" alt="User" class="avatar">
+                    <div class="user-info"><span class="user-name">Bapak Ahmad Fauzi</span><span class="user-role">Klien</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Dokumen Perkara</h1>
+                    <p>Sengketa Tanah Warisan – No. Kasus: JAI/2026/089</p>
+                </div>
+                <button class="btn btn-primary"><i class="fa-solid fa-upload"></i> &nbsp; Unggah Dokumen</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
+                <div>
+                    <h3 style="margin-bottom:var(--space-md);font-size:1rem;color:var(--text-muted);">Dokumen Diunggah Klien</h3>
+                    <div class="doc-card">
+                        <div class="doc-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Sertifikat_Tanah_SHM_1234.pdf</div>
+                            <div class="doc-meta"><i class="fa-solid fa-clock"></i> Diunggah 15 Mar 2026 · 2.4 MB</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Akta_Kelahiran_Pewaris.pdf</div>
+                            <div class="doc-meta"><i class="fa-solid fa-clock"></i> Diunggah 15 Mar 2026 · 1.1 MB</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-icon" style="background:rgba(0,181,216,0.1);color:var(--accent-color);"><i class="fa-solid fa-file-image"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Foto_Lahan_Sengketa.jpg</div>
+                            <div class="doc-meta"><i class="fa-solid fa-clock"></i> Diunggah 16 Mar 2026 · 3.8 MB</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;color:var(--danger);border-color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="upload-zone" onclick="triggerUpload()">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:var(--primary-light);margin-bottom:10px;"></i>
+                        <p style="font-weight:600;margin-bottom:4px;">Seret & Jatuhkan Dokumen di Sini</p>
+                        <p style="font-size:0.82rem;color:var(--text-muted);">PDF, JPG, PNG, DOCX (maks. 10MB per file)</p>
+                        <button class="btn btn-outline" style="margin-top:12px;padding:8px 20px;" onclick="event.stopPropagation();triggerUpload()">Pilih File</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom:var(--space-md);font-size:1rem;color:var(--text-muted);">Dokumen dari Advokat/Pengadilan</h3>
+                    <div class="doc-card">
+                        <div class="doc-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Surat_Kuasa_Advokat_Budi.pdf</div>
+                            <div class="doc-meta"><i class="fa-solid fa-user-tie"></i> Adv. Budi · Diterima 17 Mar 2026</div>
+                        </div>
+                        <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Draft_Gugatan_Perdata_v1.pdf</div>
+                            <div class="doc-meta"><i class="fa-solid fa-user-tie"></i> Adv. Budi · Butuh Review Anda</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-primary" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-check"></i> Setujui</button>
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-icon" style="background:rgba(56,161,105,0.1);color:var(--success);"><i class="fa-solid fa-gavel"></i></div>
+                        <div class="doc-body">
+                            <div class="doc-name">Penetapan_Hari_Sidang_PN.pdf</div>
+                            <div class="doc-meta"><i class="fa-solid fa-landmark"></i> PN Jakarta Selatan · Resmi</div>
+                        </div>
+                        <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function triggerUpload() { alert('Silakan pilih file untuk diunggah (demo)'); }
+</script>
+</body>
+</html>

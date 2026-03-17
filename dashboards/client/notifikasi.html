@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Notifikasi - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; width: 100%; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Notifications List */
+        .notif-list { display: flex; flex-direction: column; gap: 15px; }
+        .notif-item { display: flex; gap: 20px; padding: 20px; background-color: var(--bg-alt); border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; position: relative; }
+        .notif-item:hover { border-color: rgba(255,255,255,0.2); transform: translateX(5px); }
+        
+        .notif-item.unread { border-left: 3px solid var(--primary-color); background-color: rgba(56, 189, 248, 0.02); }
+        .notif-item.unread::before { content: ''; position: absolute; right: 20px; top: 20px; width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; }
+
+        .n-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .icon-payment { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .icon-lawyer { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+        .icon-ai { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .icon-system { background-color: rgba(234, 179, 8, 0.1); color: #facc15; }
+
+        .n-content { flex: 1; }
+        .n-time { font-family: monospace; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; display: block; }
+        .n-title { font-weight: bold; color: white; margin: 0 0 5px 0; font-size: 1.05rem; }
+        .n-desc { margin: 0; color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; }
+        
+        .n-action { margin-top: 15px; }
+        .btn-sm { font-size: 0.8rem; padding: 6px 12px; cursor: pointer; border-radius: 4px; border: 1px solid transparent; }
+        .btn-outline { background: transparent; color: white; border-color: rgba(255,255,255,0.2); }
+
+        @media screen and (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .topbar { padding: 0 20px; font-size: 0.9rem; text-align: center; justify-content: center; }
+            .content-area { padding: 20px; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .page-header button { width: 100%; }
+            .notif-item { flex-direction: column; padding: 15px; }
+            .notif-item.unread::before { right: 10px; top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-balanced"></i> Justice App</a>
+            </div>
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Riwayat Pribadi</p>
+                <a href="profile.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-user"></i> Akun Saya</a>
+                <a href="notifikasi.html" style="display: block; color: #38bdf8; text-decoration: none; padding: 10px 0; border-left: 3px solid #38bdf8; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-bell"></i> Pemberitahuan <span id="badgeCount" style="background-color: var(--primary-color); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; float: right;">3 Baru</span></a>
+                <a href="../../ai/chatbot.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-robot"></i> LexBot Cerdas</a>
+                <a href="history.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Histori Konsultasi</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-regular fa-envelope"></i> Kotak Masuk Platform Termutakhir (Sync)</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tinjauan Pesan & Pemberitahuan</h1>
+                    </div>
+                    <button class="btn btn-outline" id="btnMarkAllRead" style="border-color: rgba(255,255,255,0.2); cursor: pointer; padding: 8px 16px; border-radius: var(--radius-md);"><i class="fa-solid fa-check-double"></i> Tandai Semua Dibaca</button>
+                </div>
+
+                <div class="notif-list">
+                    
+                    <div class="notif-item unread">
+                        <div class="n-icon icon-lawyer"><i class="fa-solid fa-video"></i></div>
+                        <div class="n-content">
+                            <span class="n-time" style="color: var(--primary-light);">Hari ini, 10:15 WIB (Sedang Berlangsung)</span>
+                            <h3 class="n-title">Panggilan Terjadwal (Video Call) dari Advokat</h3>
+                            <p class="n-desc">Adv. Riano Prakoso telah membuka Ruangan WebRTC untuk pembahasan Gugatan Wanprestasi Anda. Silakan masuk (Join Room) sekarang karena waktu konsultasi telah berjalan.</p>
+                            <div class="n-action">
+                                <button class="btn btn-primary btn-sm" style="border: none; background: var(--primary-color); color: white;" onclick="window.location.href='../konsultasi/chat-lawyer.html'"><i class="fa-solid fa-phone"></i> Masuk Ruangan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notif-item unread">
+                        <div class="n-icon icon-ai"><i class="fa-solid fa-file-contract"></i></div>
+                        <div class="n-content">
+                            <span class="n-time">Kemarin, 21:05 WIB</span>
+                            <h3 class="n-title">Pemindaian Kontrak (AI Scanner) Selesai</h3>
+                            <p class="n-desc">Dokumen "Draft_Kerjasama_Distributor.pdf" telah dianalisa. Ditemukan 2 klausul berbahaya yang dapat merugikan Anda di Pengadilan Negeri.</p>
+                            <div class="n-action">
+                                <button class="btn btn-outline btn-sm" style="border-color: #a855f7; color: #a855f7;" onclick="alert('Memuat Dashboard LexBot AI dan riwayat analisa Dokumen Contract...')"><i class="fa-solid fa-brain"></i> Lihat Hasil Review LexBot</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notif-item unread">
+                        <div class="n-icon icon-payment"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="n-content">
+                            <span class="n-time">15 Mar 2026, 09:30 WIB</span>
+                            <h3 class="n-title">Dana Ditahan Sementara (Escrow Xendit)</h3>
+                            <p class="n-desc">Pembayaran sebesar Rp 1.500.000 untuk "Konsultasi Sengketa Tanah" telah berhasil ditampung di dompet bersama. Dana akan dirilis kepada Pengacara terkait apabila Anda telah menyetujui kinerjanya.</p>
+                        </div>
+                    </div>
+
+                    <div class="notif-item">
+                        <div class="n-icon icon-system"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="n-content">
+                            <span class="n-time">12 Mar 2026, 15:00 WIB</span>
+                            <h3 class="n-title">KTP Anda Berhasil Divalidasi</h3>
+                            <p class="n-desc">Proses e-KYC terintegrasi Dukcapil berhasil. Anda sekarang diizinkan menyewa Pengacara (Lawyer) Terverifikasi di Justice AI.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script Pemrosesan Notifikasi Interaktif -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnMarkRead = document.getElementById('btnMarkAllRead');
+            const unreadItems = document.querySelectorAll('.notif-item.unread');
+            const badgeCount = document.getElementById('badgeCount');
+
+            // Logika membersihkan tag Unread (Belum Terbaca)
+            btnMarkRead.addEventListener('click', () => {
+                let itemsLeft = unreadItems.length;
+
+                if (itemsLeft === 0) {
+                    alert("Seluruh pesan Anda sudah berstatus terbaca.");
+                    return;
+                }
+
+                // Animasi/Iterasi penghapusan class CSS secara langsung
+                unreadItems.forEach(item => {
+                    item.classList.remove('unread');
+                    // Ganti border hijau atau transparansinya
+                    item.style.borderLeftColor = 'rgba(255,255,255,0.05)';
+                    item.style.backgroundColor = 'var(--bg-alt)';
+                });
+
+                // Hapus tulisan badge "3 Baru"
+                if (badgeCount) {
+                    badgeCount.style.display = 'none';
+                }
+
+                btnMarkRead.innerHTML = '<i class="fa-solid fa-check"></i> Semuanya Terbaca';
+                btnMarkRead.style.color = '#94a3b8';
+                btnMarkRead.style.borderColor = 'rgba(255,255,255,0.05)';
+            });
+
+            // Memberikan efek klik manual pada Tiap Kartu Notifikasi untuk membersihkan "Unread"
+            const notifCards = document.querySelectorAll('.notif-item');
+            notifCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Cek agar tidak bertabrakan dengan klik Button di dalam
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && this.classList.contains('unread')) {
+                        this.classList.remove('unread');
+                        this.style.borderLeftColor = 'rgba(255,255,255,0.05)';
+                        this.style.backgroundColor = 'var(--bg-alt)';
+
+                        // Kurangi Angka Badge Hitung
+                        if (badgeCount && badgeCount.style.display !== 'none') {
+                            const currentText = badgeCount.textContent;
+                            const numStr = currentText.match(/\d+/);
+                            if (numStr) {
+                                let count = parseInt(numStr[0]) - 1;
+                                if (count > 0) {
+                                    badgeCount.textContent = count + ' Baru';
+                                } else {
+                                    badgeCount.style.display = 'none';
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

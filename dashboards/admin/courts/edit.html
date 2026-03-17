@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pengadilan - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Manajemen</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <div class="menu-label">Pengadilan</div>
+            <a href="list.html" class="menu-item"><i class="fa-solid fa-landmark"></i><span>Daftar Pengadilan</span></a>
+            <a href="create.html" class="menu-item"><i class="fa-solid fa-plus"></i><span>Tambah Pengadilan</span></a>
+            <a href="map-management.html" class="menu-item"><i class="fa-solid fa-map"></i><span>Peta Wilayah</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Edit Pengadilan</h1>
+                    <p>Perbarui data: <strong>Pengadilan Negeri Jakarta Pusat</strong></p>
+                </div>
+                <a href="list.html" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> &nbsp; Kembali</a>
+            </div>
+
+            <div style="display:flex; gap:var(--space-sm); margin-bottom:var(--space-md);">
+                <div style="background:rgba(56,161,105,0.1);color:var(--success);padding:8px 16px;border-radius:var(--radius-full);font-size:0.85rem;font-weight:600;">
+                    <i class="fa-solid fa-circle-check"></i> Status: Aktif
+                </div>
+                <div style="background:var(--bg-alt);padding:8px 16px;border-radius:var(--radius-full);font-size:0.85rem;color:var(--text-muted);">
+                    Terakhir diperbarui: 10 Januari 2026
+                </div>
+            </div>
+
+            <div class="card" style="max-width: 800px;">
+                <div class="card-header"><h3 class="card-title">Edit Informasi Pengadilan</h3></div>
+                <div class="card-body">
+                    <form onsubmit="submitForm(event)">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-lg);">
+                            <div class="form-group">
+                                <label class="form-label">Nama Pengadilan *</label>
+                                <input type="text" class="form-input" value="Pengadilan Negeri Jakarta Pusat" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Jenis Pengadilan *</label>
+                                <select class="form-select" required>
+                                    <option selected>Pengadilan Negeri (PN)</option>
+                                    <option>Pengadilan Tinggi (PT)</option>
+                                    <option>Mahkamah Agung (MA)</option>
+                                    <option>Pengadilan Tata Usaha Negara (PTUN)</option>
+                                    <option>Pengadilan Niaga</option>
+                                    <option>Pengadilan Agama (PA)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Provinsi *</label>
+                                <select class="form-select" required>
+                                    <option selected>DKI Jakarta</option>
+                                    <option>Jawa Barat</option><option>Jawa Tengah</option><option>Jawa Timur</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kota/Kabupaten *</label>
+                                <input type="text" class="form-input" value="Jakarta Pusat" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label">Alamat Lengkap *</label>
+                                <textarea class="form-input" rows="3" style="resize:vertical;" required>Jl. Budi Keadilan No. 1, Gambir, Jakarta Pusat 10110</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nomor Telepon</label>
+                                <input type="tel" class="form-input" value="021-3849555">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Resmi</label>
+                                <input type="email" class="form-input" value="pn.jakartapusat@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ketua Pengadilan</label>
+                                <input type="text" class="form-input" value="Dr. H. Suyudi, S.H., M.H.">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-select">
+                                    <option selected>Aktif</option>
+                                    <option>Tidak Aktif</option>
+                                    <option>Dalam Renovasi</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label">Fasilitas</label>
+                                <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;">
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" checked> e-Court</label>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" checked> Teleconference</label>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox"> Parkir Difabel</label>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" checked> CCTV</label>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox"> Ruang Anak</label>
+                                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" checked> WiFi Publik</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:var(--space-md);margin-top:var(--space-xl);">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Simpan Perubahan</button>
+                            <a href="list.html" class="btn btn-outline">Batal</a>
+                            <button type="button" class="btn btn-outline" style="color:var(--danger);border-color:var(--danger);margin-left:auto;" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function submitForm(e) { e.preventDefault(); alert('Data pengadilan berhasil diperbarui!'); window.location.href = 'list.html'; }
+    function confirmDelete() { if(confirm('Yakin ingin menghapus data pengadilan ini?')) window.location.href = 'list.html'; }
+</script>
+</body>
+</html>

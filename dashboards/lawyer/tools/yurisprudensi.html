@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Yurisprudensi - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/lawyer.css">
+    <style>
+        .juris-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); margin-bottom: var(--space-md); transition: all var(--transition-fast); }
+        .juris-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .juris-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .juris-no { font-size: 0.8rem; font-weight: 700; color: var(--primary-color); background: rgba(26,54,93,0.08); padding: 4px 12px; border-radius: var(--radius-full); }
+        .juris-verdict { font-size: 0.78rem; padding: 4px 10px; border-radius: var(--radius-full); font-weight: 600; }
+        .verdict-kabul { background: rgba(56,161,105,0.1); color: var(--success); }
+        .verdict-tolak { background: rgba(229,62,62,0.1); color: var(--danger); }
+        .juris-title { font-weight: 700; margin-bottom: 6px; }
+        .juris-meta { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        .juris-synopsis { font-size: 0.87rem; color: var(--text-muted); line-height: 1.7; }
+        .juris-tags { margin-top: 10px; }
+        .juris-tag { display: inline-block; padding: 3px 10px; background: var(--bg-alt); border-radius: var(--radius-full); font-size: 0.75rem; color: var(--text-muted); margin-right: 6px; }
+        .search-bar { display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg); }
+        .search-bar input { flex: 1; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.12); border-radius: var(--radius-md); font-size: 0.9rem; outline: none; font-family: var(--font-body); }
+        .search-bar input:focus { border-color: var(--primary-color); }
+        .stats-banner { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-md); margin-bottom: var(--space-xl); }
+        .stat-mini { background: var(--bg-alt); border-radius: var(--radius-md); padding: var(--space-md); text-align: center; }
+        .stat-mini h3 { font-size: 1.6rem; color: var(--primary-color); margin-bottom: 4px; }
+        .stat-mini p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Workspace</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Ringkasan Kinerja</span></a>
+            <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Tugas Perkara</span></a>
+            <a href="../consultations/list.html" class="menu-item"><i class="fa-solid fa-comments"></i><span>Konsultasi</span></a>
+            <div class="menu-label">AI Legal Tools</div>
+            <a href="yurisprudensi.html" class="menu-item active"><i class="fa-solid fa-book-bookmark"></i><span>Yurisprudensi</span></a>
+            <a href="search-pasal.html" class="menu-item"><i class="fa-solid fa-search"></i><span>Pencarian Pasal</span></a>
+            <a href="kalkulator-fee.html" class="menu-item"><i class="fa-solid fa-calculator"></i><span>Kalkulator Fee</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar Sesi</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari yurisprudensi..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Profile" class="avatar">
+                    <div class="user-info"><span class="user-name">Adv. Budi Santoso, S.H.</span><span class="user-role">Litigasi Perdata & Bisnis</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Database Yurisprudensi</h1>
+                    <p>Akses 2.5+ juta putusan pengadilan dari PN, PT, MA, dan MK seluruh Indonesia.</p>
+                </div>
+                <button class="btn btn-primary"><i class="fa-solid fa-download"></i> &nbsp; Export Putusan</button>
+            </div>
+
+            <div class="stats-banner">
+                <div class="stat-mini"><h3>2.5M+</h3><p>Total Putusan</p></div>
+                <div class="stat-mini"><h3>450K+</h3><p>Putusan MA</p></div>
+                <div class="stat-mini"><h3>98%</h3><p>Akurasi AI</p></div>
+                <div class="stat-mini"><h3>Real-time</h3><p>Update Harian</p></div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="jurisSearch" placeholder="Cari nomor putusan, kata kunci, nama hakim, atau ringkasan perkara...">
+                <select class="form-select" style="width: 180px;">
+                    <option>Semua Tingkatan</option>
+                    <option>Mahkamah Agung</option>
+                    <option>Pengadilan Tinggi</option>
+                    <option>Pengadilan Negeri</option>
+                    <option>Mahkamah Konstitusi</option>
+                </select>
+                <select class="form-select" style="width: 160px;">
+                    <option>Semua Tahun</option>
+                    <option>2026</option><option>2025</option><option>2024</option>
+                    <option>2023</option><option>2022</option><option>2021</option>
+                </select>
+                <button class="btn btn-primary"><i class="fa-solid fa-search"></i> Cari</button>
+            </div>
+
+            <!-- Results List -->
+            <div class="juris-card">
+                <div class="juris-header">
+                    <span class="juris-no">No. 1234 K/Pdt/2025</span>
+                    <span class="juris-verdict verdict-kabul">Dikabulkan</span>
+                </div>
+                <div class="juris-title">Sengketa Wanprestasi Kontrak Pengadaan Barang antara PT. Maju Jaya vs. CV. Sentosa</div>
+                <div class="juris-meta">
+                    <span><i class="fa-solid fa-gavel"></i> Mahkamah Agung</span>
+                    <span><i class="fa-regular fa-calendar"></i> 14 Maret 2025</span>
+                    <span><i class="fa-solid fa-user-tie"></i> Hakim: Prof. Dr. Suyudi, S.H., M.H.</span>
+                </div>
+                <div class="juris-synopsis">Mahkamah Agung mengabulkan kasasi Pemohon berdasarkan fakta bahwa tergugat terbukti melakukan wanprestasi dengan tidak menyerahkan barang sesuai jadwal yang disepakati. Majelis hakim mewajibkan tergugat membayar ganti rugi sebesar Rp 2,3 Miliar...</div>
+                <div class="juris-tags">
+                    <span class="juris-tag">Wanprestasi</span><span class="juris-tag">Kontrak Pengadaan</span><span class="juris-tag">Ganti Rugi</span><span class="juris-tag">Kasasi</span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-eye"></i> Lihat Putusan Lengkap</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-robot"></i> Analisis AI</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                </div>
+            </div>
+
+            <div class="juris-card">
+                <div class="juris-header">
+                    <span class="juris-no">No. 567/Pid.Sus/2024/PN.Bdg</span>
+                    <span class="juris-verdict verdict-tolak">Ditolak (Bebas)</span>
+                </div>
+                <div class="juris-title">Perkara Penggelapan dalam Jabatan – Direksi PT. Nusantara Indah</div>
+                <div class="juris-meta">
+                    <span><i class="fa-solid fa-gavel"></i> PN Bandung</span>
+                    <span><i class="fa-regular fa-calendar"></i> 5 November 2024</span>
+                    <span><i class="fa-solid fa-user-tie"></i> Hakim: Dr. Ratna Dewi, S.H.</span>
+                </div>
+                <div class="juris-synopsis">Terdakwa dinyatakan tidak terbukti melakukan penggelapan dalam jabatan (Pasal 374 KUHP) karena jaksa penuntut umum tidak dapat membuktikan unsur "jabatan" yang menjadi kualifikasi pemberat. Perbuatan terdakwa dinilai masuk kategori sengketa perdata...</div>
+                <div class="juris-tags">
+                    <span class="juris-tag">Penggelapan</span><span class="juris-tag">Pasal 374</span><span class="juris-tag">Putusan Bebas</span><span class="juris-tag">Pidana Khusus</span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-eye"></i> Lihat Putusan Lengkap</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-robot"></i> Analisis AI</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                </div>
+            </div>
+
+            <div class="juris-card">
+                <div class="juris-header">
+                    <span class="juris-no">No. 45/G/2024/PTUN-JKT</span>
+                    <span class="juris-verdict verdict-kabul">Dikabulkan Sebagian</span>
+                </div>
+                <div class="juris-title">Gugatan TUN – Pencabutan Izin Usaha Pertambangan oleh Gubernur DKI Jakarta</div>
+                <div class="juris-meta">
+                    <span><i class="fa-solid fa-gavel"></i> PTUN Jakarta</span>
+                    <span><i class="fa-regular fa-calendar"></i> 20 Agustus 2024</span>
+                    <span><i class="fa-solid fa-user-tie"></i> Hakim: M. Yusuf, S.H., M.Si.</span>
+                </div>
+                <div class="juris-synopsis">Pengadilan mengabulkan sebagian gugatan penggugat. SK Gubernur tentang pencabutan Izin Usaha Pertambangan dinyatakan batal demi hukum karena tidak melalui prosedur pemberian kesempatan untuk membela diri sebagaimana diatur UU Administrasi Pemerintahan...</div>
+                <div class="juris-tags">
+                    <span class="juris-tag">TUN</span><span class="juris-tag">Izin Usaha</span><span class="juris-tag">SK Gubernur</span><span class="juris-tag">Pertambangan</span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-eye"></i> Lihat Putusan Lengkap</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;margin-right:6px;"><i class="fa-solid fa-robot"></i> Analisis AI</button>
+                    <button class="btn btn-outline" style="padding:5px 12px;font-size:0.78rem;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                </div>
+            </div>
+
+            <div style="text-align:center; padding: var(--space-xl) 0;">
+                <button class="btn btn-outline"><i class="fa-solid fa-rotate"></i> Muat Lebih Banyak Putusan</button>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

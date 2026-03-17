@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konsultasi AI - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); background: var(--bg-alt); border-radius: var(--radius-lg); overflow: hidden; }
+        .chat-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); padding: var(--space-lg); color: white; display: flex; align-items: center; gap: var(--space-md); }
+        .ai-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-md); }
+        .message { display: flex; gap: var(--space-sm); max-width: 75%; }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message-bubble { padding: var(--space-md); border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; }
+        .message.ai .message-bubble { background: white; border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); }
+        .message.user .message-bubble { background: var(--primary-color); color: white; border-bottom-right-radius: 4px; }
+        .message-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .msg-ai-avatar { background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-size: 0.8rem; }
+        .msg-user-avatar { background: var(--secondary-color); color: white; font-size: 0.8rem; }
+        .chat-input-area { background: white; padding: var(--space-md); border-top: 1px solid rgba(0,0,0,0.08); display: flex; gap: var(--space-sm); align-items: flex-end; }
+        .chat-input { flex: 1; border: 1px solid rgba(0,0,0,0.12); border-radius: var(--radius-full); padding: 10px 16px; font-size: 0.9rem; outline: none; font-family: var(--font-body); resize: none; max-height: 100px; }
+        .chat-input:focus { border-color: var(--primary-color); }
+        .quick-questions { display: flex; flex-wrap: wrap; gap: 6px; padding: var(--space-md); background: white; border-top: 1px solid rgba(0,0,0,0.05); }
+        .quick-q { padding: 6px 14px; border-radius: var(--radius-full); background: var(--bg-alt); border: 1px solid rgba(0,0,0,0.1); font-size: 0.8rem; cursor: pointer; transition: all var(--transition-fast); }
+        .quick-q:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">AI</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Layanan</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+            <a href="lawyer.html" class="menu-item"><i class="fa-solid fa-user-tie"></i><span>Cari Advokat</span></a>
+            <a href="ai.html" class="menu-item active"><i class="fa-solid fa-robot"></i><span>Konsultasi AI</span></a>
+            <a href="booking.html" class="menu-item"><i class="fa-solid fa-calendar-check"></i><span>Booking Konsultasi</span></a>
+            <a href="history.html" class="menu-item"><i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">2</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" alt="User" class="avatar">
+                    <div class="user-info"><span class="user-name">Bapak Ahmad Fauzi</span><span class="user-role">Klien</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area" style="padding: 0; height: calc(100vh - 70px);">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <div style="font-weight:700;font-size:1rem;">JusticeBot AI</div>
+                        <div style="font-size:0.8rem;opacity:0.8;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#68d391;margin-right:4px;"></span>Online – Siap membantu Anda</div>
+                    </div>
+                    <div style="margin-left:auto;display:flex;gap:8px;">
+                        <button class="btn" style="background:rgba(255,255,255,0.15);color:white;padding:6px 14px;font-size:0.8rem;border-radius:var(--radius-full);"><i class="fa-solid fa-trash"></i> Reset Chat</button>
+                        <a href="lawyer.html" class="btn" style="background:rgba(255,255,255,0.15);color:white;padding:6px 14px;font-size:0.8rem;border-radius:var(--radius-full);"><i class="fa-solid fa-user-tie"></i> Hubungi Advokat</a>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai">
+                        <div class="message-avatar msg-ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div>
+                            <div class="message-bubble">
+                                👋 Halo! Saya <strong>JusticeBot</strong>, asisten hukum AI Anda. Saya dapat membantu Anda memahami hak-hak hukum, proses peradilan, dan memberikan informasi hukum umum.<br><br>
+                                ⚠️ <em>Catatan: Jawaban saya bersifat informatif dan bukan merupakan konsultasi hukum resmi. Untuk kasus spesifik, silakan konsultasikan dengan advokat kami.</em><br><br>
+                                Apa yang ingin Anda tanyakan hari ini?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="message user">
+                        <div class="message-avatar msg-user-avatar"><i class="fa-solid fa-user"></i></div>
+                        <div class="message-bubble">Saya ingin tahu proses hukum untuk sengketa tanah warisan. Dari mana saya harus memulai?</div>
+                    </div>
+                    <div class="message ai">
+                        <div class="message-avatar msg-ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div>
+                            <div class="message-bubble">
+                                Baik! Untuk sengketa tanah warisan, berikut langkah-langkah yang perlu Anda lakukan:<br><br>
+                                <strong>1. Kumpulkan Dokumen Penting</strong><br>
+                                • Sertifikat tanah (SHM, HGB, atau SHGB)<br>
+                                • Akta kematian pewaris<br>
+                                • Surat keterangan ahli waris<br>
+                                • Akta nikah dan akta kelahiran semua ahli waris<br><br>
+                                <strong>2. Upayakan Penyelesaian Kekeluargaan</strong><br>
+                                Sebelum ke jalur hukum, coba mediasi keluarga yang difasilitasi notaris atau camat setempat.<br><br>
+                                <strong>3. Jika Gagal, Tempuh Jalur Hukum</strong><br>
+                                • Ajukan gugatan perdata ke Pengadilan Negeri setempat<br>
+                                • Gunakan jasa advokat untuk menyusun surat gugatan<br>
+                                • Siapkan biaya perkara (berkisar Rp 500rb - 5 juta tergantung nilai objek)<br><br>
+                                Apakah Anda sudah memiliki dokumen-dokumen tersebut?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-questions">
+                    <span style="font-size:0.78rem;color:var(--text-muted);margin-right:4px;">Pertanyaan cepat:</span>
+                    <div class="quick-q" onclick="sendQuick('Berapa lama proses sengketa tanah di pengadilan?')">⏱️ Berapa lama prosesnya?</div>
+                    <div class="quick-q" onclick="sendQuick('Apa itu mediasi dan kapan diwajibkan?')">🤝 Apa itu mediasi?</div>
+                    <div class="quick-q" onclick="sendQuick('Berapa biaya advokat untuk kasus perdata?')">💰 Biaya advokat?</div>
+                    <div class="quick-q" onclick="sendQuick('Apa dokumen yang harus saya siapkan?')">📄 Dokumen apa saja?</div>
+                </div>
+
+                <div class="chat-input-area">
+                    <textarea class="chat-input" id="chatInput" placeholder="Ketik pertanyaan hukum Anda di sini..." rows="1" onkeypress="handleEnter(event)" oninput="autoResize(this)"></textarea>
+                    <button class="btn btn-primary" style="border-radius:50%;width:44px;height:44px;padding:0;flex-shrink:0;" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        appendMessage('user', text);
+        input.value = '';
+        setTimeout(() => {
+            appendMessage('ai', 'Terima kasih atas pertanyaan Anda. AI sedang menganalisis berdasarkan database hukum Indonesia... Untuk pertanyaan ini saya sarankan Anda juga berkonsultasi langsung dengan advokat spesialis kami untuk mendapatkan pendapat hukum yang lebih komprehensif.');
+        }, 1200);
+    }
+    function sendQuick(text) { document.getElementById('chatInput').value = text; sendMessage(); }
+    function handleEnter(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+    function autoResize(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+    function appendMessage(type, text) {
+        const container = document.getElementById('chatMessages');
+        const isAi = type === 'ai';
+        const div = document.createElement('div');
+        div.className = `message ${type}`;
+        div.innerHTML = `<div class="message-avatar ${isAi ? 'msg-ai-avatar' : 'msg-user-avatar'}"><i class="fa-solid ${isAi ? 'fa-robot' : 'fa-user'}"></i></div><div class="message-bubble">${text}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+</script>
+</body>
+</html>

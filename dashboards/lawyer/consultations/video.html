@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saluran Chat Aman (E2EE) - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        
+        /* Video Call Interface Layout */
+        .video-wrapper { flex: 1; background-color: #0f172a; position: relative; display: flex; flex-direction: column; }
+        
+        /* Main Video (Client feed) */
+        .main-stream { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; background-image: radial-gradient(circle at center, #1e293b, #0f172a); }
+        .main-stream img { width: 150px; opacity: 0.1; filter: grayscale(1); } /* Placeholder if cam off */
+        
+        .stream-info { position: absolute; top: 30px; left: 30px; display: flex; flex-direction: column; gap: 5px; z-index: 10; padding: 10px 15px; background-color: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+        .stream-info h3 { margin: 0; color: white; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .stream-info p { margin: 0; color: #94a3b8; font-size: 0.8rem; font-family: monospace; }
+        .badge-secure { background-color: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #4ade80; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        /* Timer / Cost */
+        .session-timer { position: absolute; top: 30px; right: 30px; text-align: right; background-color: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); z-index: 10; backdrop-filter: blur(5px); }
+        .timer-val { font-family: monospace; font-size: 1.5rem; font-weight: bold; color: white; display: block; margin-bottom: 5px; }
+        .timer-cost { font-size: 0.85rem; color: #facc15; font-weight: bold; }
+        
+        /* Local Video (Lawyer self view) */
+        .local-stream { position: absolute; bottom: 100px; right: 30px; width: 240px; height: 160px; background-color: var(--bg-alt); border-radius: 12px; border: 2px solid #58a6ff; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10; display: flex; justify-content: center; align-items: center; color: #58a6ff; font-weight: bold; }
+
+        /* Controls Bottom Bar */
+        .video-controls { height: 80px; background-color: rgba(15, 23, 42, 0.9); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 20; backdrop-filter: blur(10px); }
+        
+        .v-btn { width: 50px; height: 50px; border-radius: 50%; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .v-btn:hover { background-color: rgba(255,255,255,0.2); }
+        .v-btn.danger { background-color: #f85149; border-color: #f85149; }
+        .v-btn.danger:hover { background-color: #fc3c34; }
+        .v-btn.off { color: #f85149; background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.3); }
+
+        .v-btn::after { content: attr(title); position: absolute; bottom: 60px; background-color: black; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; }
+        .v-btn:hover::after { opacity: 1; transform: translateY(-5px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Konsultasi Klien</p>
+                <a href="chat.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-comment-dots"></i> Pesan Masuk (E2EE)</a>
+                <a href="video.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-video"></i> WebRTC Telekonferensi</a>
+                <a href="history.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Laporan Pertemuan</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Navigasi Panel</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-backward"></i> Kembali ke Antarmuka</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-satellite-dish"></i> Koneksi P2P (Peer-to-Peer) Tersandi &bull; Latency: 24ms</div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="width: 10px; height: 10px; background-color: #4ade80; border-radius: 50%; box-shadow: 0 0 10px #4ade80;"></div>
+                    <span style="color: white; font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;">WEB-RTC CONNECTED</span>
+                </div>
+            </div>
+
+            <div class="video-wrapper">
+                
+                <div class="main-stream">
+                    <!-- Simulasi Video Klien Blur/Wait -->
+                    <div style="text-align: center; color: #64748b;">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 20px; color: rgba(255,255,255,0.2);"></i>
+                        <h2 style="margin:0; font-family: var(--font-heading); font-size: 1.5rem; color: #cbd5e1;">Menunggu Video Pihak Klien...</h2>
+                        <p style="font-family: monospace; margin-top: 10px;">ID Koneksi: WSS://JUSTICE-ICE-7182A</p>
+                    </div>
+
+                    <div class="stream-info">
+                        <h3><i class="fa-solid fa-user"></i> Anisa Wulandari <span class="badge-secure"><i class="fa-solid fa-lock"></i> AES-GCM Muted</span></h3>
+                        <p>Klien (Penasihat Sengketa Tanah)</p>
+                    </div>
+
+                    <div class="session-timer">
+                        <span class="timer-val">00 : 04 : 15</span>
+                        <span class="timer-cost">Retainer Terkunci: Rp 850.000 / Jam</span>
+                    </div>
+
+                    <div class="local-stream">
+                        <div style="text-align: center;">
+                            <i class="fa-solid fa-camera" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            CAM ANDA AKTIF
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-controls">
+                    <button class="v-btn" title="Pengaturan Audio (Mic)"><i class="fa-solid fa-microphone"></i></button>
+                    <button class="v-btn" title="Pengaturan Kamera"><i class="fa-solid fa-video"></i></button>
+                    
+                    <button class="v-btn off" title="Matikan Pengawasan (Blur Latarnya)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                    
+                    <button class="v-btn" title="Akses Vault Bukti / Presentasi Kontrak" style="color: #facc15; border-color: rgba(250, 204, 21, 0.4);"><i class="fa-solid fa-desktop"></i></button>
+                    
+                    <button class="v-btn" title="Buka Sisi Obrolan Teks"><i class="fa-solid fa-message"></i></button>
+                    
+                    <button class="v-btn danger" title="Tutup Panggilan & Tarik Dana Escrow" onclick="alert('Telekonferensi dihentikan. Berita Acara Rapat telah diciptakan. Dana Escrow sesi ini akan dicairkan ke dompet Lawyer.'); window.location.href='history.html';"><i class="fa-solid fa-phone-slash"></i></button>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>

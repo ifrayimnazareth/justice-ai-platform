@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pusat - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand { font-family: var(--font-heading); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--primary-color); }
+
+        .menu-group { margin-top: 20px; }
+        .menu-title { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--text-main); text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.02); color: white; }
+        .menu-item.active { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); border-right: 3px solid var(--primary-color); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Setting Blocks */
+        .setting-block { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-lg); padding: 30px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .setting-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .setting-header h3 { margin: 0; color: white; font-family: var(--font-heading); }
+        .setting-header i { font-size: 1.5rem; color: var(--primary-color); }
+
+        .form-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
+        .form-info { flex: 1; }
+        .form-info h4 { margin: 0 0 5px 0; color: #e2e8f0; font-size: 1rem; }
+        .form-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        
+        .form-control { flex: 1; max-width: 400px; display: flex; align-items: center; justify-content: flex-end; }
+        
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .3s; border-radius: 34px; border: 1px solid rgba(255,255,255,0.05); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 3px; background-color: var(--text-muted); transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.5); }
+        input:checked + .slider:before { transform: translateX(22px); background-color: #4ade80; }
+
+        .select-modern { width: 100%; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 6px; color: white; outline: none; }
+        .input-modern { width: 100%; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 6px; color: white; font-family: monospace; }
+        
+        .btn-danger-zone { background-color: rgba(248, 81, 73, 0.1); border: 1px solid rgba(248, 81, 73, 0.4); color: #f85149; padding: 12px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-danger-zone:hover { background-color: #f85149; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i class="fa-solid fa-shield-halved"></i> Justice Root</div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Konfigurasi Inti</div>
+                <a href="system.html" class="menu-item active"><i class="fa-solid fa-microchip"></i> Sistem Dasar (Engine)</a>
+                <a href="integrations.html" class="menu-item"><i class="fa-solid fa-plug"></i> Integrasi API / Gateway</a>
+                <a href="audit-logs.html" class="menu-item"><i class="fa-solid fa-fingerprint"></i> Log Audit Keamanan</a>
+            </div>
+            
+            <div class="menu-group">
+                <div class="menu-title">Manajemen Platform</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;">Justice AI Operating System v2.1.0</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Pengaturan Algoritma Dasar Platform</h1>
+                        <p style="color: var(--text-muted); margin-top: 5px;">Hanya Administrator Root yang memiliki akses untuk mengubah arsitektur keamanan di halaman ini.</p>
+                    </div>
+                </div>
+
+                <!-- AI Engine Behaviour -->
+                <div class="setting-block">
+                    <div class="setting-header">
+                        <i class="fa-solid fa-brain" style="color: #a855f7;"></i>
+                        <h3>Mesin Kecerdasan Buatan (Lex AI)</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4>Izinkan AI Menganalisa Bukti Hukum Rahasia (Kontrak/Surat)</h4>
+                            <p>Jika dimatikan, semua fitur 'Pindai Risiko Dokumen' dan 'Kalkulator Peluang Menang' untuk klien akan hilang untuk menghindari penyimpanan Data Privacy.</p>
+                        </div>
+                        <div class="form-control">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background-color: rgba(255,255,255,0.05);"></div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4>Strict Zero-Retention Policy OpenAI</h4>
+                            <p>Mewajibkan request API dikirimkan dengan header "No-Log" untuk memastikan Server Besar *(LLM Provider)* tidak menjadikan obrolan pengacara sebagai bahan Training Data AI mereka.</p>
+                        </div>
+                        <div class="form-control">
+                            <label class="switch">
+                                <input type="checkbox" checked disabled title="Regulasi Wajib">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Vault -->
+                <div class="setting-block">
+                    <div class="setting-header">
+                        <i class="fa-solid fa-vault" style="color: var(--success);"></i>
+                        <h3>Brankas Enkripsi Digital (Cloud Vault)</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4>Algoritma Cipher Default</h4>
+                            <p>Metodologi pengacak data yang diterapkan seketika pada file KTP, Kartu Keluarga, dan Alat Bukti klien saat diunggah. AES-256 GCM membutuhkan CPU lebih tinggi namun tidak bisa di-brute force oleh Komputer Kuantum saat ini.</p>
+                        </div>
+                        <div class="form-control">
+                            <select class="select-modern">
+                                <option>AES-256-GCM (Bank Standard - Disarankan)</option>
+                                <option>AES-256-CBC (Standar Lama)</option>
+                                <option>ChaCha20-Poly1305 (Ringan & Cepat)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background-color: rgba(255,255,255,0.05);"></div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4>Masa Bertahan Token E2EE Video Call (WebRTC)</h4>
+                            <p>Durasi maksimum satu sesi video sebelum kunci ter-reset. Default: 3600 Detik (1 Jam).</p>
+                        </div>
+                        <div class="form-control">
+                            <input type="number" class="input-modern" value="3600" style="text-align: right; width: 100px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="setting-block" style="border-color: rgba(248, 81, 73, 0.3);">
+                    <div class="setting-header">
+                        <i class="fa-solid fa-biohazard" style="color: #f85149;"></i>
+                        <h3 style="color: #f85149;">Zona Pemusnahan (Danger Zone)</h3>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4 style="color: white;">Shutdown Node Web Terbuka</h4>
+                            <p>Sistem akan memutus akses ke seluruh klien dan pengacara serta memunculkan status "Sedang Dalam Perbaikan Hukum" atau <i>Under Maintenance</i>.</p>
+                        </div>
+                        <div class="form-control">
+                            <button class="btn-danger-zone"><i class="fa-solid fa-power-off"></i> Freeze Layanan</button>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background-color: rgba(255,255,255,0.05);"></div>
+
+                    <div class="form-row">
+                        <div class="form-info">
+                            <h4 style="color: white;">Purge Database Simulasi Kasus (Self-Destruct)</h4>
+                            <p>Menghapus seluruh histori MongoDB, mengosongkan direktori `/storage` termasuk Brankas AES, dan mengatur sistem kembali ke titik awal. <strong>Tindakan ini tidak bisa dibatalkan tanpa backup manual!</strong></p>
+                        </div>
+                        <div class="form-control">
+                            <button class="btn-danger-zone" style="background-color: #f85149; color: white;"><i class="fa-solid fa-dumpster-fire"></i> Format Pabrik E-Court Database</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histori Keuangan - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Stats / Info */
+        .wallet-card { background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), transparent); border: 1px solid rgba(250, 204, 21, 0.3); border-radius: var(--radius-md); padding: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .w-info h4 { margin: 0 0 10px 0; color: #facc15; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .w-info p { margin: 0; font-family: monospace; font-size: 2rem; color: white; font-weight: bold; }
+        
+        /* Transaction Table styling to be more like a ledger */
+        .ledger-container { background-color: var(--bg-alt); border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .ledger-row { display: flex; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; justify-content: space-between; transition: 0.2s; }
+        .ledger-row:hover { background-color: rgba(255,255,255,0.02); }
+        .ledger-row:last-child { border-bottom: none; }
+        
+        .l-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background-color: rgba(255,255,255,0.05); color: #94a3b8; }
+        
+        .l-details { flex: 1; margin-left: 20px; }
+        .l-details h3 { margin: 0 0 5px 0; font-size: 1.05rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .l-details p { margin: 0; font-size: 0.85rem; color: #94a3b8; font-family: monospace; }
+        
+        .l-amount { text-align: right; }
+        .l-amount .val { font-weight: bold; font-family: monospace; font-size: 1.2rem; margin-bottom: 5px; display: block; }
+        .val.minus { color: white; }
+        .val.refund { color: #4ade80; }
+        .l-amount .status { font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        
+        .status-hold { background-color: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .status-released { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-refunded { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+        .btn-act { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-left: 20px; }
+        .btn-act:hover { background-color: white; color: black; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice App</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Aktivitas Escrow</p>
+                <a href="checkout.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-cart-shopping"></i> Checkout Pembayaran</a>
+                <a href="riwayat.html" style="display: block; color: #facc15; text-decoration: none; padding: 10px 0; border-left: 3px solid #facc15; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-file-invoice-dollar"></i> Jejak Transaksi (Ledger)</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Navigasi Lain</p>
+                <a href="../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-lock"></i> Xendit Escrow Ledger (IDR)</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Arus Kas & Pembayaran</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Lacak uang yang Anda bayarkan ke rekening pihak ketiga.</p>
+                    </div>
+                </div>
+
+                <div class="wallet-card">
+                    <div class="w-info">
+                        <h4>Dana Sedang Tertahan di Vault (Escrow Hold)</h4>
+                        <p>Rp 1.500.000 <span style="font-size: 0.9rem; color: #94a3b8; font-family: var(--font-body); font-weight: normal;">(Aman)</span></p>
+                    </div>
+                    <i class="fa-solid fa-piggy-bank" style="font-size: 4rem; color: rgba(250, 204, 21, 0.2);"></i>
+                </div>
+
+                <div class="ledger-container">
+                    
+                    <div class="ledger-row">
+                        <div class="l-icon" style="background-color: rgba(250, 204, 21, 0.1); color: #facc15;"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div class="l-details">
+                            <h3><i class="fa-solid fa-video" style="color: #64748b;"></i> Konsultasi (Adv. Farhan S.H.)</h3>
+                            <p>TX-99824 A &bull; Hari ini, 10:15 WIB</p>
+                        </div>
+                        <div class="l-amount">
+                            <span class="val minus">- Rp 958.500</span>
+                            <span class="status status-hold">MENUNGGU ACC PENYELESAIAN</span>
+                        </div>
+                        <button class="btn-act" title="Kuitansi Draft"><i class="fa-solid fa-file-pdf"></i> Draft</button>
+                    </div>
+
+                    <div class="ledger-row">
+                        <div class="l-icon" style="background-color: rgba(34, 197, 94, 0.1); color: #22c55e;"><i class="fa-solid fa-check-double"></i></div>
+                        <div class="l-details">
+                            <h3><i class="fa-solid fa-comment-dots" style="color: #64748b;"></i> Chat Darurat 2 Jam</h3>
+                            <p>TX-9811A B &bull; 10 Mar 2026</p>
+                        </div>
+                        <div class="l-amount">
+                            <span class="val minus">- Rp 350.000</span>
+                            <span class="status status-released">DANA DIRILIS KE PENGACARA</span>
+                        </div>
+                        <button class="btn-act" title="Unduh Kuitansi Resmi E-Meterai Peruri"><i class="fa-solid fa-download"></i> Kuitansi</button>
+                    </div>
+
+                    <div class="ledger-row" style="background-color: rgba(56, 189, 248, 0.05);">
+                        <div class="l-icon" style="background-color: rgba(56, 189, 248, 0.1); color: #38bdf8;"><i class="fa-solid fa-rotate-left"></i></div>
+                        <div class="l-details">
+                            <h3><i class="fa-solid fa-ban" style="color: #f85149;"></i> Sengketa Escrow Batal Dimenangkan Pengacara</h3>
+                            <p>TX-REFUND-091 &bull; 01 Jan 2026</p>
+                            <span style="font-size: 0.75rem; color: #38bdf8; display: block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Hakim platform mengembalikan dana krn lawyer tidak merespon 7 hari.</span>
+                        </div>
+                        <div class="l-amount">
+                            <span class="val refund">+ Rp 1.000.000</span>
+                            <span class="status status-refunded">KEMBALI KE REKENING ANDA</span>
+                        </div>
+                        <button class="btn-act"><i class="fa-solid fa-eye"></i> Log Mediasi</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

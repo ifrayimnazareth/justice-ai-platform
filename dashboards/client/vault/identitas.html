@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Vault (Brankas Aman) - Dasbor Klien</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    
+    <style>
+        /* Force Dark aesthetics specifically for the vault to emphasize security */
+        body { background-color: #0f192b; color: white; }
+        .sidebar { background-color: #0d1421; border-right-color: rgba(255,255,255,0.05); }
+        .main-content { background-color: #0f192b; }
+        .topbar { background-color: #0d1421; border-bottom-color: rgba(255,255,255,0.05); }
+
+        .vault-header {
+            background: linear-gradient(135deg, rgba(56, 161, 105, 0.2) 0%, transparent 100%);
+            border: 1px solid rgba(56, 161, 105, 0.3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .shield-icon {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin-right: var(--space-lg);
+            filter: drop-shadow(0 0 10px rgba(56, 161, 105, 0.5));
+        }
+
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .document-card {
+            background-color: #1a202c;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            position: relative;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            background-color: #222d3d;
+        }
+
+        .doc-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary-light);
+            display: block;
+        }
+
+        .doc-icon.pdf { color: #e53e3e; }
+        .doc-icon.img { color: #d69e2e; }
+
+        .doc-title {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin: 0 0 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+        }
+
+        .doc-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+        .lock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(56, 161, 105, 0.2);
+            color: #48bb78;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl);
+            text-align: center;
+            background-color: rgba(255,255,255,0.02);
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-xl);
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-light);
+            background-color: rgba(43, 108, 176, 0.05);
+        }
+
+        #fileUploadInput { display: none; }
+
+        @media screen and (max-width: 768px) {
+            .vault-header { flex-direction: column; text-align: center; gap: 20px; }
+            .shield-icon { margin-right: 0; margin-bottom: 10px; }
+            .vault-header > div:first-child { flex-direction: column; }
+            .upload-zone { padding: var(--space-xl); }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+                </a>
+            </div>
+
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Kembali Dasbor</span>
+                </a>
+                
+                <div class="menu-label">Kategori Brankas</div>
+                <a href="identitas.html" class="menu-item active">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Bukti Identitas Khusus</span>
+                </a>
+                <a href="kontak.html" class="menu-item">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <span>Perjanjian Kontrak Rahasia</span>
+                </a>
+                <a href="sertifikat.html" class="menu-item">
+                    <i class="fa-solid fa-scroll"></i>
+                    <span>Sertifikat Lahan/Aset</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-search" style="flex: 1; max-width: 600px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="text" id="vaultSearch" placeholder="Cari by Hash Document atau Nama..." style="width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 10px 15px 10px 40px; outline: none;">
+                </div>
+                <div class="topbar-actions">
+                    <button class="icon-btn" style="color: white;"><i class="fa-solid fa-moon"></i></button>
+                    <button class="icon-btn" style="color: white;"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=1a365d&color=fff" class="avatar" id="userAvatar">
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area animate-fade-in">
+                
+                <div class="vault-header">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fa-solid fa-shield-halved shield-icon"></i>
+                        <div>
+                            <h2 style="margin: 0; color: white; display: flex; align-items: center; gap: 10px;">
+                                Digital Vault <span style="font-size: 0.7rem; background: var(--success); padding: 2px 8px; border-radius: 10px; color: white;">Protected</span>
+                            </h2>
+                            <p style="color: var(--text-muted); margin: 5px 0 0 0; font-size: 0.95rem;">
+                                Penyimpanan Dokumen Asli Terenkripsi End-to-End dengan Algoritma AES-256 (Standar Hukum Internasional). Kunci dekripsi hanya tersimpan di perangkat keras Anda, sehingga platform bahkan pengusaha cloud tidak dapat mendebobol konten file tanpa persetujuan Anda.
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" style="white-space: nowrap;"><i class="fa-solid fa-key"></i> Manajemen Kunci</button>
+                    </div>
+                </div>
+
+                <!-- Upload Hidden Input -->
+                <input type="file" id="fileUploadInput" multiple>
+
+                <!-- Drag Drop Box -->
+                <div class="upload-zone" id="uploadZone">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 15px;"></i>
+                    <h3 style="color: white; margin-bottom: 5px;">Tarik dan Lepaskan Berkas ke Brankas</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Mendukung PDF, DOCX, JPG/PNG (Maks 50MB) yang akan langsung dipecah, dicatat Hash SHA-256 miliknya untuk pembuktian originalitas saat sidang, dan diamankan.</p>
+                    <button class="btn btn-outline" style="margin-top: 15px; border-color: rgba(255,255,255,0.4); color: white;" onclick="document.getElementById('fileUploadInput').click()">Atau Pilih File</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: white; font-family: var(--font-body); font-weight: 500;">Isi Kategori Akses Identitas Diri (Sub-Vault)</h3>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Digunakan otomatis untuk mendaftar Sidang KYC</span>
+                </div>
+
+                <!-- Files Vault Area -->
+                <div class="vault-grid">
+                    
+                    <!-- File PDF -->
+                    <div class="document-card">
+                        <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                        <i class="fa-solid fa-file-pdf doc-icon pdf"></i>
+                        <h4 class="doc-title">Scan_KTP_Asli_Budi_Santoso.pdf</h4>
+                        <div class="doc-meta">
+                            1.2 MB &bull; Diunggah: 12 Mar 2026<br>
+                            <span style="font-family: monospace; color: #48bb78; font-size: 0.7rem; margin-top: 5px; display: inline-block;">Hash: a3f8...9b2c <i class="fa-solid fa-certificate"></i> Verified</span>
+                        </div>
+                    </div>
+
+                    <!-- File Image -->
+                    <div class="document-card">
+                        <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                        <i class="fa-regular fa-image doc-icon img"></i>
+                        <h4 class="doc-title">Buku-Nikah-Halaman-1.jpg</h4>
+                        <div class="doc-meta">
+                            3.4 MB &bull; Diunggah: 15 Mar 2026<br>
+                            <span style="font-family: monospace; color: #48bb78; font-size: 0.7rem; margin-top: 5px; display: inline-block;">Hash: e2a1...4f3x <i class="fa-solid fa-certificate"></i> Verified</span>
+                        </div>
+                    </div>
+
+                    <!-- Add New Button -->
+                    <div class="document-card" id="btnAddNewCard" style="border: 1px dashed rgba(255,255,255,0.3); background-color: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+                        <div style="background-color: rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                            <i class="fa-solid fa-plus" style="font-size: 1.5rem; color: white;"></i>
+                        </div>
+                        <span style="color: white; font-weight: 500;">Amankan Dokumen Baru</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts Inti -->
+    <script src="../../../assets/js/core/app.js"></script>
+
+    <!-- Script Fungsionalitas Digital Vault Berbrankas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileUploadInput');
+            const vaultGrid = document.querySelector('.vault-grid');
+            const searchInput = document.getElementById('vaultSearch');
+            const btnAddNewCard = document.getElementById('btnAddNewCard');
+
+            // 1. Trigger Klik Manual dari seluruh area upload zone
+            uploadZone.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'BUTTON') { 
+                    fileInput.click();
+                }
+            });
+
+            btnAddNewCard.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // 2. Drag and Drop Effects
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, () => {
+                    uploadZone.style.borderColor = 'var(--primary-color)';
+                    uploadZone.style.backgroundColor = 'rgba(43, 108, 176, 0.1)';
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, () => {
+                    uploadZone.style.borderColor = '';
+                    uploadZone.style.backgroundColor = '';
+                }, false);
+            });
+
+            // Handle Drop & Input Selection Change
+            uploadZone.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
+            fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    const sizeMB = (file.size / (1024*1024)).toFixed(1);
+                    const isPDF = file.name.toLowerCase().endsWith('.pdf');
+                    
+                    const iconClass = isPDF ? 'fa-file-pdf pdf' : 'fa-image img';
+                    
+                    // Simulasi UI Loading/Enkripsi
+                    const originalHtml = uploadZone.innerHTML;
+                    uploadZone.innerHTML = `<div style="padding: 20px 0;"><i class="fa-solid fa-fingerprint fa-beat-fade" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i><h3 style="color: white;">Mengenkripsi & Verifikasi Hash AES-256...</h3><p style="color: var(--text-muted);">Merapatkan Brankas Dokumen: ${file.name}</p></div>`;
+                    
+                    setTimeout(() => {
+                        uploadZone.innerHTML = originalHtml; // kembalikan tampilan dropzone
+
+                        // Generate Hash String Buatan
+                        const dummyHash1 = Math.random().toString(36).substring(2, 6);
+                        const dummyHash2 = Math.random().toString(36).substring(2, 6);
+
+                        // Injection Kartu Div HTML Baru
+                        const newCard = document.createElement('div');
+                        newCard.className = 'document-card animate-fade-in';
+                        newCard.innerHTML = `
+                            <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+                            <i class="fa-solid ${iconClass} doc-icon"></i>
+                            <h4 class="doc-title" title="${file.name}">${file.name}</h4>
+                            <div class="doc-meta">
+                                ${sizeMB} MB &bull; Diunggah: Baru Saja<br>
+                                <span style="font-family: monospace; color: #48bb78; font-size: 0.7rem; margin-top: 5px; display: inline-block;">Hash: ${dummyHash1}...${dummyHash2} <i class="fa-solid fa-certificate"></i> Verified</span>
+                            </div>
+                        `;
+                        
+                        // Letakkan sebelum Kartu "+ Amankan Dokumen Baru"
+                        vaultGrid.insertBefore(newCard, btnAddNewCard);
+                        
+                        alert(`Proteksi Sukses!\n\nDokumen '${file.name}' telah dibungkus enkripsi dan disetorkan ke brankas digital Vault Anda.`);
+                    }, 2000);
+                }
+            }
+
+            // 3. Modul Pencarian "Cari by Hash / Nama"
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const allCards = vaultGrid.querySelectorAll('.document-card');
+                
+                allCards.forEach(card => {
+                    // Abaikan kartu khusus 'Add New'
+                    if (card.id === 'btnAddNewCard') return;
+                    
+                    const title = card.querySelector('.doc-title').textContent.toLowerCase();
+                    const hashStr = card.querySelector('.doc-meta span').textContent.toLowerCase();
+                    
+                    if (title.includes(query) || hashStr.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // 4. Modul Klik File / Dekripsi Akses File
+            vaultGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.document-card');
+                
+                if (card && card.id !== 'btnAddNewCard') {
+                    const title = card.querySelector('.doc-title').textContent;
+                    if(confirm(`SYSTEM ALERT: Kunci Brankas Diperlukan.\n\nAnda bermaksud mendekripsi dan membuka/mengunduh dokumen [${title}].\n\nUntuk membuka gembok digital ini, anda harus menekan tombol OK (Simulasi input Kunci Pribadi). Lanjutkan?`)) {
+                        alert('Dekripsi End-to-End berhasil ditembus secara sah! Mendownload dokumen ke perangkat lokal Anda...');
+                    }
+                }
+            });
+            
+            // 5. Tombol Manajemen Kunci Vault (Header)
+            document.querySelector('.vault-header button').addEventListener('click', () => {
+                alert('Manajemen Kunci Kriptografi:\n\nDi sini nanti Anda dapat memutar kata sandi/Private Key Vault Anda atau menghubungkannya ke Autentikator wajah/sidik jari.');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penasihat AI Hakim - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: var(--font-body); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        .header-sidang { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #1e293b; border-bottom: 2px solid #facc15; }
+        .sidang-info h1 { font-family: var(--font-heading); margin: 0 0 5px 0; font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .sidang-info h1 i { color: #facc15; }
+        .sidang-info p { color: #8b949e; margin: 0; font-size: 0.9rem; font-family: monospace; }
+        
+        .main-stage { display: flex; flex: 1; overflow: hidden; }
+
+        /* Left Panel - Document Viewer */
+        .doc-panel { flex: 2; background-color: #f8fafc; color: #0f172a; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid rgba(255,255,255,0.05); }
+        .doc-toolbar { background-color: #e2e8f0; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cbd5e1; }
+        .doc-content { flex: 1; padding: 40px; overflow-y: auto; font-family: 'Times New Roman', serif; font-size: 1.15rem; line-height: 1.8; }
+        
+        .hl-conflict { background-color: rgba(239, 68, 68, 0.2); border-bottom: 2px solid #ef4444; position: relative; cursor: pointer; }
+        .hl-key { background-color: rgba(59, 130, 246, 0.2); border-bottom: 2px solid #3b82f6; position: relative; cursor: pointer; }
+
+        /* Right Panel - AI Analysis */
+        .ai-panel { flex: 1; display: flex; flex-direction: column; background-color: #161b22; min-width: 400px; }
+        
+        .ai-header { padding: 20px; background-color: #0d1117; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 15px; }
+        .ai-header i { font-size: 2rem; color: #facc15; }
+        .ai-header h2 { margin: 0; color: white; font-size: 1.2rem; }
+        
+        .ai-content { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+        .insight-card { background-color: #0d1117; border: 1px solid #30363d; border-radius: var(--radius-md); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .insight-card h3 { margin: 0 0 15px 0; color: #facc15; font-size: 1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        
+        .insight-card.conflict { border-left: 3px solid #f85149; }
+        .insight-card.conflict h3 { color: #f85149; }
+        
+        .insight-card.precedent { border-left: 3px solid #58a6ff; }
+        .insight-card.precedent h3 { color: #58a6ff; }
+
+        .insight-body { font-size: 0.95rem; color: #c9d1d9; line-height: 1.6; }
+        
+        .cite-box { background-color: rgba(88, 166, 255, 0.1); border: 1px dashed rgba(88, 166, 255, 0.3); padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: #58a6ff; margin-top: 15px; }
+
+        .btn-draft { background-color: rgba(63, 185, 80, 0.1); border: 1px solid #3fb950; color: #3fb950; padding: 15px; border-radius: var(--radius-md); font-weight: bold; text-align: center; cursor: pointer; transition: 0.2s; margin-top: auto; }
+        .btn-draft:hover { background-color: #3fb950; color: white; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header-sidang">
+        <div class="sidang-info">
+            <h1><i class="fa-solid fa-microchip"></i> LexBrain | Asisten Yudisial Hakim</h1>
+            <p>Menganalisis Perkara: SENG-2026-X1 (Wanprestasi Hutang vs Penipu)</p>
+        </div>
+        <div>
+            <a href="dashboard.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+        </div>
+    </header>
+
+    <div class="main-stage animate-fade-in">
+        
+        <main class="doc-panel">
+            <div class="doc-toolbar">
+                <span style="font-weight: bold;"><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> Pledoi Kuasa Hukum Tergugat (Rev_2.pdf)</span>
+                <div>
+                    <button class="btn btn-outline" style="padding: 2px 10px; font-size: 0.8rem; border-color: #94a3b8; color: #475569;">Hal: 1 / 15</button>
+                    <button class="btn btn-outline" style="padding: 2px 10px; font-size: 0.8rem; border-color: #94a3b8; color: #475569;"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                </div>
+            </div>
+            
+            <div class="doc-content">
+                <strong>PENDAHULUAN</strong><br><br>
+                Bahwa demi Keadilan Berdasarkan Ketuhanan Yang Maha Esa, Kami selaku Kuasa Hukum Tergugat, dengan ini menolak seluruh dalil Penggugat.<br><br>
+                
+                <strong>TENTANG DUDUK PERKARA</strong><br><br>
+                <span class="hl-key">Klien Kami mengakui adanya penerimaan dana titipan investasi sebesar Rp 150.000.000 (Seratus Lima Puluh Juta Rupiah) pada tanggal 2 Januari 2024.</span> Namun demikian, uang tersebut <span class="hl-conflict">telah hangus murni akibat jatuhnya saham perusahaan X (Force Majeure Pasar), bukan karena itikad buruk (Mens Rea) untuk menipu saudara Penggugat.</span>
+                <br><br>
+                Oleh karena itu, tindakan Penggugat yang mendalilkan perbuatan Klien kami sebagai Penipuan sesuai Pasal 378 KUHP adalah sama sekali tidak mendasar, karena murni masuk ke ranah hukum perdata bisnis.
+            </div>
+        </main>
+
+        <aside class="ai-panel">
+            <div class="ai-header">
+                <i class="fa-solid fa-brain"></i>
+                <h2>Temuan Sinkronisasi AI</h2>
+            </div>
+
+            <div class="ai-content">
+                
+                <div class="insight-card conflict">
+                    <h3><i class="fa-solid fa-triangle-exclamation"></i> Celah Logika (Logical Fallacy) Temuan #1</h3>
+                    <div class="insight-body">
+                        Dalil Tergugat yang menyatakan "Hangus akibat saham" <strong>bertentangan</strong> dengan bukti P-2 (Rekening Koran) di mana AI mendeteksi dana Rp150 Juta tersebut ditransfer untuk membeli Aset Mobil Pribadi Tergugat di hari yang sama, bukan ke <i>Market Sekuritas</i>.
+                    </div>
+                </div>
+
+                <div class="insight-card precedent">
+                    <h3><i class="fa-solid fa-scale-balanced"></i> Relevansi Yurisprudensi (Preseden 95% Mirip)</h3>
+                    <div class="insight-body">
+                        Modus operandi "Investasi" yang diselewengkan untuk kepentingan pribadi memenuhi unsur <strong>Penipuan (Pasal 378 KUHP)</strong> dan tidak bisa dibelokkan ke ranah murni Perdata, meskipun awalnya adalah persekot.
+                        
+                        <div class="cite-box">
+                            <strong>Putusan Mahkamah Agung No:</strong><br>
+                            1689 K/Pid/2015<br>
+                            Kaedah: "Penggunaan uang titipan di luar kesepakatan surat perjanjian, yang menguntungkan diri sendiri secara melawan hukum adalah pidana penggelapan/penipuan."
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <h3><i class="fa-solid fa-gavel"></i> Saran Konklusi Hakim</h3>
+                    <div class="insight-body" style="color: #64748b;">
+                        Berdasarkan pemaparan di atas, AI memprediksi Eksepsi Tergugat dapat dimentahkan (Ditolak) untuk dilanjutkan ke proses hukum pidana-perdata.
+                    </div>
+                </div>
+
+                <div class="btn-draft">
+                    <i class="fa-solid fa-robot" style="margin-right: 10px;"></i>
+                    Jadikan Sebagai Dasar "Pertimbangan Hakim" di Draf Putusan
+                </div>
+                
+            </div>
+        </aside>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Klien - Justice AI Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/client.css">
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../public/index.html" class="logo" style="font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+                </a>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-label">Menu Utama</div>
+                <a href="dashboard.html" class="menu-item active">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ringkasan</span>
+                </a>
+                <a href="cases/list.html" class="menu-item">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Katalog Perkara</span>
+                </a>
+                <a href="vault/identitas.html" class="menu-item">
+                    <i class="fa-solid fa-vault"></i>
+                    <span>Brankas Digital (Vault)</span>
+                </a>
+                
+                <div class="menu-label">Layanan Hukum</div>
+                <a href="../../ai/chatbot.html" class="menu-item">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>Tanya AI Legal</span>
+                </a>
+                <a href="konsultasi/lawyer.html" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Cari Pengacara</span>
+                </a>
+                <a href="konsultasi/history.html" class="menu-item">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Sesi Konsultasi & Sidang</span>
+                </a>
+
+                <div class="menu-label">Pengaturan</div>
+                <a href="pembayaran/riwayat.html" class="menu-item">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Tagihan & Invoice</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Profil Pengguna</span>
+                </a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <a href="../../auth/login.html" class="btn btn-outline" style="width: 100%; border-color: var(--danger); color: var(--danger);">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari dokumen, pasal, atau nama advokat...">
+                </div>
+
+                <div class="topbar-actions">
+                    <button id="theme-toggle" class="icon-btn">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="icon-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge"></span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-info" style="text-align: right;">
+                            <span class="user-name" id="userNameLabel">Budi Santoso</span>
+                            <span class="user-role">Klien Terverifikasi KYC</span>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=1a365d&color=fff" alt="Profile" class="avatar" id="userAvatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area animate-fade-in">
+                
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1 id="welcomeLabel">Selamat Datang, Bapak Budi 👋</h1>
+                        <p>Pemantauan aktivitas hukum Anda hari ini, 17 Maret 2026.</p>
+                    </div>
+                    <a href="konsultasi/lawyer.html" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> &nbsp; Buat Perkara Baru
+                    </a>
+                </div>
+
+                <!-- AI Promo Banner -->
+                <div class="ai-promo">
+                    <div>
+                        <h3>Butuh pandangan awal hukum yang cepat?</h3>
+                        <p>Unggah draf kontrak atau jelaskan masalah Anda. AI akan memberikan opini awal dan rekomendasi pasal.</p>
+                    </div>
+                    <a href="../../ai/chatbot.html" class="btn btn-secondary" style="color: white; border: 1px solid rgba(255,255,255,0.2);">
+                        Analisis Sekarang <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>2</h3>
+                            <p>Perkara Aktif</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>14</h3>
+                            <p>Dokumen di Vault</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>5</h3>
+                            <p>Sesi Chat AI</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Rp0</h3>
+                            <p>Tagihan Tertunda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grids -->
+                <div class="dashboard-grid">
+                    <!-- Kasus Berjalan -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Perkembangan Kasus Anda</h3>
+                            <a href="cases/list.html" style="font-size: 0.85rem;">Lihat Semua</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="case-list">
+                                <!-- Item 1 -->
+                                <div class="case-item">
+                                    <div class="case-info">
+                                        <h4>Gugatan Wanprestasi Kontrak Pembelian Properti</h4>
+                                        <div class="case-meta">
+                                            <span><i class="fa-solid fa-fingerprint"></i> CAS-2026-0312-XYZ</span>
+                                            <span><i class="fa-solid fa-user-tie"></i> Adv. Rina Marlina, S.H.</span>
+                                            <span><i class="fa-regular fa-clock"></i> Sidang: 20 Mar</span>
+                                        </div>
+                                    </div>
+                                    <div class="status-badge status-active">Proses Persidangan</div>
+                                </div>
+                                
+                                <!-- Item 2 -->
+                                <div class="case-item">
+                                    <div class="case-info">
+                                        <h4>Review dan Revisi Perjanjian Kerja Karyawan (PKWT)</h4>
+                                        <div class="case-meta">
+                                            <span><i class="fa-solid fa-fingerprint"></i> DOC-2026-0205-ABC</span>
+                                            <span><i class="fa-solid fa-robot"></i> Justice AI + Lawyer Review</span>
+                                        </div>
+                                    </div>
+                                    <div class="status-badge status-pending">Menunggu Pembayaran</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jadwal & Aktivitas -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Jadwal Mendatang</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="text-align: center; padding: var(--space-xl) 0; color: var(--text-muted);">
+                                <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p>Tidak ada jadwal sidang atau konsultasi video dalam 7 hari ke depan.</p>
+                                <button class="btn btn-outline" style="margin-top: 15px; font-size: 0.85rem;">Jadwalkan Konsultasi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/app.js"></script>
+
+    <!-- Script Integrasi Sinkronisasi Sesi Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Konfigurasi Web Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIYkKAlRLu5kTUiB9yICRDaR5UNAVPKXg",
+            authDomain: "justice-ai-b0fd0.firebaseapp.com",
+            projectId: "justice-ai-b0fd0",
+            storageBucket: "justice-ai-b0fd0.firebasestorage.app",
+            messagingSenderId: "762124315437",
+            appId: "1:762124315437:web:eb6ef47c2aeeaef10041a4",
+            measurementId: "G-6S9KY8X3R3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Pantau Status Autentikasi secara Realtime
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Ganti Nama dan Avatar dengan Data SSO Google Client
+                const displayName = user.displayName || user.email.split('@')[0];
+                const userNameLabel = document.getElementById('userNameLabel');
+                const userAvatar = document.getElementById('userAvatar');
+                const welcomeLabel = document.getElementById('welcomeLabel');
+                
+                if (userNameLabel) {
+                    userNameLabel.textContent = displayName; 
+                }
+
+                if (welcomeLabel) {
+                    // Hanya mengambil nama depan pertama untuk salam jika ada spasinya
+                    const firstName = displayName.split(" ")[0];
+                    welcomeLabel.innerHTML = `Selamat Datang, Pengguna ${firstName} 👋`;
+                }
+                
+                if (userAvatar && user.photoURL) {
+                    // Ubah foto avatarnya menjadi foto Google Profile
+                    userAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
+                }
+
+                console.log("Sesi Klien SSO Aktif:", user.displayName);
+            } else {
+                console.log("Tidak ada Sesi Pengguna Aktif. (Menggunakan Dummy Profile)");
+            }
+        });
+    </script>
+</body>
+</html>

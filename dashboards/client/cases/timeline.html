@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Perkara - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--primary-color), var(--accent-color)); }
+        .timeline-item { position: relative; margin-bottom: var(--space-xl); }
+        .timeline-dot { position: absolute; left: -32px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border: 3px solid white; box-shadow: 0 0 0 2px var(--primary-color); }
+        .dot-done { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+        .dot-current { background: var(--primary-color); animation: pulse 2s infinite; }
+        .dot-pending { background: var(--bg-alt); box-shadow: 0 0 0 2px rgba(0,0,0,0.15); color: var(--text-muted); }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 2px var(--primary-color);} 50%{box-shadow:0 0 0 6px rgba(26,54,93,0.2);} }
+        .timeline-content { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); }
+        .timeline-date { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
+        .timeline-title { font-weight: 700; margin-bottom: 6px; }
+        .timeline-desc { font-size: 0.87rem; color: var(--text-muted); line-height: 1.7; }
+        .progress-bar { height: 8px; background: var(--bg-alt); border-radius: var(--radius-full); overflow: hidden; margin: var(--space-lg) 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: var(--radius-full); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">AI</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Perkara Saya</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+            <a href="list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Daftar Perkara</span></a>
+            <a href="dokumen.html" class="menu-item"><i class="fa-solid fa-folder-open"></i><span>Dokumen</span></a>
+            <a href="timeline.html" class="menu-item active"><i class="fa-solid fa-timeline"></i><span>Timeline</span></a>
+            <div class="menu-label">Layanan</div>
+            <a href="../konsultasi/lawyer.html" class="menu-item"><i class="fa-solid fa-user-tie"></i><span>Cari Advokat</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">2</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" alt="User" class="avatar">
+                    <div class="user-info"><span class="user-name">Bapak Ahmad Fauzi</span><span class="user-role">Klien</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Timeline Perkara</h1><p>Sengketa Tanah Warisan – No. Kasus: JAI/2026/089</p></div>
+                <span style="background:rgba(56,161,105,0.1);color:var(--success);padding:10px 20px;border-radius:var(--radius-full);font-weight:600;">Sedang Berjalan</span>
+            </div>
+
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-body">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <span style="font-weight:600;">Progress Perkara</span>
+                        <span style="color:var(--primary-color);font-weight:700;">40% selesai</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);">
+                        <span>Mulai: 10 Jan 2026</span><span>Estimasi Selesai: Desember 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--space-xl);">
+                <div>
+                    <h3 style="margin-bottom:var(--space-lg);">Riwayat Perjalanan Kasus</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-done"><i class="fa-solid fa-check" style="color:white;"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">10 Januari 2026</div>
+                                <div class="timeline-title">✅ Pendaftaran Kasus</div>
+                                <div class="timeline-desc">Kasus berhasil didaftarkan ke platform Justice AI. Dokumen awal diterima dan diverifikasi.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-done"><i class="fa-solid fa-check" style="color:white;"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">12 Januari 2026</div>
+                                <div class="timeline-title">✅ Penugasan Advokat</div>
+                                <div class="timeline-desc">Adv. Budi Santoso, S.H. ditugaskan sebagai kuasa hukum. Surat kuasa ditandatangani secara digital.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-done"><i class="fa-solid fa-check" style="color:white;"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">20 Januari 2026</div>
+                                <div class="timeline-title">✅ Gugatan Didaftarkan ke PN</div>
+                                <div class="timeline-desc">Surat gugatan perdata berhasil didaftarkan di Pengadilan Negeri Jakarta Selatan. Nomor perkara: 123/Pdt.G/2026/PN.Jkt.Sel.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-done"><i class="fa-solid fa-check" style="color:white;"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">5 Februari 2026</div>
+                                <div class="timeline-title">✅ Sidang Pertama</div>
+                                <div class="timeline-desc">Sidang pemeriksaan pertama digelar. Tergugat hadir dan pengadilan mewajibkan mediasi selama 30 hari.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-current"><i class="fa-solid fa-spinner fa-spin" style="color:white;"></i></div>
+                            <div class="timeline-content" style="border-color:var(--primary-color);">
+                                <div class="timeline-date">17 Maret 2026 (Saat ini)</div>
+                                <div class="timeline-title" style="color:var(--primary-color);">🔄 Proses Mediasi</div>
+                                <div class="timeline-desc">Mediasi sedang berlangsung antara kedua pihak. Mediator ditunjuk pengadilan: Dr. Suyono, S.H. Kemajuan mediasi akan dilaporkan setiap minggu.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-pending"><i class="fa-solid fa-clock"></i></div>
+                            <div class="timeline-content" style="opacity:0.6;">
+                                <div class="timeline-date">April 2026 (Estimasi)</div>
+                                <div class="timeline-title">⏳ Pembuktian</div>
+                                <div class="timeline-desc">Jika mediasi gagal, sidang akan dilanjutkan ke tahap pembuktian dan pemeriksaan saksi.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot dot-pending"><i class="fa-solid fa-gavel"></i></div>
+                            <div class="timeline-content" style="opacity:0.6;">
+                                <div class="timeline-date">Desember 2026 (Estimasi)</div>
+                                <div class="timeline-title">⏳ Putusan Pengadilan</div>
+                                <div class="timeline-desc">Majelis hakim akan membacakan putusan setelah semua fakta persidangan terkumpul.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card" style="position:sticky;top:20px;">
+                        <div class="card-header"><h3 class="card-title">Informasi Sidang Berikutnya</h3></div>
+                        <div class="card-body">
+                            <div style="text-align:center;padding:var(--space-lg);background:linear-gradient(135deg,var(--primary-dark),var(--primary-color));border-radius:var(--radius-md);color:white;margin-bottom:var(--space-md);">
+                                <div style="font-size:0.8rem;opacity:0.8;">Sidang Mediasi Selanjutnya</div>
+                                <div style="font-size:1.8rem;font-weight:700;font-family:var(--font-heading);margin:8px 0;">25 Maret</div>
+                                <div style="font-size:0.85rem;opacity:0.8;">Pukul 10:00 WIB</div>
+                            </div>
+                            <div style="font-size:0.85rem;color:var(--text-muted);line-height:2;">
+                                <div><i class="fa-solid fa-landmark" style="width:20px;color:var(--primary-color);"></i> PN Jakarta Selatan</div>
+                                <div><i class="fa-solid fa-door-open" style="width:20px;color:var(--primary-color);"></i> Ruang Mediasi No. 3</div>
+                                <div><i class="fa-solid fa-user-tie" style="width:20px;color:var(--primary-color);"></i> Adv. Budi Santoso</div>
+                            </div>
+                            <button class="btn btn-primary" style="width:100%;margin-top:var(--space-md);"><i class="fa-regular fa-calendar"></i> Tambahkan ke Kalender</button>
+                            <a href="../konsultasi/video-call.html" class="btn btn-outline" style="width:100%;margin-top:8px;"><i class="fa-solid fa-video"></i> Konsultasi Online</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

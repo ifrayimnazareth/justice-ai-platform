@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Unggah KYC - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Verification Status Banner */
+        .status-banner { display: flex; align-items: center; gap: 20px; padding: 25px; border-radius: var(--radius-lg); background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-banner i { font-size: 3rem; color: #4ade80; }
+        .status-banner h3 { margin: 0 0 5px 0; color: #4ade80; font-size: 1.2rem; }
+        .status-banner p { margin: 0; font-size: 0.9rem; color: #cbd5e1; }
+
+        /* Document Grid */
+        .doc-setup-panel { background-color: var(--bg-alt); border-radius: var(--radius-md); padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .doc-setup-panel h3 { margin: 0 0 20px 0; font-size: 1rem; color: white; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+
+        .doc-item { display: flex; align-items: center; justify-content: space-between; padding: 20px; background-color: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); margin-bottom: 15px; }
+        .doc-item:last-child { margin-bottom: 0; }
+        
+        .d-info { display: flex; align-items: center; gap: 15px; }
+        .d-icon { width: 45px; height: 45px; border-radius: 8px; background-color: rgba(56, 189, 248, 0.1); color: #58a6ff; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+        .d-info h4 { margin: 0 0 5px 0; color: white; font-size: 1rem; }
+        .d-info p { margin: 0; font-size: 0.8rem; color: #94a3b8; }
+        
+        .d-status { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .badge-verified { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-process { background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .badge-none { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+
+        .btn-act { background-color: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-act:hover { background-color: white; color: black; }
+        .btn-act.disabled { opacity: 0.5; cursor: not-allowed; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Praktik</p>
+                <a href="profile.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-user-tie"></i> Profil Publik Khusus</a>
+                <a href="kyc-upload.html" style="display: block; color: #58a6ff; text-decoration: none; padding: 10px 0; border-left: 3px solid #58a6ff; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-id-badge"></i> Sertifikat Legalitas Resmi</a>
+            </div>
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Keuangan</p>
+                <a href="earnings/income.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-wallet"></i> Saldo & Penarikan Fee</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-fingerprint"></i> OCR Terintegrasi Ditjen Dukcapil & Mahkamah Agung</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Validasi Pihak Berperkara Penuh</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Unggah kredensial untuk mencegah akun palsu di dalam *Marketplace* Konsultasi Hukum.</p>
+                    </div>
+                </div>
+
+                <div class="status-banner">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <div>
+                        <h3>Status Advokat Anda: Verified (Akun Bebas Batasan)</h3>
+                        <p>Klien Anda akan merasa aman melakukan transaksi Escrow. Lencana Centang Hijau tayang secara publik di platform.</p>
+                    </div>
+                </div>
+
+                <div class="doc-setup-panel">
+                    <h3><i class="fa-regular fa-id-card" style="color: #58a6ff;"></i> Dokumen Wajib Litigator</h3>
+                    
+                    <div class="doc-item">
+                        <div class="d-info">
+                            <div class="d-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+                            <div>
+                                <h4>Kartu Anggota PERADI / KAI</h4>
+                                <p>Telah dipindai via teknologi Optical Character Recognition (OCR) AI.</p>
+                            </div>
+                        </div>
+                        <div class="d-status">
+                            <span class="badge badge-verified"><i class="fa-solid fa-check"></i> Valid sampai 2029</span>
+                            <button class="btn-act" onclick="alert('File sudah disahkan API Root.');"><i class="fa-solid fa-file-arrow-up"></i> Perbarui File</button>
+                        </div>
+                    </div>
+
+                    <div class="doc-item">
+                        <div class="d-info">
+                            <div class="d-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <div>
+                                <h4>Berita Acara Sumpah (BAS) Pengadilan Tinggi</h4>
+                                <p>Skrining silang manual diperiksa oleh Admin platform.</p>
+                            </div>
+                        </div>
+                        <div class="d-status">
+                            <span class="badge badge-verified"><i class="fa-solid fa-check"></i> Cross-Match SIPP M.A.</span>
+                            <button class="btn-act disabled"><i class="fa-solid fa-cloud-arrow-up"></i> Terkunci Admin</button>
+                        </div>
+                    </div>
+
+                    <div class="doc-item" style="border-color: rgba(250, 204, 21, 0.3); background-color: rgba(250, 204, 21, 0.05);">
+                        <div class="d-info">
+                            <div class="d-icon" style="background-color: rgba(250, 204, 21, 0.1); color: #facc15;"><i class="fa-solid fa-face-smile"></i></div>
+                            <div>
+                                <h4 style="color: #facc15;">Swafoto 3D (Face-Liveness) Bersama KTP Asli</h4>
+                                <p>Menunggu peninjauan Endpoint API Dukcapil untuk mendeteksi ID Palsu / Masker.</p>
+                            </div>
+                        </div>
+                        <div class="d-status">
+                            <span class="badge badge-process"><i class="fa-solid fa-spinner fa-spin"></i> Proses Sinkronisasi AI 1x24 Jam</span>
+                            <button class="btn-act disabled" style="color: #facc15; border-color: rgba(250, 204, 21, 0.3);"><i class="fa-solid fa-camera"></i> Ulangi Perekaman</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

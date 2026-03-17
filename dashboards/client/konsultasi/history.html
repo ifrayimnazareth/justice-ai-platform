@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Konsultasi AI & Telepon - Klien Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; }
+
+        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .header-title h1 { margin: 0 0 5px 0; font-size: 1.8rem; font-family: var(--font-heading); color: white; }
+        .header-title p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+
+        .filters { display: flex; gap: 15px; margin-bottom: 30px; }
+        .search-box { flex: 1; max-width: 400px; position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 15px; color: var(--text-muted); }
+        .search-box input { width: 100%; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background-color: var(--bg-alt); padding: 12px 15px 12px 40px; color: white; }
+        
+        /* History Items */
+        .history-list { display: flex; flex-direction: column; gap: 15px; }
+        .history-card { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; cursor: pointer; }
+        .history-card:hover { border-color: var(--primary-color); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        .h-info { display: flex; gap: 20px; align-items: center; }
+        .h-icon { width: 50px; height: 50px; border-radius: 50%; background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .h-icon.ai { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .h-icon.video { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+        .h-text h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: white; font-family: var(--font-heading); }
+        .h-text p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+
+        .h-date { font-family: monospace; font-size: 0.85rem; color: var(--text-muted); text-align: right; }
+        .action-dl { margin-top: 10px; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: inline-block; white-space: nowrap; }
+        .action-dl:hover { background-color: white; color: black; }
+
+        @media screen and (max-width: 768px) {
+            .dashboard-container { flex-direction: column; min-height: auto; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .topbar { padding: 0 20px; font-size: 0.85rem; text-align: center; }
+            .content-area { padding: 20px; }
+            .header-title { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .filters { flex-direction: column; }
+            .filters .search-box, .filters select { width: 100%; max-width: none; }
+            .history-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .h-date { text-align: left; margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px; width: 100%; }
+            .h-info { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-balanced"></i> Justice App</a>
+            </div>
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Riwayat Pribadi</p>
+                <a href="../profile.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-user"></i> Akun Saya</a>
+                <a href="../notifikasi.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-bell"></i> Pemberitahuan</a>
+                <a href="../../ai/chatbot.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-robot"></i> LexBot Cerdas</a>
+                <a href="history.html" style="display: block; color: #38bdf8; text-decoration: none; padding: 10px 0; border-left: 3px solid #38bdf8; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-clock-rotate-left"></i> Histori Konsultasi</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;">Berkas Percakapan Dienkripsi Berlapis (Zero-Log System)</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="header-title">
+                    <div>
+                        <h1>Rekam Jejak Edukasi & Konsultasi</h1>
+                        <p>Akses kembali notula advokat atau riwayat chat AI masa lalu Anda.</p>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Cari Topik, Lawfirm, atau No Kasus...">
+                    </div>
+                    <select class="btn btn-outline" style="border-radius: 6px; padding: 10px; background-color: var(--bg-alt); color: white; border-color: rgba(255,255,255,0.1);">
+                        <option>Semua Metode</option>
+                        <option>Chat AI (LexBot)</option>
+                        <option>Video Call (E2EE)</option>
+                        <option>Chat Pengacara Pribadi</option>
+                    </select>
+                </div>
+
+                <div class="history-list">
+                    
+                    <div class="history-card">
+                        <div class="h-info">
+                            <div class="h-icon video"><i class="fa-solid fa-video"></i></div>
+                            <div class="h-text">
+                                <h3>Sesi Tatap Muka Virtual: Sengketa Agraria</h3>
+                                <p>Durasi: 01:12:05 &bull; Bersama Adv. Farhan (Kantor Hukum LexA)</p>
+                            </div>
+                        </div>
+                        <div class="h-date">
+                            <div style="margin-bottom:8px;">16 Mar 2026, 14:30 WIB</div>
+                            <button class="action-dl" onclick="dlTranscript(event)"><i class="fa-solid fa-download"></i> Unduh Transkrip AI (PDF)</button>
+                        </div>
+                    </div>
+
+                    <div class="history-card">
+                        <div class="h-info">
+                            <div class="h-icon"><i class="fa-solid fa-comments"></i></div>
+                            <div class="h-text">
+                                <h3>Chat Terenkripsi - Persiapan Somasi</h3>
+                                <p>SENG-2026-X1 &bull; Status: Terselesaikan</p>
+                            </div>
+                        </div>
+                        <div class="h-date">
+                            <div style="margin-bottom:8px;">15 Mar 2026, 09:12 WIB</div>
+                            <button class="action-dl" onclick="openLogs(event)"><i class="fa-solid fa-eye"></i> Buka Brankas Log</button>
+                        </div>
+                    </div>
+
+                    <div class="history-card">
+                        <div class="h-info">
+                            <div class="h-icon ai"><i class="fa-solid fa-robot"></i></div>
+                            <div class="h-text">
+                                <h3>LexBot: Penjelasan Hukum Perdata Terkait Force Majeure</h3>
+                                <p>Topik Terkait: Wanprestasi Hutang Bisnis</p>
+                            </div>
+                        </div>
+                        <div class="h-date">
+                            <div style="margin-bottom:8px;">12 Mar 2026, 21:05 WIB</div>
+                            <button class="action-dl" onclick="copyAILog(event)"><i class="fa-solid fa-copy"></i> Salin Kesimpulan</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Pemuatan Core Script Penting untuk Dropdown/Navigasi CSS -->
+    <script src="../../../assets/js/core/app.js"></script>
+
+    <!-- Script Fungsionalitas Hal. Riwayat -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const historyCards = document.querySelectorAll('.history-card');
+
+            // 1. Pencarian Real-Time
+            searchInput.addEventListener('input', function() {
+                const term = this.value.toLowerCase();
+                
+                historyCards.forEach(card => {
+                    const textContent = card.innerText.toLowerCase();
+                    if(textContent.includes(term)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // 2. Aksi Klik Global pada Kartu (Navigasi ke Detail)
+            historyCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I') {
+                        alert('Anda mengklik seluruh area riwayat ini.\nDalam versi nyata, ini akan membawa Anda ke layar "Detail Berkas Perkara" spesifik.');
+                    }
+                });
+            });
+        });
+
+        // 3. Tombol Unduh Transkrip
+        window.dlTranscript = function(event) {
+            // Mencegah klik menular ke history-card
+            event.stopPropagation();
+            alert('Menyambungkan ke Server Storage Node...\nSedang memproses enkripsi PDF "Sesi Tatap Muka - Adv. Riano". Unduhan akan segera dimulai.');
+        }
+
+        // 4. Tombol Buka Brankas (E2EE Chat)
+        window.openLogs = function(event) {
+            event.stopPropagation();
+            const pass = prompt('WARNING: Log Percakapan Pribadi ini diamankan End-to-End Encryption!\nSilakan masukkan sandi Dekripsi Pribadi Anda:');
+            if(pass) alert('Terkunci. Sandi cocok! Memuat Chat UI Viewer mode read-only...');
+        }
+
+        // 5. Tombol Salin dari LexBot AI
+        window.copyAILog = function(event) {
+            event.stopPropagation();
+            alert("Kesimpulan diskusi berserta yurisprudensi dari LexBot: Penjelasan Hukum Perdata Terkait Force Majeure telah disalin ke Clipboard (Ctrl+V) Anda!");
+        }
+    </script>
+</body>
+</html>

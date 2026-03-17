@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identitas Digital - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .vault-card { background: var(--bg-main); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-xl); margin-bottom: var(--space-lg); transition: all var(--transition-fast); }
+        .vault-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+        .info-row { display: flex; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: 0.82rem; color: var(--text-muted); width: 180px; flex-shrink: 0; }
+        .info-value { font-weight: 600; font-size: 0.9rem; }
+        .verified-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(56,161,105,0.1); color: var(--success); padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+        .edit-section { display: flex; gap: var(--space-lg); }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); }
+        .page-header h1 { margin: 0 0 5px 0; font-size: 1.5rem; }
+        .page-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        .search-wrapper { flex: 1; max-width: 500px; position: relative; }
+        .search-wrapper input { width: 100%; padding: 10px 15px 10px 40px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.1); outline: none; transition: all 0.2s; }
+        .search-wrapper input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(43,108,176,0.1); }
+        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-main); padding: var(--space-xl); border-radius: var(--radius-lg); width: 100%; max-width: 500px; position: relative; animation: fadeIn 0.3s; }
+
+        @media screen and (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .page-header button { width: 100%; }
+            .info-row { flex-direction: column; gap: 5px; }
+            .info-label { width: 100%; }
+            .vault-card > div:first-child { flex-direction: column; gap: 15px; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">AI</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Ruang Aman</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+            <a href="identitas.html" class="menu-item"><i class="fa-solid fa-id-card"></i><span>Identitas Digital</span></a>
+            <a href="kasus.html" class="menu-item"><i class="fa-solid fa-folder-closed"></i><span>Dokumen Kasus</span></a>
+            <a href="kontak.html" class="menu-item active"><i class="fa-solid fa-address-book"></i><span>Kontak Darurat</span></a>
+            <a href="sertifikat.html" class="menu-item"><i class="fa-solid fa-certificate"></i><span>Sertifikat</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="contactSearchTerm" placeholder="Cari nama atau nomor telepon...">
+            </div>
+            <div class="topbar-actions">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=1a365d&color=fff" alt="User" class="avatar" id="userAvatar">
+                    <div class="user-info"><span class="user-name" id="userNameLabel">Budi Santoso</span><span class="user-role">Klien</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Kontak Darurat</h1><p>Daftar kontak yang dapat dihubungi jika terjadi situasi hukum darurat.</p></div>
+                <button class="btn btn-primary" onclick="showAddContact()"><i class="fa-solid fa-plus"></i> &nbsp; Tambah Kontak</button>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(229,62,62,0.08), rgba(229,62,62,0.03)); border: 1px solid rgba(229,62,62,0.2); border-radius: var(--radius-lg); padding: var(--space-lg); margin-bottom: var(--space-xl);">
+                <h4 style="color: var(--danger); margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Informasi Penting</h4>
+                <p style="font-size: 0.87rem; color: var(--text-muted); margin: 0;">Kontak darurat akan dihubungi secara otomatis oleh sistem bila Anda tidak dapat hadir di sidang atau ada situasi kritis terkait perkara Anda. Pastikan informasi selalu diperbarui.</p>
+            </div>
+
+            <div class="vault-card">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-md);">
+                    <div style="display:flex;align-items:center;gap:var(--space-md);">
+                        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary-color),var(--primary-light));display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem;font-weight:700;">R</div>
+                        <div>
+                            <div style="font-weight:700;font-size:1rem;">Ibu Ratna Fauzi</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);">Istri / Pasangan</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;" onclick="editContactDummy()"><i class="fa-solid fa-edit"></i></button>
+                        <button class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;color:var(--danger);border-color:var(--danger);" onclick="deleteContactDummy(this)"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="info-row"><div class="info-label">No. Telepon</div><div class="info-value">+62 821-xxxx-xxxx <span class="verified-badge"><i class="fa-solid fa-check"></i> Terverifikasi</span></div></div>
+                <div class="info-row"><div class="info-label">Email</div><div class="info-value">ratna.fauzi@email.com</div></div>
+                <div class="info-row"><div class="info-label">Prioritas</div><div class="info-value"><span style="background:rgba(229,62,62,0.1);color:var(--danger);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Prioritas 1</span></div></div>
+                <div class="info-row"><div class="info-label">Hak Akses</div><div class="info-value">Melihat status perkara, Notifikasi sidang</div></div>
+            </div>
+
+            <div class="vault-card">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-md);">
+                    <div style="display:flex;align-items:center;gap:var(--space-md);">
+                        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--secondary-dark),var(--secondary-color));display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem;font-weight:700;">A</div>
+                        <div>
+                            <div style="font-weight:700;font-size:1rem;">Bapak Andi Fauzi</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);">Saudara Kandung</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;" onclick="editContactDummy()"><i class="fa-solid fa-edit"></i></button>
+                        <button class="btn btn-outline" style="padding:6px 12px;font-size:0.78rem;color:var(--danger);border-color:var(--danger);" onclick="deleteContactDummy(this)"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="info-row"><div class="info-label">No. Telepon</div><div class="info-value">+62 813-xxxx-xxxx</div></div>
+                <div class="info-row"><div class="info-label">Email</div><div class="info-value">andi.fauzi@email.com</div></div>
+                <div class="info-row"><div class="info-label">Prioritas</div><div class="info-value"><span style="background:rgba(214,158,46,0.1);color:var(--secondary-dark);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Prioritas 2</span></div></div>
+                <div class="info-row"><div class="info-label">Hak Akses</div><div class="info-value">Notifikasi sidang saja</div></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal Tambah Kontak Baru -->
+<div class="modal-overlay" id="addContactModal">
+    <div class="modal-content">
+        <button onclick="closeModal()" style="position:absolute; right:15px; top:15px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);"><i class="fa-solid fa-times"></i></button>
+        <h3 style="margin-top:0; margin-bottom:15px;">Tambah Kontak Darurat</h3>
+        
+        <div style="margin-bottom:15px;">
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem; font-weight:600;">Nama Lengkap</label>
+            <input type="text" style="width:100%; padding:10px; border:1px solid rgba(0,0,0,0.1); border-radius:6px;" placeholder="Contoh: Siti Aisyah">
+        </div>
+        
+        <div style="margin-bottom:15px;">
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem; font-weight:600;">Hubungan Kekerabatan</label>
+            <select style="width:100%; padding:10px; border:1px solid rgba(0,0,0,0.1); border-radius:6px; font-family:inherit;">
+                <option>Suami / Istri</option>
+                <option>Orang Tua</option>
+                <option>Saudara Kandung</option>
+                <option>Kerabat / Sahabat</option>
+                <option>Rekan Kerja</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom:15px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+                 <label style="display:block; margin-bottom:5px; font-size:0.85rem; font-weight:600;">No. Handphone Aktif</label>
+                 <input type="text" style="width:100%; padding:10px; border:1px solid rgba(0,0,0,0.1); border-radius:6px;" placeholder="+62 8...">
+            </div>
+            <div>
+                 <label style="display:block; margin-bottom:5px; font-size:0.85rem; font-weight:600;">Alamat Email</label>
+                 <input type="text" style="width:100%; padding:10px; border:1px solid rgba(0,0,0,0.1); border-radius:6px;" placeholder="opsional@email.com">
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;" onclick="submitNewContact()">Simpan Kontak ke Brankas</button>
+    </div>
+</div>
+
+<script src="../../../assets/js/core/app.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDIYkKAlRLu5kTUiB9yICRDaR5UNAVPKXg",
+        authDomain: "justice-ai-b0fd0.firebaseapp.com",
+        projectId: "justice-ai-b0fd0",
+        storageBucket: "justice-ai-b0fd0.firebasestorage.app",
+        messagingSenderId: "762124315437",
+        appId: "1:762124315437:web:eb6ef47c2aeeaef10041a4",
+        measurementId: "G-6S9KY8X3R3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            const userNameLabel = document.getElementById('userNameLabel');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            if (userNameLabel) userNameLabel.textContent = displayName;
+            if (userAvatar && user.photoURL) userAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
+        }
+    });
+
+    // Fitur Pencarian Nama/Telepon
+    document.getElementById('contactSearchTerm').addEventListener('input', function(e) {
+        let keyword = e.target.value.toLowerCase();
+        let cards = document.querySelectorAll('.vault-card');
+        
+        cards.forEach(card => {
+            let textKumpulan = card.innerText.toLowerCase();
+            if(textKumpulan.includes(keyword)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    const modal = document.getElementById('addContactModal');
+    
+    // Akses secara global karena module type membatasi local scope
+    window.showAddContact = function() { modal.style.display = 'flex'; }
+    window.closeModal = function() { modal.style.display = 'none'; }
+    window.submitNewContact = function() {
+        alert("Pihak keluarga tersebut telah diajukan ke dalam sistem darurat Justice AI dan undangan verifikasi akan dikirimkan ke kontak mereka.");
+        closeModal();
+    }
+    window.editContactDummy = function() {
+        alert("Mengubah konfigurasi otorisasi dan profil kontak darurat...");
+    }
+    window.deleteContactDummy = function(btnElem) {
+        if(confirm("PERINGATAN KRITIS: Anda akan menghapus pihak penerima mandat darurat ini dari protokol keamanan. Apakah Anda yakin?")) {
+            const card = btnElem.closest('.vault-card');
+            card.style.opacity = '0';
+            setTimeout(() => card.remove(), 300);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Perkara Saya - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .cases-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: var(--space-xl);
+        }
+
+        [data-theme="dark"] .tabs { border-bottom-color: rgba(255,255,255,0.1); }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            font-family: var(--font-body);
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all var(--transition-fast);
+        }
+
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .case-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .case-card {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: var(--space-lg);
+            display: flex;
+            gap: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast);
+            cursor: pointer;
+        }
+
+        [data-theme="dark"] .case-card { border-color: rgba(255,255,255,0.05); }
+
+        .case-card:hover {  box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+        .case-status-indicator {
+            width: 5px;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+        }
+        .status-active { background-color: var(--primary-color); }
+        .status-warning { background-color: var(--warning); }
+        .status-success { background-color: var(--success); }
+
+        .case-content { flex: 1; }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .case-title {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            font-family: var(--font-body);
+        }
+
+        .case-id {
+            font-family: monospace;
+            background: var(--bg-alt);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .bg-primary-light { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); }
+        .bg-warning-light { background-color: rgba(221, 107, 32, 0.1); color: var(--warning); }
+        .bg-success-light { background-color: rgba(56, 161, 105, 0.1); color: var(--success); }
+
+        .case-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .case-meta div { display: flex; align-items: center; gap: 5px; }
+
+        .progress-container { margin-bottom: 15px; }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .progress-bar {
+            height: 6px;
+            background-color: var(--bg-alt);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: var(--radius-full);
+        }
+
+        .case-lawyer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .case-lawyer { border-top-color: rgba(255,255,255,0.05); }
+
+        .lawyer-avatar-sm {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .case-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            min-width: 150px;
+        }
+
+        .topbar-search { flex: 1; max-width: 600px; position: relative; }
+        .topbar-search input { width: 100%; padding-right: 15px; transition: all var(--transition-fast); }
+        .topbar-search input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(43,108,176,0.1); }
+
+        /* Mobile Responsiveness untuk Manajemen Kartu Perkara */
+        @media screen and (max-width: 768px) {
+            .cases-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .cases-header button { width: 100%; }
+            
+            /* Tab bisa di-swipe horizontal di HP */
+            .tabs { 
+                overflow-x: auto; white-space: nowrap; padding-bottom: 5px; 
+                -webkit-overflow-scrolling: touch; 
+            }
+            .tabs::-webkit-scrollbar { height: 4px; }
+            .tabs::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+            .case-card { 
+                flex-direction: column; gap: var(--space-md); 
+                padding: var(--space-md); position: relative; overflow: hidden; 
+            }
+            
+            .case-status-indicator { 
+                position: absolute; left: 0; top: 0; 
+                width: 5px; height: 100%; border-radius: 0; 
+            }
+            
+            .case-content { padding-left: 10px; width: 100%; }
+            .case-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .case-meta { flex-direction: column; gap: 8px; }
+
+            .case-actions { 
+                flex-direction: row; flex-wrap: wrap; align-items: center; 
+                width: 100%; gap: 10px; justify-content: space-between;
+                border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; margin-top: 5px;
+            }
+            .case-actions button { flex: 1; white-space: nowrap; padding: 10px; font-size: 0.85rem;}
+            .case-actions span { width: 100%; text-align: left; margin-bottom: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Ringkasan Dasbor</span></a>
+                <a href="list.html" class="menu-item active"><i class="fa-solid fa-folder-open"></i><span>Perkara Saya (Active)</span></a>
+                <a href="../vault/identitas.html" class="menu-item"><i class="fa-solid fa-shield-halved"></i><span>Brankas Digital (Vault)</span></a>
+                
+                <div class="menu-label">Interaksi Hukum</div>
+                <a href="../../konsultasi/lawyer.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Cari Advokat</span></a>
+                <a href="../../../ai/chatbot.html" class="menu-item"><i class="fa-solid fa-robot"></i><span>Chatbot Resolusi AI</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="caseSearchInput" placeholder="Cari nomor registrasi perkara, nama tergugat...">
+                </div>
+                <div class="topbar-actions">
+                    <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=1a365d&color=fff" class="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area animate-fade-in">
+                
+                <div class="cases-header">
+                    <div>
+                        <h2 style="margin: 0 0 5px 0;">Manajemen Perkara & Sengketa</h2>
+                        <p style="color: var(--text-muted); margin: 0;">Pantau progres hukum Anda, jadwal pengadilan, dan komunikasi dengan advokat secara real-time.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.location.href='../konsultasi/lawyer.html'"><i class="fa-solid fa-plus"></i> Buat Kasus Baru</button>
+                </div>
+
+                <div class="tabs" id="caseTabs">
+                    <button class="tab-btn active" data-filter="semua">Semua Perkara (2)</button>
+                    <button class="tab-btn" data-filter="menunggu">Menunggu Tindakan (1)</button>
+                    <button class="tab-btn" data-filter="litigasi">Dalam Proses Litigasi (1)</button>
+                    <button class="tab-btn" data-filter="selesai">Selesai (0)</button>
+                </div>
+
+                <div class="case-list" id="caseListContainer">
+                    
+                    <!-- Case 1: Litigasi -->
+                    <div class="case-card" data-status="litigasi">
+                        <div class="case-status-indicator status-active"></div>
+                        <div class="case-content">
+                            <div class="case-header">
+                                <div>
+                                    <h3 class="case-title">Gugatan Wanprestasi PT. Pembangunan Maju</h3>
+                                    <span class="case-id">REG-ID: JAI-2026-03-A981</span>
+                                </div>
+                                <span class="status-badge bg-primary-light">Litigasi Pengadilan Negeri</span>
+                            </div>
+
+                            <div class="case-meta">
+                                <div><i class="fa-regular fa-calendar"></i> Tgl Daftar: 10 Feb 2026</div>
+                                <div><i class="fa-solid fa-gavel"></i> PN Jakarta Selatan</div>
+                                <div><i class="fa-solid fa-sack-dollar"></i> Gugatan: Rp 1.5 Miliar</div>
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="progress-header">
+                                    <span>Tahap 3: Pembuktian Dokumen</span>
+                                    <span style="color: var(--primary-color);">60%</span>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                            </div>
+
+                            <div class="case-lawyer">
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Kuasa Hukum:</span>
+                                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" class="lawyer-avatar-sm">
+                                <span style="font-weight: 500; font-size: 0.9rem;">Adv. Riano Prakoso, S.H.</span>
+                            </div>
+                        </div>
+                        <div class="case-actions">
+                            <button class="btn btn-outline" style="width: 100%; border-color: rgba(0,0,0,0.1);" onclick="window.location.href='../../../konsultasi/chat-lawyer.html'"><i class="fa-solid fa-video"></i> Diskusi</button>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="alert('Memuat histori sidang e-Court dan rincian putusan sela perkara JAI-2026-03-A981...')"><i class="fa-solid fa-folder-open"></i> Detail Kasus</button>
+                        </div>
+                    </div>
+
+                    <!-- Case 2: Menunggu Mediasi -->
+                    <div class="case-card" data-status="menunggu">
+                        <div class="case-status-indicator status-warning"></div>
+                        <div class="case-content">
+                            <div class="case-header">
+                                <div>
+                                    <h3 class="case-title">Sengketa Hak Asuh & Pembagian Harta Bersama</h3>
+                                    <span class="case-id">REG-ID: JAI-2026-03-B422</span>
+                                </div>
+                                <span class="status-badge bg-warning-light">Mediasi Pra-Litigasi</span>
+                            </div>
+
+                            <div class="case-meta">
+                                <div><i class="fa-regular fa-calendar"></i> Tgl Daftar: 15 Mar 2026</div>
+                                <div><i class="fa-solid fa-gavel"></i> Pengadilan Agama Jakarta Pusat</div>
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="progress-header">
+                                    <span>Tahap 1: Penyusunan Draft Mediasi Bipartit</span>
+                                    <span style="color: var(--warning);">20%</span>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 20%; background-color: var(--warning);"></div></div>
+                            </div>
+
+                            <div class="case-lawyer">
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Kuasa Hukum:</span>
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" class="lawyer-avatar-sm">
+                                <span style="font-weight: 500; font-size: 0.9rem;">Nadya Lestari, S.H., M.Kn.</span>
+                            </div>
+                        </div>
+                        <div class="case-actions">
+                            <span style="font-size: 0.8rem; color: var(--danger); font-weight: 500;"><i class="fa-solid fa-circle-exclamation"></i> Menunggu TTD Klien</span>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='../vault/identitas.html'"><i class="fa-solid fa-file-pen"></i> Buka Dokumen</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="../../../assets/js/core/app.js"></script>
+
+    <!-- Script Logika Fitur Manajemen Perkara -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('caseSearchInput');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const caseCards = document.querySelectorAll('.case-card');
+            const caseListContainer = document.getElementById('caseListContainer');
+
+            let currentFilter = 'semua';
+
+            function applyFilters() {
+                const query = searchInput.value.toLowerCase().trim();
+                let visibleCards = 0;
+
+                caseCards.forEach(card => {
+                    const status = card.getAttribute('data-status');
+                    
+                    // Ambil teks data dari card untuk sistem search
+                    const title = card.querySelector('.case-title').textContent.toLowerCase();
+                    const caseId = card.querySelector('.case-id').textContent.toLowerCase();
+                    const lawyerNode = card.querySelector('.case-lawyer span:last-child');
+                    const lawyerName = lawyerNode ? lawyerNode.textContent.toLowerCase() : '';
+
+                    // 1. Validasi Status Tab
+                    const isTabMatch = (currentFilter === 'semua') || (currentFilter === status);
+                    
+                    // 2. Validasi Kata Kunci Input
+                    const isSearchMatch = title.includes(query) || caseId.includes(query) || lawyerName.includes(query);
+
+                    if (isTabMatch && isSearchMatch) {
+                        card.style.display = 'flex';
+                        visibleCards++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Tampilkan pesan kosong (Not Found State) jika tak ada kasus yang lolos filter
+                let noResultElem = document.getElementById('noCaseMsgContainer');
+                
+                if (visibleCards === 0) {
+                    if (!noResultElem) {
+                        noResultElem = document.createElement('div');
+                        noResultElem.id = 'noCaseMsgContainer';
+                        noResultElem.style.padding = '40px';
+                        noResultElem.style.textAlign = 'center';
+                        noResultElem.style.color = 'var(--text-muted)';
+                        noResultElem.style.backgroundColor = 'var(--bg-main)';
+                        noResultElem.style.borderRadius = 'var(--radius-lg)';
+                        noResultElem.style.border = '1px dashed rgba(0,0,0,0.1)';
+                        noResultElem.innerHTML = '<i class="fa-regular fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i><br>Tidak ada data perkara yang cocok dengan kriteria status atau pencarian Anda.';
+                        caseListContainer.appendChild(noResultElem);
+                    }
+                } else {
+                    if (noResultElem) noResultElem.remove();
+                }
+            }
+
+            // Bind Event Listeners untuk pergantian Tab Filter Status
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // simpan status ID tab menu yang diklik lalu saring kartu
+                    currentFilter = btn.getAttribute('data-filter');
+                    applyFilters();
+                });
+            });
+
+            // Bind Event Listeners pengetikan real-time fungsi Search/Filter Bar
+            searchInput.addEventListener('input', applyFilters);
+        });
+    </script>
+</body>
+</html>

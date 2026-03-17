@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Gugatan - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Two Column Layout */
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        
+        /* Case Info Panel */
+        .case-card { background-color: var(--bg-alt); border-radius: var(--radius-lg); padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .case-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .case-meta { font-family: monospace; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px; display: flex; gap: 20px; }
+        
+        .case-desc { line-height: 1.8; color: #e2e8f0; font-size: 1.05rem; }
+        .case-desc h4 { color: #58a6ff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; margin-top: 30px; }
+
+        /* Timeline Snapshot */
+        .t-node { display: flex; gap: 15px; margin-bottom: 20px; position: relative; }
+        .t-node::before { content: ''; position: absolute; left: 19px; top: 35px; bottom: -25px; width: 2px; background-color: rgba(255,255,255,0.1); }
+        .t-node:last-child::before { display: none; }
+        .t-icon { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(56, 189, 248, 0.1); border: 2px solid #58a6ff; display: flex; align-items: center; justify-content: center; color: #58a6ff; flex-shrink: 0; z-index: 2; }
+        .t-info { flex: 1; background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); }
+        .t-info h5 { margin: 0 0 5px 0; color: white; display: flex; justify-content: space-between; }
+        .t-info p { margin: 0; font-size: 0.85rem; color: #94a3b8; }
+        .t-time { font-family: monospace; color: #64748b; font-size: 0.8rem; }
+
+        .ai-verdict { background-color: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.3); padding: 25px; border-radius: var(--radius-md); margin-top: 30px; }
+        .ai-verdict h4 { color: #a855f7; margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px; }
+
+        /* Summary Sidebar */
+        .sidebar-card { background-color: #0f172a; border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+        .sidebar-card h3 { margin: 0 0 15px 0; font-size: 1rem; color: white; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .lawyer-mini { display: flex; align-items: center; gap: 15px; }
+        .lawyer-mini img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #38bdf8; }
+        
+        .side-stats { margin-top: 20px; }
+        .s-val { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; }
+        .s-val span:first-child { color: #94a3b8; }
+        .s-val span:last-child { color: white; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice App</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Perkara (Dockets)</p>
+                <a href="list.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-gavel"></i> Perkembangan Kasus</a>
+                <a href="../vault/kasus.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-folder-open"></i> Manajemen Brankas</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Navigasi Lain</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-satellite-dish"></i> Status Real-Time Terhubung E-Court MA-RI</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tinjauan Pledoi Sengketa Bisnis</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Melihat status persidangan, riwayat bukti, dan ringkasan dari Advokat.</p>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    
+                    <!-- Kiri: Penjelasan Kasus -->
+                    <div class="case-card">
+                        <span class="case-status"><i class="fa-solid fa-spinner fa-spin"></i> TAHAP VERIFIKASI ALAT BUKTI SEBELUM SIDANG</span>
+                        <h2>Sengketa Utang-Piutang PT Maju & CV Abadi</h2>
+                        
+                        <div class="case-meta">
+                            <span><i class="fa-solid fa-hashtag"></i> SG-2026/XI/109</span>
+                            <span><i class="fa-solid fa-scale-balanced"></i> Hukum Bisnis (Perdata)</span>
+                            <span><i class="fa-solid fa-calendar"></i> Dimulai: 01 Mar 2026</span>
+                        </div>
+
+                        <div class="case-desc">
+                            Kasus perselisihan yang melibatkan gagal bayar pihak tergugat terhadap invoice bernilai <b>Rp 1.4 Milyar Rupiah</b> sesuai Kontrak Kerja Sama tanggal 12 Agustus 2025. Tergugat menyatakan force majeure akibat inflasi global yang dinilai tidak sesuai yurisprudensi.
+                            
+                            <h4><i class="fa-solid fa-robot" style="color: #58a6ff;"></i> Ringkasan Bukti Vault</h4>
+                            <ul>
+                                <li>Invoice #INV-250812 (Sudah dilegalisir E-Meterai)</li>
+                                <li>Catatan Log Web WhatsApp (Disita digital)</li>
+                                <li>Rekening Koran Mandiri CV Abadi</li>
+                            </ul>
+                        </div>
+
+                        <div class="ai-verdict">
+                            <h4><i class="fa-solid fa-brain"></i> Prediksi Pakar AI (LexBot)</h4>
+                            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">Dengan alat bukti P-1 dan P-2 yang tersimpan di Vault Anda, kemungkinan gugatan dikabulkan <strong>Tinggi (88%)</strong>. Hakim MA sangat jarang menerima eksepsi Inflasi sebagai Force Majeure (Yurisprudensi MA No.23K/Pdt/2009).</p>
+                        </div>
+                        
+                        <div class="case-desc">
+                            <h4><i class="fa-solid fa-shoe-prints"></i> Linimasa Histori</h4>
+                            
+                            <div class="t-node">
+                                <div class="t-icon"><i class="fa-solid fa-check"></i></div>
+                                <div class="t-info">
+                                    <h5>Pembacaan Draf Gugatan oleh Advokat <span class="t-time">10 Mar 26</span></h5>
+                                    <p>Telah disepakati draft akhir untuk dikirim ke register MA via WSS Endpoint.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="t-node">
+                                <div class="t-icon" style="background-color: rgba(250, 204, 21, 0.1); border-color: #facc15; color: #facc15;"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                <div class="t-info">
+                                    <h5 style="color: #facc15;">Telekonferensi Rapat Klien <span class="t-time">14 Mar 26</span></h5>
+                                    <p>Pertemuan E2EE untuk negosiasi pembuktian digital rekening koran.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Kanan: Sidebar Aksi & Lawyer -->
+                    <div>
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-user-tie"></i> Representasi Hukum</h3>
+                            <div class="lawyer-mini">
+                                <img src="https://ui-avatars.com/api/?name=Adv+Farhan&background=1e293b&color=58a6ff" alt="Pengacara">
+                                <div>
+                                    <div style="font-weight: bold; color: white;">Adv. Farhan, S.H.</div>
+                                    <div style="font-size: 0.8rem; color: #4ade80;"><i class="fa-solid fa-circle"></i> Online via WebRTC</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.2); margin-top: 15px;"><i class="fa-solid fa-video"></i> Ajak Telekonferensi</button>
+                        </div>
+
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-money-bill-transfer"></i> Laporan Tagihan (Escrow)</h3>
+                            <div class="side-stats">
+                                <div class="s-val"><span>Total Nilai Retainer</span> <span>Rp 150.000.000</span></div>
+                                <div class="s-val"><span>Uang Dimuka Ditahan Xendit</span> <span style="color: #facc15;">Rp 75.000.000</span></div>
+                                <div class="s-val"><span>Kontrak Sukses Fee (Win)</span> <span style="color: #4ade80;">10% dari 1.4M</span></div>
+                            </div>
+                            <button class="btn btn-outline" style="width: 100%; background-color: rgba(250, 204, 21, 0.1); color: #facc15; border-color: rgba(250, 204, 21, 0.3); margin-top: 15px;"><i class="fa-solid fa-lock"></i> Escrow Aman</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

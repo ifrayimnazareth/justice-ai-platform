@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saluran Chat Aman (E2EE) - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        
+        /* Chat UI Layout */
+        .chat-wrapper { flex: 1; display: flex; overflow: hidden; }
+        
+        /* Chat List Sidebar */
+        .chat-list { width: 320px; border-right: 1px solid rgba(255,255,255,0.05); background-color: var(--bg-alt); display: flex; flex-direction: column; }
+        .chat-search { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .chat-search input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background-color: var(--bg-main); color: white; outline: none; }
+        
+        .rooms { flex: 1; overflow-y: auto; }
+        .room-item { padding: 15px 20px; display: flex; gap: 15px; cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .room-item:hover, .room-item.active { background-color: rgba(255,255,255,0.05); }
+        .room-item.active { border-left: 3px solid #58a6ff; }
+        
+        .r-avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #0f172a; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; position: relative; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-alt); }
+        .status-online { background-color: #4ade80; }
+        
+        .r-info { flex: 1; overflow: hidden; }
+        .r-info h4 { margin: 0 0 5px 0; font-size: 0.95rem; color: white; display: flex; justify-content: space-between; }
+        .r-time { font-size: 0.75rem; color: #64748b; font-weight: normal; }
+        .r-msg { margin: 0; font-size: 0.8rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; }
+        .unread-badge { background-color: #58a6ff; color: white; font-size: 0.7rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto; }
+
+        /* Chat Area Box */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-main); }
+        
+        .chat-header { padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-alt); }
+        .c-user-info { display: flex; align-items: center; gap: 15px; }
+        .c-user-info h3 { margin: 0 0 5px 0; color: white; display: flex; align-items: center; gap: 8px; }
+        .c-user-info p { margin: 0; font-size: 0.8rem; color: #4ade80; display: flex; align-items: center; gap: 5px; }
+        
+        .chat-history { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        
+        .msg-bubble { max-width: 60%; padding: 15px 20px; border-radius: 12px; font-size: 0.95rem; line-height: 1.5; position: relative; clear: both; }
+        .msg-bubble.is-client { background-color: rgba(255,255,255,0.05); color: #e2e8f0; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid rgba(255,255,255,0.05); }
+        .msg-bubble.is-lawyer { background-color: rgba(88, 166, 255, 0.15); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg-time { display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-align: right; margin-top: 5px; }
+        
+        .e2e-notice { align-self: center; background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); padding: 8px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-bottom: 20px; text-align: center; }
+
+        .chat-input-area { padding: 20px 30px; border-top: 1px solid rgba(255,255,255,0.05); background-color: var(--bg-alt); display: flex; gap: 15px; align-items: center; }
+        .btn-attach { background: none; border: none; font-size: 1.2rem; color: #94a3b8; cursor: pointer; transition: 0.2s; }
+        .btn-attach:hover { color: white; }
+        .c-input { flex: 1; height: 50px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); background-color: var(--bg-main); padding: 0 20px; color: white; outline: none; font-family: var(--font-body); }
+        .btn-send { height: 50px; width: 50px; border-radius: 50%; background-color: #58a6ff; border: none; color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+        .btn-send:hover { background-color: #3b82f6; transform: scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Konsultasi Klien</p>
+                <a href="chat.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-comment-dots"></i> Pesan Teks (E2EE)</a>
+                <a href="video.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-video"></i> WebRTC Telekonferensi</a>
+                <a href="history.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-clock-rotate-left"></i> Histori Sesi & Transkrip</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-lock"></i> Sesi komunikasi di-enkripsi menggunakan sandi asimetris (Curve25519)</div>
+            </div>
+
+            <div class="chat-wrapper">
+                
+                <div class="chat-list">
+                    <div class="chat-search">
+                        <input type="text" placeholder="Cari percakapan Klien...">
+                    </div>
+                    
+                    <div class="rooms">
+                        <div class="room-item active">
+                            <div class="r-avatar">AW <span class="status-dot status-online"></span></div>
+                            <div class="r-info">
+                                <h4>Anisa Wulandari <span class="r-time">14:02</span></h4>
+                                <div style="display: flex; align-items: center;">
+                                    <p class="r-msg"><i class="fa-solid fa-check-double" style="color: #4ade80;"></i> Baik Pak, dokumennya sudah saya Vault.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="room-item">
+                            <div class="r-avatar" style="background-color: rgba(248, 81, 73, 0.2); color: #f85149;">BK <span class="status-dot" style="background-color: #64748b;"></span></div>
+                            <div class="r-info">
+                                <h4>Budi Kusuma <span class="r-time">Kemarin</span></h4>
+                                <p class="r-msg">Saya sudah transfer ke Escrow...</p>
+                            </div>
+                            <div class="unread-badge">2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <div class="c-user-info">
+                            <div class="r-avatar" style="background-color: #38bdf8;">AW</div>
+                            <div>
+                                <h3>Anisa Wulandari <i class="fa-solid fa-shield-halved" style="color: #facc15; font-size: 0.9rem;" title="Vault Bersama Level Akses Granted"></i></h3>
+                                <p><i class="fa-solid fa-circle"></i> Klien VIP - Kasus Sengketa Utang-Piutang</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="alert('Beralih ke saluran Video WebRTC...'); window.location.href='video.html';"><i class="fa-solid fa-phone-volume"></i> Mulai Telekonferensi Penuh</button>
+                    </div>
+
+                    <div class="chat-history">
+                        <div class="e2e-notice">
+                            <i class="fa-solid fa-lock"></i> Percakapan dilindungi *Zero Retention Policy*. 15 Menit setelah sesi konsultasi ditutup Klien, sandi kunci akan dibakar dan data lenyap dari server Database MA (Purged).
+                        </div>
+
+                        <div class="msg-bubble is-client">
+                            Selamat Siang Pak Farhan. Sesuai konsultasi kita hari rabu minggu lalu, saya mendapatkan Surat Somasi ke-2... apa yang harus saya lakukan ya Pak? Apakah ini ancaman serius?
+                            <span class="msg-time">13:45 WIB</span>
+                        </div>
+
+                        <div class="msg-bubble is-lawyer">
+                            Selamat siang Ibu Anisa. Jangan khawatir Bu, tarik nafas sejenak. Jika merujuk ke somasi pertama, mereka sebenarnya tidak punya bukti rekening koran dari kita. Bisakah Ibu unggah surat tersebut ke Brankas/Vault kita? NNanti saya buka dengan master key Klien Ibu.
+                            <span class="msg-time"><i class="fa-solid fa-check-double" style="color: #4ade80; margin-right: 5px;"></i> 13:48 WIB</span>
+                        </div>
+
+                        <div class="msg-bubble is-client">
+                            Tentu Pak, saya foto dulu menggunakan applikasi Justice Scanner. Sebentar ya Pak...
+                            <span class="msg-time">13:55 WIB</span>
+                        </div>
+
+                        <div class="msg-bubble is-client">
+                            <div style="background-color: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(88, 166, 255, 0.3); display: flex; align-items: center; gap: 10px;">
+                                <i class="fa-solid fa-file-pdf" style="color: #58a6ff; font-size: 1.5rem;"></i>
+                                <div>
+                                    <span style="font-weight: bold; display: block; filter: blur(3px);">SOMASI_KEDUA_FINAL.pdf.AES</span>
+                                    <span style="font-size: 0.7rem; color: #4ade80;"><i class="fa-solid fa-lock"></i> Dilindungi Vault Asimetris</span>
+                                </div>
+                            </div>
+                            Baik Pak, dokumennya sudah saya Vault.
+                            <span class="msg-time">14:02 WIB</span>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <button class="btn-attach" title="Kirim Surat Resmi/Tagihan"><i class="fa-solid fa-paperclip"></i></button>
+                        <button class="btn-attach" title="Gunakan AI LexBot Untuk Draf Jawaban" style="color: #a855f7;"><i class="fa-solid fa-brain"></i></button>
+                        <input type="text" class="c-input" placeholder="Ketik Pesan Hukum Terenkripsi...">
+                        <button class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>

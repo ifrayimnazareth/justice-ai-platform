@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permintaan Konsultasi - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/lawyer.css">
+    <style>
+        .consult-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); margin-bottom: var(--space-md); display: flex; gap: var(--space-lg); align-items: flex-start; transition: all var(--transition-fast); }
+        .consult-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .consult-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .consult-body { flex: 1; }
+        .consult-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+        .consult-name { font-weight: 700; font-size: 1rem; }
+        .consult-time { font-size: 0.78rem; color: var(--text-muted); }
+        .consult-topic { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.6; }
+        .badge-type { display: inline-block; padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; margin-right: 6px; }
+        .badge-chat { background: rgba(49,130,206,0.1); color: var(--info); }
+        .badge-video { background: rgba(0,181,216,0.1); color: var(--accent-color); }
+        .badge-urgent { background: rgba(229,62,62,0.1); color: var(--danger); }
+        .tab-bar { display: flex; border-bottom: 2px solid rgba(0,0,0,0.08); margin-bottom: var(--space-xl); }
+        .tab-item { padding: 12px 20px; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all var(--transition-fast); }
+        .tab-item.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Workspace</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Ringkasan Kinerja</span></a>
+            <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Tugas Perkara</span></a>
+            <a href="list.html" class="menu-item active"><i class="fa-solid fa-comments"></i><span>Permintaan Konsultasi</span></a>
+            <a href="../schedule/calendar.html" class="menu-item"><i class="fa-regular fa-calendar-days"></i><span>Jadwal</span></a>
+            <div class="menu-label">AI Legal Tools</div>
+            <a href="../cases/draft-maker.html" class="menu-item"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Pembuat Draft</span></a>
+            <a href="../../../ai/win-probability.html" class="menu-item"><i class="fa-solid fa-percent"></i><span>Prediksi Kasus</span></a>
+            <div class="menu-label">Keuangan</div>
+            <a href="../earnings/income.html" class="menu-item"><i class="fa-solid fa-money-bill-trend-up"></i><span>Pendapatan</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar Sesi</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari konsultasi..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Profile" class="avatar">
+                    <div class="user-info"><span class="user-name">Adv. Budi Santoso, S.H.</span><span class="user-role">Litigasi Perdata & Bisnis</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Permintaan Konsultasi</h1>
+                    <p>Kelola semua permintaan konsultasi dari klien Anda.</p>
+                </div>
+                <div style="display:flex; gap: var(--space-sm);">
+                    <span class="status-badge" style="background-color: var(--danger); color: white; padding: 8px 16px; border-radius: var(--radius-full); font-weight:600; font-size: 0.85rem;">5 Baru Menunggu</span>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab-item active" onclick="setTab(this)">Menunggu (5)</div>
+                <div class="tab-item" onclick="setTab(this)">Aktif (3)</div>
+                <div class="tab-item" onclick="setTab(this)">Selesai (47)</div>
+                <div class="tab-item" onclick="setTab(this)">Ditolak (2)</div>
+            </div>
+
+            <!-- Pending Consultations -->
+            <div class="consult-card">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150" alt="Klien" class="consult-avatar">
+                <div class="consult-body">
+                    <div class="consult-header">
+                        <div>
+                            <div class="consult-name">Bapak Ahmad Fauzi</div>
+                            <div style="font-size:0.78rem; color: var(--text-muted);">Klien Baru · Jakarta Selatan</div>
+                        </div>
+                        <span class="consult-time">5 menit lalu</span>
+                    </div>
+                    <div class="consult-topic"><strong>Topik:</strong> Sengketa kepemilikan tanah warisan dengan saudara kandung. Sertifikat atas nama mendiang ayah belum balik nama. Butuh panduan langkah hukum segera.</div>
+                    <div>
+                        <span class="badge-type badge-video"><i class="fa-solid fa-video"></i> Video Call</span>
+                        <span class="badge-type badge-urgent"><i class="fa-solid fa-fire"></i> Mendesak</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <a href="video.html" class="btn btn-primary" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-check"></i> Terima & Mulai</a>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> Jadwalkan</button>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem; color:var(--danger); border-color:var(--danger);">Tolak</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consult-card">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" alt="Klien" class="consult-avatar">
+                <div class="consult-body">
+                    <div class="consult-header">
+                        <div>
+                            <div class="consult-name">Ibu Sari Dewi Utami</div>
+                            <div style="font-size:0.78rem; color: var(--text-muted);">Klien Lama · Bandung</div>
+                        </div>
+                        <span class="consult-time">23 menit lalu</span>
+                    </div>
+                    <div class="consult-topic"><strong>Topik:</strong> Review kontrak kerja sama dengan mitra bisnis baru. Perlu pengecekan klausul penalti dan force majeure sebelum penandatanganan besok.</div>
+                    <div>
+                        <span class="badge-type badge-chat"><i class="fa-solid fa-comments"></i> Chat</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <a href="chat.html" class="btn btn-primary" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-check"></i> Terima & Chat</a>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> Jadwalkan</button>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem; color:var(--danger); border-color:var(--danger);">Tolak</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consult-card">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150" alt="Klien" class="consult-avatar">
+                <div class="consult-body">
+                    <div class="consult-header">
+                        <div>
+                            <div class="consult-name">PT. Global Nusantara Tbk.</div>
+                            <div style="font-size:0.78rem; color: var(--text-muted);">Korporat · Jakarta Pusat</div>
+                        </div>
+                        <span class="consult-time">1 jam lalu</span>
+                    </div>
+                    <div class="consult-topic"><strong>Topik:</strong> Konsultasi korporat terkait rencana akuisisi anak perusahaan. Butuh pendapat hukum (legal opinion) mengenai implikasi anti-monopoli dan persaingan usaha.</div>
+                    <div>
+                        <span class="badge-type badge-video"><i class="fa-solid fa-video"></i> Video + Dokumen</span>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <a href="video.html" class="btn btn-primary" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-check"></i> Terima</a>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> Jadwalkan</button>
+                        <button class="btn btn-outline" style="padding:7px 18px; font-size:0.85rem; color:var(--danger); border-color:var(--danger);">Tolak</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function setTab(el) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+</script>
+</body>
+</html>

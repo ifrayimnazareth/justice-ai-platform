@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Agenda - Hakim Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; }
+
+        .dashboard-layout { display: flex; min-height: 100vh; }
+
+        .sidebar { width: 280px; background-color: #1e293b; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar-menu { padding: 20px 0; overflow-y: auto; }
+        .menu-label { padding: 10px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
+
+        .menu-item { display: flex; align-items: center; padding: 12px 24px; color: #cbd5e1; text-decoration: none; gap: 15px; transition: all 0.2s ease; position: relative; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.03); color: white; }
+        .menu-item.active { background-color: rgba(234, 179, 8, 0.1); color: #facc15; border-right: 3px solid #facc15; }
+
+        .main-content { flex: 1; margin-left: 280px; display: flex; flex-direction: column; }
+
+        .topbar { height: 70px; background-color: #1e293b; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; position: sticky; top: 0; z-index: 90; }
+
+        .content-area { padding: 40px; display: flex; gap: 40px; }
+
+        /* Left Split: Calendar View */
+        .calendar-section { flex: 2; }
+        
+        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-action h2 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        .cal-controls { display: flex; gap: 10px; align-items: center; }
+        .cal-btn { background-color: #1e293b; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .cal-btn:hover { border-color: #facc15; color: #facc15; }
+        
+        .cal-grid { background-color: #1e293b; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+        
+        .cal-header { background-color: rgba(0,0,0,0.2); font-weight: bold; color: #94a3b8; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .cal-day { padding: 20px 10px; height: 120px; border-right: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; flex-direction: column; transition: 0.2s; cursor: pointer; }
+        .cal-day:hover { background-color: rgba(255,255,255,0.02); }
+        .cal-day:nth-child(7n) { border-right: none; }
+        
+        .cal-day.muted { color: #64748b; opacity: 0.5; background-color: rgba(0,0,0,0.1); }
+        .cal-day.today { background-color: rgba(234, 179, 8, 0.05); box-shadow: inset 0 0 0 1px #facc15; }
+        
+        .date-num { align-self: flex-start; font-weight: bold; margin-bottom: 10px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .cal-day.today .date-num { background-color: #facc15; color: black; }
+
+        .cal-event { background-color: rgba(59, 130, 246, 0.15); border-left: 3px solid #3b82f6; padding: 5px; font-size: 0.75rem; color: #cbd5e1; text-align: left; margin-bottom: 5px; border-radius: 0 4px 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cal-event.urgent { border-left-color: #f87171; background-color: rgba(239, 68, 68, 0.15); }
+        .cal-event.done { border-left-color: #4ade80; background-color: rgba(74, 222, 128, 0.15); opacity: 0.7; }
+
+        /* Right Split: Daily Detail & Filter */
+        .detail-section { flex: 1; }
+        
+        .agenda-card { background-color: #1e293b; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .agenda-card h3 { margin: 0 0 20px 0; font-family: var(--font-heading); color: #facc15; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        
+        .task-list { display: flex; flex-direction: column; gap: 15px; }
+        
+        .task-item { display: flex; gap: 15px; align-items: flex-start; }
+        .task-time { font-family: monospace; font-weight: bold; width: 50px; flex-shrink: 0; color: #94a3b8; }
+        .task-info { flex: 1; background-color: rgba(0,0,0,0.2); padding: 12px 15px; border-radius: 6px; border-left: 2px solid #58a6ff; }
+        .task-info h4 { margin: 0 0 5px 0; font-size: 0.95rem; color: white; }
+        .task-info p { margin: 0; font-size: 0.8rem; color: #8b949e; }
+        
+        .task-item.priority .task-info { border-left-color: #f87171; background-color: rgba(248, 81, 73, 0.05); }
+        .task-item.priority .task-time { color: #f87171; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout animate-fade-in">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-unbalanced" style="color: #facc15;"></i> Hakim<span>Arbiter</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gavel"></i><span>Meja Hijau (Dashboard)</span></a>
+                
+                <div class="menu-label">Pemeriksaan Perkara</div>
+                <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-folder-open"></i><span>Berkas Perkara Masuk</span></a>
+                <a href="../cases/review.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Sistem Review Bukti (AI)</span></a>
+                <a href="../cases/putusan.html" class="menu-item"><i class="fa-solid fa-stamp"></i><span>Drafting Putusan</span></a>
+                
+                <div class="menu-label">Ruang Sidang Virtual</div>
+                <a href="jadwal.html" class="menu-item active"><i class="fa-regular fa-calendar-check"></i><span>Agenda Sidang</span></a>
+                <a href="teleconference.html" class="menu-item"><i class="fa-solid fa-tower-broadcast"></i><span>Teleconference E-Court</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;">Kalender Cuti Bersama Tersinkronisasi dgn Mahkamah Agung RI</div>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <button class="btn btn-outline" style="border-radius: 20px; padding: 5px 15px; font-size: 0.8rem; border-color: #facc15; color: #facc15;"><i class="fa-solid fa-plus"></i> Tambah Agenda Khusus</button>
+                    <div style="width: 35px; height: 35px; border-radius: 50%; background-color: #facc15; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold;">HR</div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <!-- Kalender Visual -->
+                <section class="calendar-section">
+                    <div class="header-action">
+                        <h2>Maret 2026</h2>
+                        <div class="cal-controls">
+                            <button class="cal-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="cal-btn" style="font-weight: bold; background-color: rgba(255,255,255,0.05);">Hari Ini</button>
+                            <button class="cal-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="cal-grid">
+                        <div class="cal-header">Min</div>
+                        <div class="cal-header">Sen</div>
+                        <div class="cal-header">Sel</div>
+                        <div class="cal-header">Rab</div>
+                        <div class="cal-header">Kam</div>
+                        <div class="cal-header">Jum</div>
+                        <div class="cal-header">Sab</div>
+
+                        <!-- Baris 1: Februari & Awal Maret -->
+                        <div class="cal-day muted"><div class="date-num">22</div></div>
+                        <div class="cal-day muted"><div class="date-num">23</div></div>
+                        <div class="cal-day muted"><div class="date-num">24</div></div>
+                        <div class="cal-day muted"><div class="date-num">25</div></div>
+                        <div class="cal-day muted"><div class="date-num">26</div></div>
+                        <div class="cal-day muted"><div class="date-num">27</div></div>
+                        <div class="cal-day muted"><div class="date-num">28</div></div>
+                        
+                        <div class="cal-day"><div class="date-num">1</div></div>
+                        <div class="cal-day"><div class="date-num">2</div></div>
+                        <div class="cal-day"><div class="date-num">3</div></div>
+                        <div class="cal-day"><div class="date-num">4</div></div>
+                        <div class="cal-day"><div class="date-num">5</div></div>
+                        <div class="cal-day"><div class="date-num">6</div></div>
+                        <div class="cal-day"><div class="date-num">7</div></div>
+                        
+                        <!-- Event Minggu Ke-2 -->
+                        <div class="cal-day"><div class="date-num">8</div></div>
+                        <div class="cal-day"><div class="date-num">9</div><div class="cal-event done">Sengketa Utang 1/3</div></div>
+                        <div class="cal-day"><div class="date-num">10</div></div>
+                        <div class="cal-day"><div class="date-num">11</div><div class="cal-event">Pembacaan Gugatan</div></div>
+                        <div class="cal-day"><div class="date-num">12</div></div>
+                        <div class="cal-day"><div class="date-num">13</div></div>
+                        <div class="cal-day muted"><div class="date-num">14</div></div>
+                        
+                        <!-- Event Hari Ini (Minggu Ke-3) -->
+                        <div class="cal-day muted"><div class="date-num">15</div></div>
+                        <div class="cal-day"><div class="date-num">16</div><div class="cal-event urgent">Putusan Akhir Pidana</div></div>
+                        <div class="cal-day"><div class="date-num">17</div></div>
+                        <div class="cal-day today">
+                            <div class="date-num">18</div>
+                            <div class="cal-event">Sengketa Hak Cipta VR</div>
+                            <div class="cal-event urgent">Pemeriksaan Saksi 2/3</div>
+                        </div>
+                        <div class="cal-day"><div class="date-num">19</div></div>
+                        <div class="cal-day"><div class="date-num">20</div><div class="cal-event">Rapat Musyawarah</div></div>
+                        <div class="cal-day muted"><div class="date-num">21</div></div>
+
+                        <div class="cal-day muted"><div class="date-num">22</div></div>
+                        <div class="cal-day"><div class="date-num">23</div></div>
+                        <div class="cal-day"><div class="date-num">24</div></div>
+                        <div class="cal-day"><div class="date-num">25</div><div class="cal-event">Sengketa Tanah</div></div>
+                        <div class="cal-day"><div class="date-num">26</div></div>
+                        <div class="cal-day"><div class="date-num">27</div></div>
+                        <div class="cal-day muted"><div class="date-num">28</div></div>
+                    </div>
+                </section>
+
+                <!-- Agenda Detail Panel -->
+                <aside class="detail-section">
+                    
+                    <div class="agenda-card">
+                        <h3>Agenda Padat Ini <span style="font-size: 0.9rem; color: white;">(18 Maret)</span></h3>
+                        
+                        <div class="task-list">
+                            <div class="task-item">
+                                <div class="task-time">10:00</div>
+                                <div class="task-info">
+                                    <h4>Pembacaan Gugatan</h4>
+                                    <p>HAKI-2026-B9 | Hak Cipta Perangkat Lunak</p>
+                                    <div style="margin-top: 8px;">
+                                        <a href="teleconference.html" class="btn btn-outline" style="padding: 3px 10px; font-size: 0.75rem; border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-video"></i> Link Room Terbuka</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="task-item priority">
+                                <div class="task-time">13:30</div>
+                                <div class="task-info">
+                                    <h4>Pemeriksaan Saksi Ahli & Bukti Forensik</h4>
+                                    <p>SENG-2026-X1 | Wanprestasi Kontrak</p>
+                                    <span style="display: inline-block; padding: 2px 8px; background: rgba(248, 81, 73, 0.2); color: #f85149; border-radius: 4px; font-size: 0.75rem; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> Kritis (Sidang 3/3)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="task-item">
+                                <div class="task-time" style="color: #64748b; text-decoration: line-through;">16:00</div>
+                                <div class="task-info" style="opacity: 0.5;">
+                                    <h4>Cetak Berita Acara (BAP) Sesi Pagi</h4>
+                                    <p>Asisten AI Sedang Mensintesis Transkrip Audio</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="background-color: rgba(34, 197, 94, 0.05); border: 1px dashed rgba(34, 197, 94, 0.3); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                        <i class="fa-solid fa-leaf" style="color: #4ade80; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                        <p style="margin: 0; color: #cbd5e1; font-size: 0.85rem;">Sisa Pekan Ini Terpantau Longgar. Cukup waktu untuk melakukan penelitian Putusan Yurisprudensi menggunakan <strong>Fitur AI Paralegal Penasihat</strong> sebelum sesi Putusan.</p>
+                    </div>
+
+                </aside>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

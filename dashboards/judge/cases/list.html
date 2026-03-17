@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berkas Perkara Masuk - Hakim Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; }
+
+        .dashboard-layout { display: flex; min-height: 100vh; }
+
+        .sidebar { width: 280px; background-color: #1e293b; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar-menu { padding: 20px 0; overflow-y: auto; }
+        .menu-label { padding: 10px 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; }
+
+        .menu-item { display: flex; align-items: center; padding: 12px 24px; color: #cbd5e1; text-decoration: none; gap: 15px; transition: all 0.2s ease; position: relative; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.03); color: white; }
+        .menu-item.active { background-color: rgba(234, 179, 8, 0.1); color: #facc15; border-right: 3px solid #facc15; }
+
+        .main-content { flex: 1; margin-left: 280px; display: flex; flex-direction: column; }
+
+        .topbar { height: 70px; background-color: #1e293b; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; position: sticky; top: 0; z-index: 90; }
+
+        .content-area { padding: 40px; }
+
+        /* Tools Bar */
+        .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .search-bar { position: relative; width: 400px; }
+        .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b; }
+        .search-bar input { width: 100%; background-color: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px 12px 40px; border-radius: 6px; color: white; font-family: var(--font-body); }
+        .search-bar input:focus { border-color: #facc15; outline: none; }
+
+        .filter-group { display: flex; gap: 15px; }
+
+        /* Table Design */
+        .table-container { background-color: #1e293b; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: rgba(0,0,0,0.2); color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; padding: 15px 20px; text-align: left; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.02); vertical-align: middle; }
+        tr:hover td { background-color: rgba(255,255,255,0.02); }
+
+        .case-nomor { font-family: monospace; font-weight: bold; color: #facc15; font-size: 1.05rem; display: block; margin-bottom: 5px; }
+        .case-title { font-weight: bold; color: white; margin-bottom: 5px; }
+        .case-type { font-size: 0.8rem; color: #94a3b8; display: inline-flex; align-items: center; gap: 5px; }
+        
+        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        .status-sidang { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-putus { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+        .status-baru { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .action-btns { display: flex; gap: 10px; }
+        .btn-act { width: 35px; height: 35px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background-color: #0f172a; color: #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-act:hover { background-color: #facc15; color: black; border-color: #facc15; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout animate-fade-in">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-unbalanced" style="color: #facc15;"></i> Hakim<span>Arbiter</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gavel"></i><span>Meja Hijau (Dashboard)</span></a>
+                
+                <div class="menu-label">Pemeriksaan Perkara</div>
+                <a href="list.html" class="menu-item active"><i class="fa-solid fa-folder-open"></i><span>Berkas Perkara Masuk</span></a>
+                <a href="review.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Sistem Review Bukti (AI)</span></a>
+                <a href="putusan.html" class="menu-item"><i class="fa-solid fa-stamp"></i><span>Drafting Putusan</span></a>
+                
+                <div class="menu-label">Ruang Sidang Virtual</div>
+                <a href="../sidang/jadwal.html" class="menu-item"><i class="fa-regular fa-calendar-check"></i><span>Agenda Sidang</span></a>
+                <a href="../sidang/teleconference.html" class="menu-item"><i class="fa-solid fa-tower-broadcast"></i><span>Teleconference E-Court</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;">Direktori Register Perkara (E-Court Supreme Court API)</div>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <div style="width: 35px; height: 35px; border-radius: 50%; background-color: #facc15; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold;">HR</div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <div style="margin-bottom: 30px;">
+                    <h2 style="font-family: var(--font-heading); font-size: 2rem; margin: 0 0 10px 0;">Manajemen Tumpukan Kasus</h2>
+                    <p style="color: #94a3b8; margin: 0;">23 Kasus Aktif &bull; 4 Menunggu Putusan &bull; 15 Gugatan Baru</p>
+                </div>
+
+                <div class="controls-row">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Cari No. Registrasi, Nama Pihak, atau Jenis Perkara...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <select class="btn btn-outline" style="border-radius: 6px; padding: 10px 15px; background-color: #1e293b; color: white;">
+                            <option>Semua Kategori HK</option>
+                            <option>Hukum Perdata Materil</option>
+                            <option>Sengketa Niaga/PT</option>
+                            <option>Sengketa Properti Biasa</option>
+                        </select>
+                        <select class="btn btn-outline" style="border-radius: 6px; padding: 10px 15px; background-color: #1e293b; color: white;">
+                            <option>Urutan: Paling Baru Masuk</option>
+                            <option>Urutan: Jadwal Sidang Terdekat</option>
+                            <option>Urutan: Tunggakan Terlama</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Informasi Sengketa Utama</th>
+                                <th>Kuasa Hukum Terlibat</th>
+                                <th>Agenda Tahapan Hukum</th>
+                                <th>Status Berkas</th>
+                                <th style="text-align: right;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td>
+                                    <span class="case-nomor">112/Pdt.G/2026/PN.Cbi</span>
+                                    <div class="case-title">Sengketa Hak Cipta Perangkat Lunak Startup Nasional</div>
+                                    <div class="case-type"><i class="fa-solid fa-building-columns" style="color: #4ade80;"></i> Pengadilan Niaga &bull; Kategori: HAKI</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: bold; font-size: 0.9rem;">P: Adv. Farhan S.H. (Kantor LexA)</div>
+                                    <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">T: Adv. Rina (Kantor Bina Law)</div>
+                                </td>
+                                <td>
+                                    <div style="color: white; font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-calendar-day" style="color: #facc15;"></i> Hari ini, 10:00</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8;">Sesi: Pemanggilan Pihak (E-Litigasi)</div>
+                                </td>
+                                <td>
+                                    <span class="status-pill status-sidang"><i class="fa-solid fa-video"></i> Tahap Persidangan</span>
+                                </td>
+                                <td>
+                                    <div class="action-btns" style="justify-content: flex-end;">
+                                        <a href="review.html" class="btn-act" title="Bedah Bukti AI"><i class="fa-solid fa-microchip"></i></a>
+                                        <a href="../sidang/teleconference.html" class="btn-act" title="Masuk Video Sidang" style="border-color: #3b82f6; color: #3b82f6;"><i class="fa-solid fa-tower-broadcast"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    <span class="case-nomor">089/Pdt.G/2026/PN.Cbi</span>
+                                    <div class="case-title">Penyerobotan Objek Agraria Warisan di Bodetabek</div>
+                                    <div class="case-type"><i class="fa-solid fa-building-columns" style="color: #4ade80;"></i> PN Cibinong &bull; Kategori: Perdata Umum (Tanah)</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: bold; font-size: 0.9rem;">P: Klien Pribadi (Budi S.)</div>
+                                    <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">T: PT Sentul Alam</div>
+                                </td>
+                                <td>
+                                    <div style="color: white; font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-clock" style="color: #f85149;"></i> 20 Hari Terhenti</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8;">Menunggu: Putusan (Inkracht) Hakim</div>
+                                </td>
+                                <td>
+                                    <span class="status-pill status-putus"><i class="fa-solid fa-stamp"></i> Pra-Putusan (Draf)</span>
+                                </td>
+                                <td>
+                                    <div class="action-btns" style="justify-content: flex-end;">
+                                        <a href="putusan.html" class="btn-act" title="Susun Amar Putusan (AI Auto-Draft)" style="border-color: #10b981; color: #10b981;"><i class="fa-solid fa-pen-nib"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span class="case-nomor">E-REG-2026/X9/PN.Cbi</span>
+                                    <div class="case-title">Gugatan Resiko Eksekusi Hak Tanggungan Fiktif</div>
+                                    <div class="case-type"><i class="fa-solid fa-building-columns" style="color: #4ade80;"></i> PN Cibinong &bull; Kategori: Kepailitan Obligasi</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: bold; font-size: 0.9rem;">P: PT Bank Nasional X</div>
+                                    <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">T: Bp. Hendra Kusuma (Debitur)</div>
+                                </td>
+                                <td>
+                                    <div style="color: white; font-size: 0.9rem; margin-bottom: 5px;"><i class="fa-solid fa-inbox" style="color: #10b981;"></i> Berkas Diterima Adm</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8;">Pendaftaran e-Court: 17 Mar 2026</div>
+                                </td>
+                                <td>
+                                    <span class="status-pill status-baru"><i class="fa-solid fa-sparkles"></i> Pendaftaran Baru</span>
+                                </td>
+                                <td>
+                                    <div class="action-btns" style="justify-content: flex-end;">
+                                        <button class="btn-act" title="Baca Relas Gugatan / Eksepsi Awal"><i class="fa-solid fa-folder-open"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

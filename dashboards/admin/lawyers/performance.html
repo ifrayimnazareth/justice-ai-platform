@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performa Advokat - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+    <style>
+        .lawyer-perf-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); display: flex; gap: var(--space-lg); align-items: flex-start; margin-bottom: var(--space-md); transition: all var(--transition-fast); }
+        .lawyer-perf-card:hover { box-shadow: var(--shadow-md); }
+        .perf-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .perf-body { flex: 1; }
+        .perf-name { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+        .perf-spec { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+        .perf-stats { display: flex; gap: var(--space-lg); margin-bottom: 10px; }
+        .perf-stat { text-align: center; }
+        .perf-stat-value { font-weight: 700; font-size: 1.1rem; color: var(--primary-color); }
+        .perf-stat-label { font-size: 0.72rem; color: var(--text-muted); }
+        .win-rate { height: 6px; background: var(--bg-alt); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 6px; }
+        .win-rate-fill { height: 100%; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--success), #68d391); }
+        .star-rating { color: var(--secondary-color); font-size: 0.85rem; }
+        .rank-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; flex-shrink: 0; }
+        .rank-1 { background: linear-gradient(135deg, #ECC94B, #D69E2E); color: white; }
+        .rank-2 { background: linear-gradient(135deg, #CBD5E0, #A0AEC0); color: white; }
+        .rank-3 { background: linear-gradient(135deg, #C05621, #DD6B20); color: white; }
+        .rank-other { background: var(--bg-alt); color: var(--text-muted); }
+        .filter-bar { display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg); flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Manajemen</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <a href="../users/list.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Pengguna</span></a>
+            <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Kasus</span></a>
+            <a href="list.html" class="menu-item"><i class="fa-solid fa-user-tie"></i><span>Daftar Advokat</span></a>
+            <a href="approval.html" class="menu-item"><i class="fa-solid fa-check-double"></i><span>Persetujuan</span></a>
+            <a href="performance.html" class="menu-item active"><i class="fa-solid fa-chart-bar"></i><span>Performa Advokat</span></a>
+            <a href="withdrawals.html" class="menu-item"><i class="fa-solid fa-money-bill-wave"></i><span>Penarikan Dana</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari advokat..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Performa Advokat</h1><p>Ranking dan statistik kinerja semua advokat di platform.</p></div>
+                <button class="btn btn-primary"><i class="fa-solid fa-download"></i> &nbsp; Export Laporan</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-user-tie"></i></div><div class="stat-details"><h3>384</h3><p>Total Advokat Aktif</p></div></div>
+                <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-star"></i></div><div class="stat-details"><h3>4.7</h3><p>Rating Rata-rata</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-trophy"></i></div><div class="stat-details"><h3>78%</h3><p>Win Rate Rata-rata</p></div></div>
+                <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-comments"></i></div><div class="stat-details"><h3>2,341</h3><p>Konsultasi Bulan Ini</p></div></div>
+            </div>
+
+            <div class="filter-bar" style="margin-top: var(--space-xl);">
+                <select class="form-select" style="width:180px;"><option>Semua Spesialisasi</option><option>Perdata</option><option>Pidana</option><option>Korporat</option><option>TUN</option></select>
+                <select class="form-select" style="width:160px;"><option>Bulan Ini</option><option>3 Bulan Terakhir</option><option>6 Bulan Terakhir</option><option>1 Tahun</option></select>
+                <select class="form-select" style="width:160px;"><option>Urut: Win Rate</option><option>Urut: Rating</option><option>Urut: Kasus Selesai</option><option>Urut: Pendapatan</option></select>
+            </div>
+
+            <!-- Ranking List -->
+            <div class="lawyer-perf-card">
+                <div class="rank-badge rank-1">#1</div>
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Advokat" class="perf-avatar">
+                <div class="perf-body">
+                    <div class="perf-name">Adv. Dr. Budi Santoso, S.H., M.H.</div>
+                    <div class="perf-spec">Litigasi Perdata & Hukum Bisnis · Jakarta</div>
+                    <div class="perf-stats">
+                        <div class="perf-stat"><div class="perf-stat-value">94%</div><div class="perf-stat-label">Win Rate</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">4.9</div><div class="perf-stat-label">Rating</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">127</div><div class="perf-stat-label">Kasus</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">Rp 480M</div><div class="perf-stat-label">Pendapatan</div></div>
+                    </div>
+                    <div class="win-rate"><div class="win-rate-fill" style="width:94%;"></div></div>
+                    <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i> 4.9 (98 ulasan)</div>
+                </div>
+                <button class="btn btn-outline" style="padding:6px 14px;font-size:0.8rem;flex-shrink:0;"><i class="fa-solid fa-eye"></i> Detail</button>
+            </div>
+
+            <div class="lawyer-perf-card">
+                <div class="rank-badge rank-2">#2</div>
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" alt="Advokat" class="perf-avatar">
+                <div class="perf-body">
+                    <div class="perf-name">Adv. Siti Rahma Wulandari, S.H.</div>
+                    <div class="perf-spec">Hukum Korporat & Pasar Modal · Surabaya</div>
+                    <div class="perf-stats">
+                        <div class="perf-stat"><div class="perf-stat-value">91%</div><div class="perf-stat-label">Win Rate</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">4.8</div><div class="perf-stat-label">Rating</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">98</div><div class="perf-stat-label">Kasus</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">Rp 390M</div><div class="perf-stat-label">Pendapatan</div></div>
+                    </div>
+                    <div class="win-rate"><div class="win-rate-fill" style="width:91%;"></div></div>
+                    <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> 4.8 (76 ulasan)</div>
+                </div>
+                <button class="btn btn-outline" style="padding:6px 14px;font-size:0.8rem;flex-shrink:0;"><i class="fa-solid fa-eye"></i> Detail</button>
+            </div>
+
+            <div class="lawyer-perf-card">
+                <div class="rank-badge rank-3">#3</div>
+                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&q=80&w=150" alt="Advokat" class="perf-avatar">
+                <div class="perf-body">
+                    <div class="perf-name">Adv. Rizky Hidayat, S.H., M.Kn.</div>
+                    <div class="perf-spec">Hukum Pidana & Tipikor · Medan</div>
+                    <div class="perf-stats">
+                        <div class="perf-stat"><div class="perf-stat-value">87%</div><div class="perf-stat-label">Win Rate</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">4.7</div><div class="perf-stat-label">Rating</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">84</div><div class="perf-stat-label">Kasus</div></div>
+                        <div class="perf-stat"><div class="perf-stat-value">Rp 310M</div><div class="perf-stat-label">Pendapatan</div></div>
+                    </div>
+                    <div class="win-rate"><div class="win-rate-fill" style="width:87%;background:linear-gradient(90deg,var(--warning),#f6ad55);"></div></div>
+                    <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> 4.7 (63 ulasan)</div>
+                </div>
+                <button class="btn btn-outline" style="padding:6px 14px;font-size:0.8rem;flex-shrink:0;"><i class="fa-solid fa-eye"></i> Detail</button>
+            </div>
+
+            <div style="text-align:center;padding:var(--space-xl) 0;">
+                <button class="btn btn-outline"><i class="fa-solid fa-rotate"></i> Muat Lebih Banyak</button>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

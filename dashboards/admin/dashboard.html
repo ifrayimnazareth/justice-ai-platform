@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-deep: #07101f;
+            --bg-dark: #0d1b2e;
+            --bg-card: #13243b;
+            --bg-card2: #0f1e32;
+            --border: rgba(255,255,255,0.07);
+            --text: #e2e8f0;
+            --text-muted: #718096;
+            --text-dim: #4a5568;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59,130,246,0.15);
+            --success: #10b981;
+            --success-glow: rgba(16,185,129,0.12);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245,158,11,0.12);
+            --danger: #ef4444;
+            --danger-glow: rgba(239,68,68,0.12);
+            --purple: #8b5cf6;
+            --cyan: #06b6d4;
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-deep); color: var(--text); overflow: hidden; }
+
+        /* ========== LAYOUT ========== */
+        .layout { display: flex; height: 100vh; }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 240px;
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .logo-text { font-size: 1rem; font-weight: 800; }
+        .logo-text span { color: #ef4444; }
+
+        .nav-section {
+            padding: 16px 16px 5px;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            margin: 1px 8px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.83rem;
+            font-weight: 500;
+            transition: all 0.18s;
+            position: relative;
+        }
+
+        .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+        .nav-item.active { background: rgba(59,130,246,0.12); color: var(--primary); font-weight: 600; }
+        .nav-item .badge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+        .nav-item i { width: 16px; text-align: center; font-size: 0.85rem; }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(239,68,68,0.08);
+            color: var(--danger);
+            font-size: 0.83rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(239,68,68,0.15);
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .logout-btn:hover { background: rgba(239,68,68,0.15); }
+
+        /* ========== MAIN ========== */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* ========== TOPBAR ========== */
+        .topbar {
+            height: 60px;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            flex-shrink: 0;
+        }
+
+        .topbar-left { display: flex; align-items: center; gap: 15px; }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; animation: blink 2s infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .metric-pill {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+        }
+
+        .metric-pill strong { color: var(--cyan); }
+
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+        .admin-avatar {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #ef4444, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.18s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.25); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { filter: brightness(1.15); }
+        .btn-ghost { background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+        .btn-success { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.25); }
+        .btn-success:hover { background: var(--success); color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+
+        /* ========== CONTENT ========== */
+        .content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ========== STAT CARDS ========== */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.12); }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            opacity: 0.06;
+        }
+
+        .stat-card.blue::before { background: var(--primary); }
+        .stat-card.green::before { background: var(--success); }
+        .stat-card.orange::before { background: var(--warning); }
+        .stat-card.purple::before { background: var(--purple); }
+
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+
+        .stat-icon {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        .stat-icon.blue { background: rgba(59,130,246,0.15); color: var(--primary); }
+        .stat-icon.green { background: rgba(16,185,129,0.15); color: var(--success); }
+        .stat-icon.orange { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .stat-icon.purple { background: rgba(139,92,246,0.15); color: var(--purple); }
+
+        .stat-trend { font-size: 0.72rem; font-weight: 600; padding: 3px 7px; border-radius: 20px; }
+        .stat-trend.up { background: rgba(16,185,129,0.12); color: var(--success); }
+        .stat-trend.warn { background: rgba(245,158,11,0.12); color: var(--warning); }
+
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: white; line-height: 1; margin-bottom: 4px; }
+        .stat-label { font-size: 0.78rem; color: var(--text-muted); }
+
+        /* ========== GRID ========== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .card-body { padding: 20px; }
+
+        /* ========== DATA TABLE ========== */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+
+        .data-table th {
+            padding: 10px 15px;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .tag.pending { background: rgba(245,158,11,0.12); color: var(--warning); }
+        .tag.approved { background: rgba(16,185,129,0.12); color: var(--success); }
+        .tag.rejected { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .tag.active { background: rgba(59,130,246,0.12); color: var(--primary); }
+
+        /* ========== LOG TERMINAL ========== */
+        .log-terminal {
+            background: #020d1a;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 2;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .log-line { display: flex; gap: 10px; }
+        .log-time { color: #4a5568; }
+        .log-info { color: var(--success); }
+        .log-warn { color: var(--warning); }
+        .log-error { color: var(--danger); }
+
+        /* ========== QUICK ACTIONS ========== */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.18s;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+
+        .action-btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); color: var(--text); }
+        .action-btn i { font-size: 1.2rem; }
+        .action-btn span { font-size: 0.72rem; font-weight: 600; text-align: center; }
+
+        /* ========== SVG SPARKLINES ========== */
+        .sparkline-row { display: flex; gap: 8px; padding: 0 20px 15px; }
+        .sparkline-item { flex: 1; }
+        .sparkline-label { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; }
+        .sparkline-val { font-size: 1rem; font-weight: 700; color: white; }
+
+        /* ========== MODAL ========== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9000; justify-content: center; align-items: center; }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; width: 480px; max-width: 95%; position: relative; animation: slideUp 0.25s; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
+        .modal-close:hover { color: var(--text); }
+
+        @media (max-width: 1200px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .sidebar { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a href="../../public/index.html" class="sidebar-logo">
+            <div class="logo-badge"><i class="fa-solid fa-server"></i></div>
+            <span class="logo-text">Platform<span>Admin</span></span>
+        </a>
+
+        <div class="nav-section">Command Center</div>
+        <a href="dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-gauge-high"></i> Metrics Pusat
+        </a>
+
+        <div class="nav-section">Manajemen Pengguna</div>
+        <a href="users/list.html" class="nav-item">
+            <i class="fa-solid fa-users"></i> Klien Terdaftar
+        </a>
+        <a href="lawyers/approval.html" class="nav-item">
+            <i class="fa-solid fa-user-tie"></i> Verifikasi Advokat
+            <span class="badge">5</span>
+        </a>
+
+        <div class="nav-section">Pengawasan Perkara</div>
+        <a href="cases/monitoring.html" class="nav-item">
+            <i class="fa-solid fa-folder-tree"></i> Monitoring Kasus
+        </a>
+        <a href="cases/disputes.html" class="nav-item">
+            <i class="fa-solid fa-triangle-exclamation"></i> Sengketa Layanan
+            <span class="badge">2</span>
+        </a>
+        <a href="courts/schedule.html" class="nav-item">
+            <i class="fa-solid fa-calendar-check"></i> Jadwal Sidang
+        </a>
+
+        <div class="nav-section">Sistem & Keuangan</div>
+        <a href="ai/model-metrics.html" class="nav-item">
+            <i class="fa-solid fa-brain"></i> Performa Engine AI
+        </a>
+        <a href="finance/transactions.html" class="nav-item">
+            <i class="fa-solid fa-money-bill-transfer"></i> Lalu Lintas Pembayaran
+        </a>
+        <a href="reports/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i> Laporan & Analitik
+        </a>
+        <a href="settings/index.html" class="nav-item">
+            <i class="fa-solid fa-sliders"></i> Pengaturan Sistem
+        </a>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="confirmLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar Session Admin
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="server-status">
+                    <div class="status-dot"></div>
+                    <span>ONLINE · 99.9% Uptime</span>
+                </div>
+                <div class="metric-pill">CPU: <strong>24%</strong></div>
+                <div class="metric-pill">GPU/AI: <strong>65%</strong></div>
+                <div class="metric-pill">RAM: <strong>4.2 / 16 GB</strong></div>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-ghost" onclick="refreshDashboard()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                <button class="btn btn-danger btn-sm" onclick="emergencyStop()"><i class="fa-solid fa-circle-stop"></i> Emergency Stop AI</button>
+                <div class="admin-avatar">SA</div>
+                <span style="font-size:0.82rem; color:var(--text-muted);">Super Admin</span>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- STAT CARDS -->
+            <div class="stats-row">
+                <div class="stat-card blue" onclick="window.location.href='users/list.html'" style="cursor:pointer;">
+                    <div class="stat-header">
+                        <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+                        <span class="stat-trend up"><i class="fa-solid fa-arrow-up"></i> +248 bulan ini</span>
+                    </div>
+                    <div class="stat-value" id="stat-users">12,849</div>
+                    <div class="stat-label">Total Pengguna Terdaftar</div>
+                </div>
+                <div class="stat-card green" onclick="window.location.href='finance/transactions.html'" style="cursor:pointer;">
+                    <div class="stat-header">
+                        <div class="stat-icon green"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <span class="stat-trend up"><i class="fa-solid fa-arrow-up"></i> +Rp 1.2M hari ini</span>
+                    </div>
+                    <div class="stat-value">Rp 12.4M</div>
+                    <div class="stat-label">Total GTV Transaksi</div>
+                </div>
+                <div class="stat-card orange" onclick="window.location.href='ai/model-metrics.html'" style="cursor:pointer;">
+                    <div class="stat-header">
+                        <div class="stat-icon orange"><i class="fa-solid fa-robot"></i></div>
+                        <span class="stat-trend warn"><i class="fa-solid fa-fire"></i> Peak Load</span>
+                    </div>
+                    <div class="stat-value">15,240</div>
+                    <div class="stat-label">Request AI Hari Ini</div>
+                </div>
+                <div class="stat-card purple" onclick="window.location.href='lawyers/approval.html'" style="cursor:pointer;">
+                    <div class="stat-header">
+                        <div class="stat-icon purple"><i class="fa-solid fa-user-tie"></i></div>
+                        <span class="stat-trend up"><i class="fa-solid fa-arrow-up"></i> +12 bulan ini</span>
+                    </div>
+                    <div class="stat-value">845</div>
+                    <div class="stat-label">Total Advokat Berlisensi</div>
+                </div>
+            </div>
+
+            <!-- MAIN GRID ROW 1 -->
+            <div class="grid-3">
+                <!-- Approval Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa-solid fa-id-card-clip" style="color:var(--primary);"></i>
+                            Antrian Verifikasi Advokat KYC
+                        </div>
+                        <button class="btn btn-ghost btn-sm" onclick="window.location.href='lawyers/approval.html'">Lihat Semua <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nama / NIA</th>
+                                <th>Spesialisasi</th>
+                                <th>Status KTP</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvalTable">
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600;">Rian Pratama, S.H.</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); font-family:monospace;">09.12345.PERADI</div>
+                                </td>
+                                <td>Hukum Bisnis</td>
+                                <td><span class="tag pending"><i class="fa-solid fa-clock"></i> Menunggu</span></td>
+                                <td style="display:flex; gap:5px;">
+                                    <button class="btn btn-ghost btn-sm" onclick="reviewKYC('Rian Pratama, S.H.')"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn btn-success btn-sm" onclick="approveKYC(this, 'Rian Pratama, S.H.')"><i class="fa-solid fa-check"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="rejectKYC(this, 'Rian Pratama, S.H.')"><i class="fa-solid fa-xmark"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600;">Siti Nurhaliza, M.Kn.</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); font-family:monospace;">PENDING UPLOAD</div>
+                                </td>
+                                <td>Kenotariatan & Pertanahan</td>
+                                <td><span class="tag rejected"><i class="fa-solid fa-triangle-exclamation"></i> KTP Buram</span></td>
+                                <td style="display:flex; gap:5px;">
+                                    <button class="btn btn-ghost btn-sm" onclick="reviewKYC('Siti Nurhaliza, M.Kn.')"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="rejectKYC(this, 'Siti Nurhaliza, M.Kn.')"><i class="fa-solid fa-xmark"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600;">Budi Hermawan, S.H.</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted); font-family:monospace;">11.88901.PERADI</div>
+                                </td>
+                                <td>Hukum Pidana</td>
+                                <td><span class="tag pending"><i class="fa-solid fa-clock"></i> Menunggu</span></td>
+                                <td style="display:flex; gap:5px;">
+                                    <button class="btn btn-ghost btn-sm" onclick="reviewKYC('Budi Hermawan, S.H.')"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn btn-success btn-sm" onclick="approveKYC(this, 'Budi Hermawan, S.H.')"><i class="fa-solid fa-check"></i></button>
+                                    <button class="btn btn-danger btn-sm" onclick="rejectKYC(this, 'Budi Hermawan, S.H.')"><i class="fa-solid fa-xmark"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quick Actions + System Info -->
+                <div style="display:flex; flex-direction:column; gap:16px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-bolt" style="color:var(--warning);"></i> Aksi Cepat Admin</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="action-grid">
+                                <a href="users/list.html" class="action-btn">
+                                    <i class="fa-solid fa-users" style="color:var(--primary);"></i>
+                                    <span>Kelola Pengguna</span>
+                                </a>
+                                <a href="lawyers/approval.html" class="action-btn">
+                                    <i class="fa-solid fa-user-check" style="color:var(--success);"></i>
+                                    <span>Verifikasi Advokat</span>
+                                </a>
+                                <button class="action-btn" onclick="broadcastNotif()">
+                                    <i class="fa-solid fa-bullhorn" style="color:var(--warning);"></i>
+                                    <span>Broadcast Notif</span>
+                                </button>
+                                <button class="action-btn" onclick="exportReport()">
+                                    <i class="fa-solid fa-file-export" style="color:var(--purple);"></i>
+                                    <span>Export Laporan</span>
+                                </button>
+                                <button class="action-btn" onclick="clearAICache()">
+                                    <i class="fa-solid fa-broom" style="color:var(--cyan);"></i>
+                                    <span>Bersihkan Cache AI</span>
+                                </button>
+                                <a href="settings/index.html" class="action-btn">
+                                    <i class="fa-solid fa-gear" style="color:var(--text-muted);"></i>
+                                    <span>Pengaturan</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN GRID ROW 2 -->
+            <div class="grid-2">
+                <!-- Error Log Terminal -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa-solid fa-terminal" style="color:var(--success);"></i>
+                            System Log Monitor (Live)
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-ghost btn-sm" onclick="clearLog()"><i class="fa-solid fa-broom"></i> Clear</button>
+                            <button class="btn btn-ghost btn-sm" onclick="downloadLogs()"><i class="fa-solid fa-download"></i> Export</button>
+                        </div>
+                    </div>
+                    <div class="log-terminal" id="logTerminal">
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:45:12]</span><span class="log-info">INFO</span><span>AI Model retraining complete — accuracy 94.2% ✓</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:47:00]</span><span class="log-info">INFO</span><span>User #8834 completed KYC verification flow</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:48:30]</span><span class="log-warn">WARN</span><span>High traffic on /api/ai/win-rate — latency &gt;2000ms</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:50:15]</span><span class="log-info">INFO</span><span>Escrow payment #TXN-8821 released to Adv. Riano Prakoso</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:51:00]</span><span class="log-error">ERROR</span><span>E-Meterai Peruri API timeout — fallback to manual queue</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:53:10]</span><span class="log-info">INFO</span><span>Dispute #DSP-0042 resolved — mediation success</span></div>
+                        <div class="log-line"><span class="log-time">[2026-03-17 10:58:55]</span><span class="log-info">INFO</span><span>Admin dashboard accessed — session authenticated</span></div>
+                    </div>
+                </div>
+
+                <!-- Active Cases Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fa-solid fa-folder-open" style="color:var(--warning);"></i>
+                            Ringkasan Kasus Aktif
+                        </div>
+                        <button class="btn btn-ghost btn-sm" onclick="window.location.href='cases/monitoring.html'">Monitor <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID / Jenis</th>
+                                <th>Advokat</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600; font-family:monospace; font-size:0.78rem;">KS-2026-0091</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted);">Sengketa Wanprestasi</div>
+                                </td>
+                                <td style="font-size:0.78rem;">Adv. Riano Prakoso</td>
+                                <td><span class="tag active">Mediasi</span></td>
+                                <td><button class="btn btn-ghost btn-sm" onclick="viewCase('KS-2026-0091')"><i class="fa-solid fa-magnifying-glass"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600; font-family:monospace; font-size:0.78rem;">KS-2026-0085</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted);">Sengketa Agraria</div>
+                                </td>
+                                <td style="font-size:0.78rem;">Adv. Farhan Legal</td>
+                                <td><span class="tag pending">Persidangan</span></td>
+                                <td><button class="btn btn-ghost btn-sm" onclick="viewCase('KS-2026-0085')"><i class="fa-solid fa-magnifying-glass"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="font-weight:600; font-family:monospace; font-size:0.78rem;">KS-2026-0078</div>
+                                    <div style="font-size:0.72rem; color:var(--text-muted);">Gugatan Pidana Bisnis</div>
+                                </td>
+                                <td style="font-size:0.78rem;">Adv. Siti R., S.H.</td>
+                                <td><span class="tag approved">Selesai</span></td>
+                                <td><button class="btn btn-ghost btn-sm" onclick="viewCase('KS-2026-0078')"><i class="fa-solid fa-magnifying-glass"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAIL KYC -->
+<div class="modal-overlay" id="kycModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('kycModal')"><i class="fa-solid fa-times"></i></button>
+        <h3 style="margin-bottom:15px; font-size:1.1rem;"><i class="fa-solid fa-id-card" style="color:var(--primary);"></i> Detail Dokumen KYC</h3>
+        <div id="kycModalContent" style="font-size:0.85rem; color:var(--text-muted); line-height:1.8;"></div>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn btn-success" style="flex:1;" onclick="closeModal('kycModal')"><i class="fa-solid fa-check"></i> Setujui Dokumen</button>
+            <button class="btn btn-danger" style="flex:1;" onclick="closeModal('kycModal')"><i class="fa-solid fa-xmark"></i> Tolak Dokumen</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BROADCAST -->
+<div class="modal-overlay" id="broadcastModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('broadcastModal')"><i class="fa-solid fa-times"></i></button>
+        <h3 style="margin-bottom:15px;"><i class="fa-solid fa-bullhorn" style="color:var(--warning);"></i> Broadcast Notifikasi ke Semua Pengguna</h3>
+        <div style="margin-bottom:12px;">
+            <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:5px;">Target Penerima</label>
+            <select style="width:100%; padding:9px; background:var(--bg-card2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'Inter',sans-serif;">
+                <option>Semua Pengguna (12,849)</option>
+                <option>Klien saja (11,004 pengguna)</option>
+                <option>Advokat saja (845 advokat)</option>
+            </select>
+        </div>
+        <div style="margin-bottom:15px;">
+            <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:5px;">Isi Pesan Notifikasi</label>
+            <textarea id="broadcastMsg" rows="4" placeholder="Tulis pesan siaran di sini..." style="width:100%; padding:9px; background:var(--bg-card2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'Inter',sans-serif; resize:vertical;"></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="sendBroadcast()"><i class="fa-solid fa-paper-plane"></i> Kirim Broadcast</button>
+    </div>
+</div>
+
+<script>
+    // ===== APPROVE KYC =====
+    function approveKYC(btn, name) {
+        if(confirm(`Setujui profil advokat "${name}" dan aktifkan akun di platform?`)) {
+            const row = btn.closest('tr');
+            row.querySelector('.tag').outerHTML = '<span class="tag approved"><i class="fa-solid fa-check"></i> Disetujui</span>';
+            row.querySelectorAll('button').forEach(b => b.remove());
+            addLog('INFO', `Advokat "${name}" telah diverifikasi dan diaktifkan oleh Admin.`);
+        }
+    }
+
+    // ===== REJECT KYC =====
+    function rejectKYC(btn, name) {
+        const reason = prompt(`Alasan penolakan profil "${name}":`, 'Dokumen tidak sesuai/tidak terbaca');
+        if(reason) {
+            const row = btn.closest('tr');
+            row.querySelector('.tag').outerHTML = '<span class="tag rejected"><i class="fa-solid fa-xmark"></i> Ditolak</span>';
+            row.querySelectorAll('button').forEach(b => b.remove());
+            addLog('WARN', `Advokat "${name}" ditolak verifikasinya. Alasan: ${reason}`);
+        }
+    }
+
+    // ===== REVIEW KYC =====
+    function reviewKYC(name) {
+        document.getElementById('kycModalContent').innerHTML = `
+            <p><strong>Nama:</strong> ${name}</p>
+            <p><strong>Nomor PERADI:</strong> 09.1234X.PERADI</p>
+            <p><strong>Email:</strong> ${name.toLowerCase().replace(/[^a-z]/g,'').substring(0,10)}@lawfirm.co.id</p>
+            <p><strong>Spesialisasi:</strong> Hukum Perdata & Bisnis</p>
+            <p><strong>KTP:</strong> <span style="color:var(--success);">✓ Terdeteksi NIK Valid via OCR</span></p>
+            <p><strong>Kartu PERADI:</strong> <span style="color:var(--success);">✓ Tervalidasi dengan database PERADI</span></p>
+            <p><strong>Waktu Daftar:</strong> ${new Date().toLocaleString('id-ID')}</p>
+        `;
+        document.getElementById('kycModal').style.display = 'flex';
+    }
+
+    // ===== VIEW CASE =====
+    function viewCase(id) {
+        alert(`Memuat detail lengkap perkara ${id}...\nDalam versi produksi, halaman monitoring perkara lengkap akan terbuka.`);
+    }
+
+    // ===== BROADCAST =====
+    function broadcastNotif() {
+        document.getElementById('broadcastModal').style.display = 'flex';
+    }
+
+    function sendBroadcast() {
+        const msg = document.getElementById('broadcastMsg').value;
+        if(!msg.trim()) { alert('Tulis pesan terlebih dahulu!'); return; }
+        closeModal('broadcastModal');
+        addLog('INFO', `Broadcast notifikasi berhasil dikirim ke seluruh pengguna platform. Pesan: "${msg.substring(0,50)}..."`);
+        alert(`✅ Broadcast berhasil dikirim ke 12,849 pengguna aktif!`);
+    }
+
+    // ===== EXPORT REPORT =====
+    function exportReport() {
+        if(confirm('Generate dan unduh laporan lengkap platform (CSV/PDF) untuk bulan Maret 2026?')) {
+            addLog('INFO', 'Laporan bulanan platform berhasil digenerate dan diunduh oleh Super Admin.');
+            alert('📊 Laporan_Justice_AI_Maret2026.xlsx sedang diunduh...');
+        }
+    }
+
+    // ===== CLEAR AI CACHE =====
+    function clearAICache() {
+        if(confirm('Bersihkan seluruh cache model AI? Ini akan menyebabkan latency tinggi sementara selama ~2 menit.')) {
+            addLog('WARN', 'Cache AI dihapus oleh Admin. Model sedang melakukan warm-up ulang...');
+            alert('🧹 Cache AI berhasil dibersihkan. Model sedang warm-up kembali (±2 menit).');
+        }
+    }
+
+    // ===== EMERGENCY STOP =====
+    function emergencyStop() {
+        if(confirm('⚠️ PERINGATAN KRITIS!\n\nIni akan menghentikan seluruh layanan AI sementara dan memutus koneksi aktif. Lanjutkan?')) {
+            addLog('ERROR', 'EMERGENCY STOP dipicu oleh Super Admin! Seluruh layanan AI dihentikan sementara.');
+            alert('🛑 Sistem AI dihentikan darurat. Tim teknis telah dinotifikasi.');
+        }
+    }
+
+    // ===== REFRESH DASHBOARD =====
+    function refreshDashboard() {
+        addLog('INFO', 'Dashboard di-refresh oleh Admin. Memuat data realtime terbaru...');
+        const val = document.getElementById('stat-users');
+        val.style.opacity = '0.4';
+        setTimeout(() => { val.style.opacity = '1'; val.style.transition = 'opacity 0.5s'; }, 500);
+    }
+
+    // ===== CLEAR LOG =====
+    function clearLog() {
+        if(confirm('Hapus tampilan log lokal? (Hanya tampilan, log server tidak terhapus)')) {
+            document.getElementById('logTerminal').innerHTML = '<div class="log-line"><span class="log-time">[' + new Date().toLocaleString() + ']</span><span class="log-info">INFO</span><span>Terminal log dibersihkan oleh Admin.</span></div>';
+        }
+    }
+
+    // ===== DOWNLOAD LOGS =====
+    function downloadLogs() {
+        const logText = document.getElementById('logTerminal').innerText;
+        const blob = new Blob([logText], {type:'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'justice_ai_system_log_' + new Date().toISOString().slice(0,10) + '.txt';
+        a.click();
+    }
+
+    // ===== ADD LOG LINE =====
+    function addLog(type, msg) {
+        const terminal = document.getElementById('logTerminal');
+        const now = new Date().toLocaleString('id-ID');
+        const colorClass = type === 'INFO' ? 'log-info' : type === 'WARN' ? 'log-warn' : 'log-error';
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-time">[${now}]</span><span class="${colorClass}">${type}</span><span>${msg}</span>`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    // ===== LOGOUT =====
+    function confirmLogout() {
+        if(confirm('Akhiri sesi Super Admin dan kembali ke halaman login?')) {
+            window.location.href = '../../auth/login.html';
+        }
+    }
+
+    // ===== CLOSE MODAL =====
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    // Close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if(e.target === overlay) overlay.style.display = 'none';
+        });
+    });
+
+    // ===== LIVE CLOCK IN TOPBAR =====
+    setInterval(() => {
+        const pills = document.querySelectorAll('.metric-pill');
+        if(pills[0]) pills[0].innerHTML = `CPU: <strong>${Math.floor(18 + Math.random()*15)}%</strong>`;
+        if(pills[1]) pills[1].innerHTML = `GPU/AI: <strong>${Math.floor(55 + Math.random()*20)}%</strong>`;
+    }, 5000);
+</script>
+</body>
+</html>

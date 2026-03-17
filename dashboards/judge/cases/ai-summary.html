@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intisari Yurisprudensi & Bukti (AI) - Hakim Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: var(--font-body); margin: 0; display: flex; flex-direction: column; overflow: hidden; height: 100vh; }
+        
+        .header { background-color: #161b22; border-bottom: 2px solid #58a6ff; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-family: var(--font-heading); color: white; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .header p { margin: 0; color: #8b949e; font-size: 0.9rem; }
+        
+        .main-content { display: flex; flex: 1; overflow: hidden; background-color: #0d1117; }
+        
+        .scrollable-body { flex: 1; padding: 40px; overflow-y: auto; }
+        
+        /* Summary Card */
+        .summary-box { background-color: #161b22; border: 1px solid #30363d; border-radius: var(--radius-lg); padding: 30px; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .summary-box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background-color: #58a6ff; }
+        .summary-box h2 { margin: 0 0 15px 0; color: white; display: flex; align-items: center; gap: 10px; font-size: 1.3rem; }
+        .summary-box p { margin: 0 0 20px 0; font-size: 1.05rem; line-height: 1.6; color: #e2e8f0; }
+        
+        /* Logic Chain */
+        .logic-chain { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; border-top: 1px solid #30363d; padding-top: 25px; }
+        .logic-node { background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: var(--radius-md); position: relative; margin-left: 20px; }
+        .logic-node::before { content: ''; position: absolute; left: -25px; top: 25px; width: 25px; height: 2px; background-color: #30363d; }
+        .logic-node::after { content: ''; position: absolute; left: -25px; top: -15px; bottom: 50%; width: 2px; background-color: #30363d; }
+        .logic-node:first-child::after { display: none; }
+        
+        .node-title { font-weight: bold; color: #58a6ff; display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .node-text { color: #8b949e; font-size: 0.95rem; line-height: 1.5; }
+
+        .flag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 10px; }
+        .flag-red { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+
+        .ai-sidebar { width: 350px; background-color: #1e293b; border-left: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
+        .tab-panel { padding: 25px; flex: 1; overflow-y: auto; }
+        .tab-panel h3 { color: #facc15; margin: 0 0 15px 0; font-family: var(--font-heading); font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-info">
+            <h1><i class="fa-solid fa-microchip" style="color: #58a6ff;"></i> Sintesis Hukum AI (Eksekutif)</h1>
+            <p>Identifikasi Bukti #SENG-2026-X1 &bull; Akurasi Analisis: 98% (GPT-4 Legal-Trained)</p>
+        </div>
+        <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-print"></i> Cetak Berkas Singkat</button>
+    </div>
+
+    <div class="main-content animate-fade-in">
+        <div class="scrollable-body">
+            
+            <div class="summary-box">
+                <h2>Ringkasan Fakta Persidangan (TL;DR)</h2>
+                <span class="flag flag-red"><i class="fa-solid fa-triangle-exclamation"></i> Terdeteksi Niat Buruk (Mens Rea)</span>
+                <p>AI memverifikasi histori aliran dana Tergugat, yang mengarah pada transfer deposito dari Klien (Penggugat) ke Rekening Pribadi milik Tergugat dalam waktu kurang dari 24 jam. Klaim Tergugat bahwa dana hangus di "pasar modal saham" terbantahkan oleh mutasi transaksi digital.</p>
+                
+                <div class="logic-chain">
+                    <div class="logic-node">
+                        <div class="node-title"><i class="fa-solid fa-file-invoice-dollar"></i> Pernyataan Fakta Gugatan (P-2)</div>
+                        <div class="node-text">Ada bukti transfer tunai Rp 150.000.000 ke rekening Bp. Setiawan, SH (Tergugat).</div>
+                    </div>
+                    <div class="logic-node">
+                        <div class="node-title"><i class="fa-solid fa-circle-xmark" style="color: #f85149;"></i> Koreksi Logika Tergugat (T-1)</div>
+                        <div class="node-text">Eksepsi surat menyatakan kerugian karena investasi hancur. Namun, <b>mesin pencari bursa (IDX API)</b> merekam saham "BUMI" pada waktu kejadian justru naik 5%, bukan turun.</div>
+                    </div>
+                    <div class="logic-node">
+                        <div class="node-title"><i class="fa-solid fa-scale-balanced" style="color: #3fb950;"></i> Kesimpulan Pasal yang Dilanggar</div>
+                        <div class="node-text">Memenuhi unsur "dengan tipu muslihat" Pasal 378 KUHP subsider wanprestasi Pasal 1243 KUHPerdata tentang kelalaian ganti rugi bunga.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <aside class="ai-sidebar">
+            <div class="tab-panel">
+                <h3>Rujukan Yurisprudensi Mahkamah Agung</h3>
+                
+                <div style="background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: var(--radius-md); border-left: 3px solid #facc15; margin-bottom: 20px;">
+                    <div style="font-weight: bold; margin-bottom: 5px; color: white;">Putusan MA No. 235 K/Pid/2016</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px;">"Unsur melawan hukum secara perdata dapat menyatu jika ditemukan mens rea tindak pidana."</div>
+                    <button class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.1); font-size: 0.75rem;">Salin Ke Draf</button>
+                </div>
+
+                <div style="background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: var(--radius-md); border-left: 3px solid #facc15;">
+                    <div style="font-weight: bold; margin-bottom: 5px; color: white;">Putusan BANI No. 129/2014</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;">Sengketa investasi terselubung harus dibuktikan alirannya (follow-the-money) di persidangan.</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

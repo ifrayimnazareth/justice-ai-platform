@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Pasal Hukum - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/lawyer.css">
+    <style>
+        .search-hero { background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); border-radius: var(--radius-lg); padding: var(--space-2xl); text-align: center; color: white; margin-bottom: var(--space-xl); }
+        .search-box-large { display: flex; background: white; border-radius: var(--radius-full); overflow: hidden; box-shadow: var(--shadow-lg); max-width: 700px; margin: 0 auto; }
+        .search-box-large input { flex: 1; border: none; padding: 16px 24px; font-size: 1rem; outline: none; color: var(--text-main); }
+        .search-box-large button { background: var(--secondary-color); border: none; padding: 16px 28px; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; }
+        .filter-tab { padding: 8px 18px; border-radius: var(--radius-full); border: 2px solid var(--primary-color); color: var(--primary-color); background: transparent; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all var(--transition-fast); margin-right: 8px; margin-bottom: 8px; }
+        .filter-tab.active { background: var(--primary-color); color: white; }
+        .pasal-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); margin-bottom: var(--space-md); transition: all var(--transition-fast); }
+        .pasal-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .pasal-number { font-size: 0.75rem; font-weight: 700; background: var(--primary-color); color: white; padding: 3px 10px; border-radius: var(--radius-full); display: inline-block; margin-bottom: 8px; }
+        .pasal-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; color: var(--primary-dark); }
+        .pasal-excerpt { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+        .pasal-source { font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
+        .highlight { background: rgba(214,158,46,0.2); color: var(--secondary-dark); font-weight: 600; }
+        .suggestion-chip { display: inline-block; padding: 5px 14px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-full); font-size: 0.8rem; color: white; margin: 4px; cursor: pointer; }
+        .ai-interpret { background: linear-gradient(135deg, rgba(0,181,216,0.08), rgba(26,54,93,0.05)); border: 1px solid rgba(0,181,216,0.2); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-lg); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size: 1.5rem; color: white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Workspace</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Ringkasan Kinerja</span></a>
+            <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Tugas Perkara</span></a>
+            <a href="../consultations/list.html" class="menu-item"><i class="fa-solid fa-comments"></i><span>Permintaan Konsultasi</span></a>
+            <div class="menu-label">AI Legal Tools</div>
+            <a href="yurisprudensi.html" class="menu-item"><i class="fa-solid fa-book-bookmark"></i><span>Yurisprudensi</span></a>
+            <a href="search-pasal.html" class="menu-item active"><i class="fa-solid fa-search"></i><span>Pencarian Pasal</span></a>
+            <a href="kalkulator-fee.html" class="menu-item"><i class="fa-solid fa-calculator"></i><span>Kalkulator Fee</span></a>
+        </div>
+        <div style="padding: 20px;">
+            <a href="../../../auth/login.html" class="btn btn-outline" style="width: 100%; border-color: var(--danger); color: var(--danger);">Keluar Sesi</a>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" alt="Profile" class="avatar">
+                    <div class="user-info"><span class="user-name">Adv. Budi Santoso, S.H.</span><span class="user-role">Litigasi Perdata & Bisnis</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="search-hero">
+                <h2 style="font-family: var(--font-heading);"><i class="fa-solid fa-magnifying-glass-chart"></i> Pencarian Pasal AI</h2>
+                <p style="opacity:0.8; margin-bottom: var(--space-lg);">Cari berdasarkan kata kunci, skenario hukum, atau nomor pasal.</p>
+                <div class="search-box-large">
+                    <input type="text" id="searchInput" placeholder="Cth: wanprestasi kontrak, penggelapan dalam jabatan..." onkeypress="if(event.key==='Enter') doSearch()">
+                    <button onclick="doSearch()"><i class="fa-solid fa-search"></i> Cari</button>
+                </div>
+                <div style="margin-top: var(--space-md);">
+                    <span class="suggestion-chip" onclick="quickSearch('wanprestasi')">Wanprestasi</span>
+                    <span class="suggestion-chip" onclick="quickSearch('penipuan')">Penipuan</span>
+                    <span class="suggestion-chip" onclick="quickSearch('pemalsuan dokumen')">Pemalsuan</span>
+                    <span class="suggestion-chip" onclick="quickSearch('PHK pesangon')">PHK & Pesangon</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: var(--space-lg);">
+                <button class="filter-tab active" onclick="setFilter(this)">Semua Hukum</button>
+                <button class="filter-tab" onclick="setFilter(this)">KUHP (Pidana)</button>
+                <button class="filter-tab" onclick="setFilter(this)">KUH Perdata</button>
+                <button class="filter-tab" onclick="setFilter(this)">Undang-Undang</button>
+                <button class="filter-tab" onclick="setFilter(this)">PERMA</button>
+            </div>
+
+            <div class="ai-interpret">
+                <h4 style="color: var(--accent-color); margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> Interpretasi AI</h4>
+                <p id="aiInterpretText" style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">Masukkan kata kunci dan AI akan memberikan interpretasi hukum yang kontekstual.</p>
+            </div>
+
+            <div id="searchResults">
+                <h3 style="margin-bottom: var(--space-md); color: var(--text-muted); font-size: 0.9rem;">Pasal Populer:</h3>
+                <div class="pasal-card">
+                    <span class="pasal-number">Pasal 1243 KUHPerdata</span>
+                    <div class="pasal-title">Penggantian Biaya, Rugi dan Bunga (Wanprestasi)</div>
+                    <div class="pasal-excerpt">Penggantian biaya, kerugian dan bunga karena tak dipenuhinya suatu perikatan mulai diwajibkan, bila <span class="highlight">debitur</span>, walaupun telah dinyatakan <span class="highlight">lalai</span>, tetap lalai untuk memenuhi perikatan itu...</div>
+                    <div class="pasal-source"><i class="fa-solid fa-book"></i> KUH Perdata | Buku III: Perikatan</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Analisis AI</button>
+                    </div>
+                </div>
+                <div class="pasal-card">
+                    <span class="pasal-number">Pasal 378 KUHP</span>
+                    <div class="pasal-title">Tindak Pidana Penipuan</div>
+                    <div class="pasal-excerpt">Barang siapa dengan maksud untuk menguntungkan diri sendiri atau orang lain secara <span class="highlight">melawan hukum</span>, dengan memakai nama palsu atau <span class="highlight">tipu muslihat</span>...</div>
+                    <div class="pasal-source"><i class="fa-solid fa-book"></i> KUHP | Bab XXV: Perbuatan Curang</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Analisis AI</button>
+                    </div>
+                </div>
+                <div class="pasal-card">
+                    <span class="pasal-number">Pasal 263 KUHP</span>
+                    <div class="pasal-title">Pemalsuan Surat / Dokumen</div>
+                    <div class="pasal-excerpt">Barang siapa membuat surat palsu atau memalsukan surat yang menimbulkan sesuatu hak, perikatan atau pembebasan hutang dengan maksud untuk memakai atau menyuruh orang lain memakai surat tersebut seolah-olah isinya benar...</div>
+                    <div class="pasal-source"><i class="fa-solid fa-book"></i> KUHP | Bab XII: Pemalsuan Surat</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem; margin-right: 6px;"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+                        <button class="btn btn-outline" style="padding: 5px 12px; font-size: 0.78rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Analisis AI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function doSearch() {
+        const q = document.getElementById('searchInput').value;
+        if (!q) return;
+        document.getElementById('aiInterpretText').textContent = `Menganalisis: "${q}" — Ditemukan landasan hukum yang relevan berdasarkan database 50.000+ putusan pengadilan.`;
+        document.querySelector('#searchResults h3').textContent = `Hasil untuk: "${q}"`;
+    }
+    function quickSearch(q) { document.getElementById('searchInput').value = q; doSearch(); }
+    function setFilter(el) { document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Transaksi - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1100px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        .btn-download { background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.3); font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-download:hover { background: #3b82f6; color: white; transform: translateY(-2px); }
+
+        /* Filter Section */
+        .filter-bar { display: flex; gap: 15px; background-color: var(--bg-alt); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-size: 0.8rem; color: #94a3b8; font-weight: bold; }
+        .filter-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .filter-input:focus { border-color: #3b82f6; }
+
+        /* Table */
+        .table-container { background-color: var(--bg-alt); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: rgba(0,0,0,0.2); padding: 15px 20px; font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+
+        .type-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        .type-income { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .type-withdraw { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+        .type-escrow { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+
+        .status-badge { font-size: 0.8rem; }
+        .status-success { color: #34d399; }
+        .status-pending { color: #fbbf24; }
+        
+        .tx-id { font-family: monospace; color: #94a3b8; font-size: 0.85rem; }
+
+        .pagination { display: flex; justify-content: center; gap: 5px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .page-btn { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .page-btn:hover, .page-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Praktik</p>
+                <a href="../profile.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-user-tie"></i> Profil Publik Khusus</a>
+                <a href="../kyc-upload.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-id-badge"></i> Sertifikat Legalitas Resmi</a>
+            </div>
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Keuangan</p>
+                <a href="income.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-wallet"></i> Saldo & Pendapatan</a>
+                <a href="withdraw.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-money-bill-transfer"></i> Tarik Dana</a>
+                <a href="history.html" style="display: block; color: #3b82f6; text-decoration: none; padding: 10px 0; border-left: 3px solid #3b82f6; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 500; color: #94a3b8;"><i class="fa-solid fa-shield-halved"></i> Escrow System Justice AI (Secured by OJK Guidelines)</div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="text-align: right; line-height: 1.2;">
+                        <span style="display: block; font-size: 0.9rem; color: white;">Budi Santoso, S.H.</span>
+                        <span style="font-size: 0.75rem; color: #34d399;">Verifikasi Selesai <i class="fa-solid fa-circle-check"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Riwayat Transaksi (Mutasi)</h1>
+                        <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 5px;">Semua catatan pendapatan, potongan fee admin, dan pengeluaran.</p>
+                    </div>
+                    <button class="btn-download" onclick="alert('Mendownload CSV Laporan Keuangan...');"><i class="fa-solid fa-file-csv"></i> Download CSV / Excel</button>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Periode</label>
+                        <select class="filter-input">
+                            <option>Bulan Ini (Maret 2026)</option>
+                            <option>Bulan Lalu (Feb 2026)</option>
+                            <option>Tahun Ini (2026)</option>
+                            <option>Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Jenis Mutasi</label>
+                        <select class="filter-input">
+                            <option>Semua Jenis</option>
+                            <option>Pendapatan Masuk</option>
+                            <option>Penarikan (Keluar)</option>
+                            <option>Dana Escrow (Ditahan)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex: 1;">
+                        <label>Cari ID / Klien</label>
+                        <input type="text" class="filter-input" placeholder="Mis: TX-82193 atau Nama PT" style="width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal & Waktu</th>
+                                <th>Keterangan</th>
+                                <th>ID Transaksi</th>
+                                <th>Jenis</th>
+                                <th>Nominal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>17 Mar 2026, 14:30 WIB</td>
+                                <td style="color: white; font-weight: 500;">Consultation Fee - Video Call (PT. Maju Bersama)</td>
+                                <td class="tx-id">TXN-491203ABC</td>
+                                <td><span class="type-badge type-income"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                <td style="color: #34d399; font-weight: bold;">+ Rp 500.000</td>
+                                <td><span class="status-badge status-success"><i class="fa-solid fa-check"></i> Selesai</span></td>
+                            </tr>
+                            <tr>
+                                <td>16 Mar 2026, 09:15 WIB</td>
+                                <td style="color: white; font-weight: 500;">Consultation Fee - Chat (Rina S.)</td>
+                                <td class="tx-id">TXN-491185XYZ</td>
+                                <td><span class="type-badge type-income"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                <td style="color: #34d399; font-weight: bold;">+ Rp 250.000</td>
+                                <td><span class="status-badge status-success"><i class="fa-solid fa-check"></i> Selesai</span></td>
+                            </tr>
+                            <tr>
+                                <td>12 Mar 2026, 10:00 WIB</td>
+                                <td style="color: white; font-weight: 500;">Penarikan Dana Payout (Bulan Berlalu) - BCA **9901</td>
+                                <td class="tx-id">WD-981123REQ</td>
+                                <td><span class="type-badge type-withdraw"><i class="fa-solid fa-arrow-up"></i> Keluar</span></td>
+                                <td style="color: #f87171; font-weight: bold;">- Rp 5.000.000</td>
+                                <td><span class="status-badge status-success"><i class="fa-solid fa-check"></i> Terkirim</span></td>
+                            </tr>
+                            <tr>
+                                <td>10 Mar 2026, 16:20 WIB</td>
+                                <td style="color: white; font-weight: 500;">Escrow Masuk: Sewa Menyewa (CV. Abadi Jaya)</td>
+                                <td class="tx-id">ESC-112233MNO</td>
+                                <td><span class="type-badge type-escrow"><i class="fa-solid fa-lock"></i> Escrow</span></td>
+                                <td style="color: #fbbf24; font-weight: bold;">Rp 45.000.000</td>
+                                <td><span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> Ditahan</span></td>
+                            </tr>
+                            <tr>
+                                <td>05 Mar 2026, 11:30 WIB</td>
+                                <td style="color: white; font-weight: 500;">Consultation Fee - Voice Call (Budi S.)</td>
+                                <td class="tx-id">TXN-491001DEF</td>
+                                <td><span class="type-badge type-income"><i class="fa-solid fa-arrow-down"></i> Masuk</span></td>
+                                <td style="color: #34d399; font-weight: bold;">+ Rp 300.000</td>
+                                <td><span class="status-badge status-success"><i class="fa-solid fa-check"></i> Selesai</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination">
+                        <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <span style="color: #94a3b8; align-self: center; padding: 0 10px;">...</span>
+                        <button class="page-btn">14</button>
+                        <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

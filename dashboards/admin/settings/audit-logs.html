@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Audit Keamanan - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .brand { font-family: var(--font-heading); font-size: 1.2rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--primary-color); }
+
+        .menu-group { margin-top: 20px; }
+        .menu-title { padding: 0 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px 20px; color: var(--text-main); text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.02); color: white; }
+        .menu-item.active { background-color: rgba(43, 108, 176, 0.1); color: var(--primary-color); border-right: 3px solid var(--primary-color); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        .filters { display: flex; gap: 15px; margin-bottom: 30px; background-color: var(--bg-alt); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .search-box { flex: 1; position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-box input { width: 100%; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px 10px 40px; border-radius: 6px; color: white; font-family: monospace; }
+        
+        .log-container { background-color: #0f172a; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; font-family: 'Consolas', monospace; font-size: 0.85rem; }
+        .log-header { display: flex; padding: 10px 20px; background-color: rgba(0,0,0,0.3); color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; }
+        .log-row { display: flex; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); align-items: center; }
+        .log-row:hover { background-color: rgba(255,255,255,0.02); }
+        
+        .col-time { width: 180px; color: #94a3b8; }
+        .col-level { width: 100px; }
+        .col-user { width: 180px; color: #cbd5e1; }
+        .col-ip { width: 140px; color: #58a6ff; }
+        .col-event { flex: 1; color: white; }
+        .col-action { width: 50px; text-align: right; }
+
+        .tag { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
+        .tag-info { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .tag-warn { background-color: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .tag-crit { background-color: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+        .tag-sec { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+        .btn-act { background: none; border: none; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .btn-act:hover { color: white; }
+
+        .chart-placeholder { height: 100px; background: linear-gradient(180deg, rgba(248, 81, 73, 0.1) 0%, rgba(248, 81, 73, 0) 100%); border-bottom: 1px solid #f85149; margin-bottom: 30px; position: relative; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+        .chart-placeholder::after { content: 'Tren Anomali Keamanan (24 Jam Terakhir)'; position: absolute; bottom: 10px; left: 20px; color: #f85149; font-size: 0.8rem; font-weight: bold; font-family: var(--font-body); }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand"><i class="fa-solid fa-shield-halved"></i> Justice Root</div>
+            </div>
+
+            <div class="menu-group">
+                <div class="menu-title">Konfigurasi Inti</div>
+                <a href="system.html" class="menu-item"><i class="fa-solid fa-microchip"></i> Sistem Dasar (Engine)</a>
+                <a href="integrations.html" class="menu-item"><i class="fa-solid fa-plug"></i> Integrasi API / Gateway</a>
+                <a href="audit-logs.html" class="menu-item active"><i class="fa-solid fa-fingerprint"></i> Log Audit Keamanan</a>
+            </div>
+            
+            <div class="menu-group">
+                <div class="menu-title">Manajemen Platform</div>
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-server"></i> Server Syslogs (Real-time Stream)</div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-outline" style="border-radius: 4px; padding: 5px 15px; border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-download"></i> Ekspor CSV</button>
+                    <button class="btn btn-outline" style="border-radius: 4px; padding: 5px 15px; border-color: rgba(248, 81, 73, 0.4); color: #f85149;"><i class="fa-solid fa-ban"></i> Blokir IP Masal</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Catatan Jejak Digital Server (Audit Logs)</h1>
+                        <p style="color: var(--text-muted); margin-top: 5px;">Memantau setiap aktivitas login, perubahan data brankas, dan potensi intrusi *brute-force* pada server Justice AI Platform.</p>
+                    </div>
+                </div>
+
+                <div class="chart-placeholder">
+                    <!-- Sparkline graphic concept -->
+                    <svg width="100%" height="100%" preserveAspectRatio="none">
+                        <path d="M0,80 L50,70 L100,75 L150,40 L200,60 L250,20 L300,50 L350,10 L400,60 L450,80 L500,30" fill="none" stroke="#f85149" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+                    </svg>
+                </div>
+
+                <div class="filters">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Grep Log: 'Failed', IP Address, atau UserID...">
+                    </div>
+                    <select class="btn btn-outline" style="background-color: var(--bg-main); color: white; border-color: rgba(255,255,255,0.1); font-family: monospace;">
+                        <option>Level: ALL EVENTS</option>
+                        <option>Level: SECURITY_CRITICAL</option>
+                        <option>Level: WARNING</option>
+                        <option>Level: INFO</option>
+                    </select>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.85rem; cursor: pointer;">
+                        <input type="checkbox" checked> Auto-Refresh (Live)
+                    </label>
+                </div>
+
+                <div class="log-container">
+                    <div class="log-header">
+                        <div class="col-time">TIMESTAMP (UTC+7)</div>
+                        <div class="col-level">LEVEL</div>
+                        <div class="col-user">ACTOR ID</div>
+                        <div class="col-ip">IP Address</div>
+                        <div class="col-event">PAYLOAD / EVENT DESCRIPTION</div>
+                        <div class="col-action"></div>
+                    </div>
+
+                    <div class="log-row">
+                        <div class="col-time">2026-03-17 12:05:11.450</div>
+                        <div class="col-level"><span class="tag tag-crit">CRITICAL</span></div>
+                        <div class="col-user">SYSTEM_WAF</div>
+                        <div class="col-ip">185.112.x.x <i class="fa-solid fa-globe" title="Russia RU"></i></div>
+                        <div class="col-event">SQL Injection Attempt Detected on `/api/v1/cases/search`. Payload: `'; DROP TABLE users;--`</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+                    
+                    <div class="log-row" style="background-color: rgba(248, 81, 73, 0.05); border-left: 2px solid #f85149;">
+                        <div class="col-time">2026-03-17 12:04:59.102</div>
+                        <div class="col-level"><span class="tag tag-sec">SECURITY</span></div>
+                        <div class="col-user">USR-LWY-8991A</div>
+                        <div class="col-ip">202.43.11.x (ID)</div>
+                        <div class="col-event">Failed Login Attempt (Password Mismatch). Attempt 4 of 5 before account lockout.</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+
+                    <div class="log-row">
+                        <div class="col-time">2026-03-17 12:01:23.771</div>
+                        <div class="col-level"><span class="tag tag-info">INFO</span></div>
+                        <div class="col-user">USR-CLI-5541C</div>
+                        <div class="col-ip">114.122.x.x (ID)</div>
+                        <div class="col-event">Vault Access: Successful decryption of file `KTP_Scan_Encrypted.aes`. Decryption Key Valid.</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+
+                    <div class="log-row">
+                        <div class="col-time">2026-03-17 11:58:45.001</div>
+                        <div class="col-level"><span class="tag tag-warn">WARNING</span></div>
+                        <div class="col-user">API_GATEWAY</div>
+                        <div class="col-ip">Internal (K8s)</div>
+                        <div class="col-event">High latency observed on AI Engine `LexBot V2` endpoint. Response time: 4500ms > Threshold (2000ms).</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+
+                    <div class="log-row">
+                        <div class="col-time">2026-03-17 11:45:10.992</div>
+                        <div class="col-level"><span class="tag tag-info">INFO</span></div>
+                        <div class="col-user">ROOT_ADMIN_01</div>
+                        <div class="col-ip">192.168.1.5 (VPN)</div>
+                        <div class="col-event">System Configuration Changed: `AES_CIPHER_MODE` updated from `AES-256-CBC` to `AES-256-GCM`.</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+
+                    <div class="log-row">
+                        <div class="col-time">2026-03-17 11:30:05.120</div>
+                        <div class="col-level"><span class="tag tag-sec">SECURITY</span></div>
+                        <div class="col-user">WEBHOOK_XENDIT</div>
+                        <div class="col-ip">13.220.x.x (SG)</div>
+                        <div class="col-event">Valid webhook payload received. Signature verified. Invoice `INV-2026-0X1` marked as PAID.</div>
+                        <div class="col-action"><button class="btn-act" title="Lihat Header Mentah"><i class="fa-solid fa-chevron-right"></i></button></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Advokat KYC - Admin Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-deep: #07101f; --bg-dark: #0d1b2e; --bg-card: #13243b; --bg-card2: #0f1e32;
+            --border: rgba(255,255,255,0.07); --text: #e2e8f0; --text-muted: #718096; --text-dim: #4a5568;
+            --primary: #3b82f6; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+            --purple: #8b5cf6; --cyan: #06b6d4; --radius: 12px; --radius-sm: 8px;
+        }
+        html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg-deep); color: var(--text); overflow: hidden; }
+        .layout { display: flex; height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 240px; background: var(--bg-dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+        .sidebar-logo { padding: 18px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); text-decoration: none; }
+        .logo-badge { width: 34px; height: 34px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: white; }
+        .logo-text { font-size: 1rem; font-weight: 800; color: white; }
+        .logo-text span { color: #ef4444; }
+        .nav-section { padding: 16px 16px 5px; font-size: 0.65rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; margin: 1px 8px; border-radius: var(--radius-sm); color: var(--text-muted); text-decoration: none; font-size: 0.83rem; font-weight: 500; transition: all 0.18s; position: relative; }
+        .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+        .nav-item.active { background: rgba(59,130,246,0.12); color: var(--primary); font-weight: 600; }
+        .nav-item i { width: 16px; text-align: center; font-size: 0.85rem; }
+        .nav-item .nbadge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+        .sidebar-footer { margin-top: auto; padding: 15px; border-top: 1px solid var(--border); }
+        .logout-btn { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); background: rgba(239,68,68,0.08); color: var(--danger); font-size: 0.83rem; font-weight: 600; border: 1px solid rgba(239,68,68,0.15); cursor: pointer; width: 100%; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .logout-btn:hover { background: rgba(239,68,68,0.18); }
+
+        /* MAIN */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* TOPBAR */
+        .topbar { height: 60px; background: var(--bg-dark); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+        .breadcrumb { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--text); }
+        .breadcrumb span { color: var(--text); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .admin-avatar { width: 30px; height: 30px; background: linear-gradient(135deg, #ef4444, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: white; }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { filter: brightness(1.12); }
+        .btn-danger { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.25); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-success { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.25); }
+        .btn-success:hover { background: var(--success); color: white; }
+        .btn-ghost { background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+        .btn-warn { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.25); }
+        .btn-warn:hover { background: var(--warning); color: white; }
+        .btn-sm { padding: 5px 11px; font-size: 0.75rem; }
+        .icon-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.18s; font-size: 0.8rem; }
+        .icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+
+        /* CONTENT */
+        .content { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+
+        /* PAGE HEADER */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .page-header h2 { font-size: 1.3rem; font-weight: 800; color: white; margin-bottom: 4px; }
+        .page-header p { font-size: 0.82rem; color: var(--text-muted); }
+        .header-acts { display: flex; gap: 8px; }
+
+        /* STATS */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-ico { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .stat-ico.orange { background: rgba(245,158,11,0.14); color: var(--warning); }
+        .stat-ico.green { background: rgba(16,185,129,0.14); color: var(--success); }
+        .stat-ico.red { background: rgba(239,68,68,0.14); color: var(--danger); }
+        .stat-ico.blue { background: rgba(59,130,246,0.14); color: var(--primary); }
+        .stat-val { font-size: 1.6rem; font-weight: 800; color: white; line-height: 1; margin-bottom: 3px; }
+        .stat-lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* TABLE CARD */
+        .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .table-toolbar { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+        .search-wrap { position: relative; flex: 1; max-width: 300px; }
+        .search-wrap i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.85rem; }
+        .search-wrap input { width: 100%; padding: 8px 12px 8px 32px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 0.83rem; font-family: 'Inter', sans-serif; }
+        .search-wrap input::placeholder { color: var(--text-dim); }
+        .search-wrap input:focus { outline: none; border-color: var(--primary); }
+        .filter-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+        .ftag { padding: 5px 12px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-family: 'Inter', sans-serif; transition: all 0.18s; }
+        .ftag:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        .ftag.active { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.12); color: var(--primary); }
+        .ftag.orange.active { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.12); color: var(--warning); }
+        .ftag.green.active { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.12); color: var(--success); }
+        .ftag.red.active { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12); color: var(--danger); }
+
+        /* DATA TABLE */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { padding: 11px 16px; text-align: left; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+        .data-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+        .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        /* LAWYER CELL */
+        .lawyer-cell { display: flex; align-items: center; gap: 11px; }
+        .law-avatar { width: 38px; height: 38px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: white; flex-shrink: 0; background: linear-gradient(135deg, #3b82f6, #6366f1); }
+        .law-name { font-size: 0.87rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        .law-email { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* NIA */
+        .nia-num { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+        .nia-org { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* DOC PILL */
+        .doc-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+        .dpill { display: inline-flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; color: #94a3b8; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.18s; }
+        .dpill:hover { background: rgba(59,130,246,0.1); color: var(--primary); border-color: rgba(59,130,246,0.3); }
+        .dpill.warn { border-color: rgba(239,68,68,0.3); color: #f87171; }
+
+        /* BADGE */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-pending { background: rgba(245,158,11,0.12); color: var(--warning); }
+        .badge-approved { background: rgba(16,185,129,0.12); color: var(--success); }
+        .badge-rejected { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .badge-review { background: rgba(59,130,246,0.12); color: var(--primary); }
+
+        /* ACTIONS */
+        .act-row { display: flex; gap: 5px; }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9000; justify-content: center; align-items: center; }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; width: 560px; max-width: 95vw; position: relative; animation: slideUp 0.25s; max-height: 90vh; overflow-y: auto; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .modal-title { font-size: 1rem; font-weight: 700; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer; }
+        .modal-close:hover { color: var(--text); }
+
+        /* KYC DETAIL FIELDS */
+        .kyc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+        .kyc-field label { font-size: 0.72rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
+        .kyc-field .val { font-size: 0.87rem; font-weight: 600; color: var(--text); }
+        .kyc-divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+        .doc-check { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); margin-bottom: 7px; }
+        .doc-check .doc-name { flex: 1; font-size: 0.83rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+        .doc-check .doc-status { font-size: 0.75rem; font-weight: 700; }
+        .doc-ok { color: var(--success); }
+        .doc-warn { color: var(--danger); }
+
+        /* MODAL FOOTER */
+        .modal-footer { display: flex; gap: 8px; margin-top: 18px; }
+        .modal-footer .btn { flex: 1; justify-content: center; }
+
+        /* TOAST */
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 18px; display: flex; align-items: center; gap: 10px; font-size: 0.83rem; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; max-width: 360px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.danger { border-left: 3px solid var(--danger); }
+        .toast.warning { border-left: 3px solid var(--warning); }
+        .toast.info { border-left: 3px solid var(--primary); }
+
+        /* REJECT FORM */
+        .reject-reason { width: 100%; padding: 9px 12px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.85rem; resize: vertical; margin-top: 5px; }
+        .reject-reason:focus { outline: none; border-color: var(--danger); }
+
+        @media (max-width: 900px) { .sidebar { display: none; } .stats-row { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a href="../dashboard.html" class="sidebar-logo">
+            <div class="logo-badge"><i class="fa-solid fa-server"></i></div>
+            <span class="logo-text">Platform<span>Admin</span></span>
+        </a>
+        <div class="nav-section">Command Center</div>
+        <a href="../dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Metrics Pusat</a>
+        <div class="nav-section">Manajemen Pengguna</div>
+        <a href="../users/list.html" class="nav-item"><i class="fa-solid fa-users"></i> Klien Terdaftar</a>
+        <a href="approval.html" class="nav-item active"><i class="fa-solid fa-id-card-clip"></i> Verifikasi Advokat <span class="nbadge" id="pendingBadge">5</span></a>
+        <div class="nav-section">Pengawasan</div>
+        <a href="../cases/monitoring.html" class="nav-item"><i class="fa-solid fa-folder-tree"></i> Monitoring Kasus</a>
+        <a href="../cases/disputes.html" class="nav-item"><i class="fa-solid fa-triangle-exclamation"></i> Sengketa <span class="nbadge">2</span></a>
+        <a href="../courts/schedule.html" class="nav-item"><i class="fa-solid fa-calendar-check"></i> Jadwal Sidang</a>
+        <div class="nav-section">Sistem</div>
+        <a href="../ai/model-metrics.html" class="nav-item"><i class="fa-solid fa-brain"></i> Performa AI</a>
+        <a href="../finance/transactions.html" class="nav-item"><i class="fa-solid fa-money-bill-transfer"></i> Pembayaran</a>
+        <a href="../settings/index.html" class="nav-item"><i class="fa-solid fa-sliders"></i> Pengaturan</a>
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="confirmLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar Session</button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar">
+            <div class="breadcrumb">
+                <a href="../dashboard.html"><i class="fa-solid fa-house"></i></a>
+                <i class="fa-solid fa-chevron-right" style="font-size:0.6rem;"></i>
+                <span>Verifikasi KYC Advokat</span>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-ghost btn-sm" onclick="refreshPage()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                <button class="btn btn-warn btn-sm" onclick="exportPending()"><i class="fa-solid fa-file-export"></i> Export Pending</button>
+                <div class="admin-avatar">SA</div>
+                <span style="font-size:0.8rem; color:var(--text-muted);">Super Admin</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <div>
+                    <h2><i class="fa-solid fa-id-card-clip" style="color:var(--warning); font-size:1.1rem;"></i> Antrian Validasi KYC Advokat</h2>
+                    <p>Verifikasi Basita (Berita Acara Sumpah), cross-check dokumen ke API Mahkamah Agung & PERADI.</p>
+                </div>
+                <div class="header-acts">
+                    <button class="btn btn-success" onclick="approveAllPending()"><i class="fa-solid fa-check-double"></i> Setujui Semua Pending</button>
+                </div>
+            </div>
+
+            <!-- STAT CARDS -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-ico orange"><i class="fa-solid fa-clock"></i></div>
+                    <div><div class="stat-val" id="statPending">5</div><div class="stat-lbl">Menunggu Review</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-ico green"><i class="fa-solid fa-check-circle"></i></div>
+                    <div><div class="stat-val">248</div><div class="stat-lbl">Disetujui Bulan Ini</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-ico red"><i class="fa-solid fa-times-circle"></i></div>
+                    <div><div class="stat-val">12</div><div class="stat-lbl">Ditolak Bulan Ini</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-ico blue"><i class="fa-solid fa-user-tie"></i></div>
+                    <div><div class="stat-val">845</div><div class="stat-lbl">Total Advokat Aktif</div></div>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div style="display:flex; gap:10px; align-items:center; flex:1; flex-wrap:wrap;">
+                        <div class="search-wrap">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="searchInput" placeholder="Cari nama, NIA, email..." oninput="filterTable()">
+                        </div>
+                        <div class="filter-tags">
+                            <button class="ftag active" onclick="setFilter('all',this)">Semua</button>
+                            <button class="ftag orange" onclick="setFilter('pending',this)">Pending</button>
+                            <button class="ftag green" onclick="setFilter('approved',this)">Disetujui</button>
+                            <button class="ftag red" onclick="setFilter('rejected',this)">Ditolak</button>
+                        </div>
+                    </div>
+                    <span id="tableCount" style="font-size:0.78rem; color:var(--text-muted);"></span>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAll" onchange="toggleAll(this)" style="cursor:pointer;"></th>
+                                <th>Profil Advokat</th>
+                                <th>NIA & Organisasi</th>
+                                <th>Spesialisasi</th>
+                                <th>Dokumen KYC</th>
+                                <th>Status</th>
+                                <th>Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lawyerTableBody"></tbody>
+                    </table>
+                    <div id="noData" style="display:none; text-align:center; padding:50px 20px; color:var(--text-muted);">
+                        <i class="fa-solid fa-user-slash" style="font-size:2rem; opacity:0.3; display:block; margin-bottom:12px;"></i>
+                        <p>Tidak ada data yang sesuai filter pencarian.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAIL KYC -->
+<div class="modal-overlay" id="kycModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fa-solid fa-file-shield" style="color:var(--primary);"></i> Tinjauan Dokumen KYC Advokat</div>
+            <button class="modal-close" onclick="closeModal('kycModal')"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div id="kycContent"></div>
+        <div class="modal-footer" id="kycFooter"></div>
+    </div>
+</div>
+
+<!-- MODAL TOLAK -->
+<div class="modal-overlay" id="rejectModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title" style="color:var(--danger);"><i class="fa-solid fa-times-circle"></i> Tolak Pengajuan KYC</div>
+            <button class="modal-close" onclick="closeModal('rejectModal')"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Pilih alasan penolakan dan sistem akan otomatis mengirim email notifikasi kepada advokat.</p>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+            <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="rejectReason" value="Foto KTP tidak terbaca / buram"> Foto KTP tidak terbaca / buram
+            </label>
+            <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="rejectReason" value="Berita Acara Sumpah tidak sesuai format"> Berita Acara Sumpah tidak sesuai format
+            </label>
+            <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="rejectReason" value="Nomor NIA tidak terdaftar di sistem PERADI"> Nomor NIA tidak terdaftar di sistem PERADI
+            </label>
+            <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="rejectReason" value="Dokumen terindikasi palsu / tidak asli"> Dokumen terindikasi palsu / tidak asli
+            </label>
+            <label style="font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="radio" name="rejectReason" value="other"> Alasan Lain
+            </label>
+        </div>
+        <textarea id="rejectNote" class="reject-reason" rows="3" placeholder="Catatan tambahan untuk advokat (opsional)..."></textarea>
+        <div class="modal-footer" style="margin-top:14px;">
+            <button class="btn btn-ghost" onclick="closeModal('rejectModal')" style="flex:1;">Batal</button>
+            <button class="btn btn-danger" style="flex:1;" onclick="submitReject()"><i class="fa-solid fa-times-circle"></i> Kirim Penolakan</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL KIRIM EMAIL -->
+<div class="modal-overlay" id="emailModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fa-solid fa-envelope" style="color:var(--cyan);"></i> Kirim Email ke Advokat</div>
+            <button class="modal-close" onclick="closeModal('emailModal')"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+                <label style="font-size:0.78rem; color:var(--text-dim); font-weight:600; display:block; margin-bottom:4px;">KEPADA</label>
+                <div id="emailTo" style="font-size:0.85rem; color:var(--text-muted); padding:8px; background:rgba(0,0,0,0.2); border-radius:6px;"></div>
+            </div>
+            <div>
+                <label style="font-size:0.78rem; color:var(--text-dim); font-weight:600; display:block; margin-bottom:4px;">SUBJEK</label>
+                <input id="emailSubject" type="text" class="reject-reason" style="margin-top:0;" value="[Justice AI] Tindak Lanjut Dokumen KYC Anda">
+            </div>
+            <div>
+                <label style="font-size:0.78rem; color:var(--text-dim); font-weight:600; display:block; margin-bottom:4px;">ISI PESAN</label>
+                <textarea id="emailBody" class="reject-reason" rows="5" placeholder="Tulis pesan..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeModal('emailModal')" style="flex:1;">Batal</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="sendEmail()"><i class="fa-solid fa-paper-plane"></i> Kirim Email</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <span id="toastIcon"></span>
+    <span id="toastMsg"></span>
+</div>
+
+<script>
+    const lawyers = [
+        { id: 'L001', name: 'Farhan Dirgantara, S.H.', email: 'farhan.law@email.com', nia: '2011.092.41', org: 'PERADI Jakarta', spec: 'Hukum Bisnis & Kontrak', status: 'pending', docs: [{n:'KTP_asli.pdf', ok:true},{n:'BAS_Sumpah.pdf', ok:true},{n:'Kartu_PERADI.pdf', ok:true}], grad: 'Universitas Indonesia', exp: '8 tahun', color: '#3b82f6' },
+        { id: 'L002', name: 'Diana Pratiwi, S.H., M.H.', email: 'diana.partner@firma.id', nia: '2015.112.98', org: 'KAI Jawa Barat', spec: 'Kenotariatan & Pertanahan', status: 'rejected', docs: [{n:'KTP_Asli.pdf', ok:true},{n:'BAS_Buram.jpg', ok:false}], grad: 'Universitas Padjadjaran', exp: '6 tahun', color: '#a855f7' },
+        { id: 'L003', name: 'Budi Hermawan, S.H.', email: 'budi.h@hukum.co.id', nia: '2009.031.27', org: 'PERADI Surabaya', spec: 'Hukum Pidana', status: 'pending', docs: [{n:'KTP_scan.pdf', ok:true},{n:'BAS_Resmi.pdf', ok:true},{n:'SKEK_2024.pdf', ok:true}], grad: 'Universitas Airlangga', exp: '12 tahun', color: '#f59e0b' },
+        { id: 'L004', name: 'Nadia Kusuma, S.H., LL.M.', email: 'nadia@legalpartners.id', nia: '2019.088.15', org: 'PERADI Bali', spec: 'Hukum Internasional & Tax', status: 'approved', docs: [{n:'Passport_scan.pdf', ok:true},{n:'BAS_lengkap.pdf', ok:true},{n:'LLM_Certificate.pdf', ok:true}], grad: 'Universitas Udayana + Harvard Law', exp: '4 tahun', color: '#10b981' },
+        { id: 'L005', name: 'Rahmat Hidayat, S.H.', email: 'rahmat.h@lawfirm.co.id', nia: 'PENDING', org: 'PERADI Medan', spec: 'Hukum Keluarga & Waris', status: 'pending', docs: [{n:'KTP_upload.pdf', ok:true},{n:'BAS_digital.pdf', ok:false}], grad: 'Universitas Sumatera Utara', exp: '3 tahun', color: '#06b6d4' },
+    ];
+
+    let currentFilter = 'all';
+    let activeRejectId = null;
+    let activeEmailId = null;
+
+    function renderTable(data) {
+        const tbody = document.getElementById('lawyerTableBody');
+        document.getElementById('noData').style.display = data.length ? 'none' : 'block';
+        document.getElementById('tableCount').textContent = `${data.length} advokat`;
+        if(!data.length) { tbody.innerHTML = ''; return; }
+        tbody.innerHTML = data.map(l => `
+            <tr id="row-${l.id}">
+                <td><input type="checkbox" style="cursor:pointer;"></td>
+                <td>
+                    <div class="lawyer-cell">
+                        <div class="law-avatar" style="background:linear-gradient(135deg, ${l.color}, ${l.color}aa);">${l.name.charAt(0)}</div>
+                        <div>
+                            <div class="law-name">${l.name}</div>
+                            <div class="law-email">${l.email}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="nia-num">${l.nia}</div>
+                    <div class="nia-org"><i class="fa-solid fa-scale-balanced" style="font-size:0.65rem;"></i> ${l.org}</div>
+                </td>
+                <td style="font-size:0.8rem; color:var(--text-muted);">${l.spec}</td>
+                <td>
+                    <div class="doc-pills">
+                        ${l.docs.map(d => `<span class="dpill ${d.ok?'':'warn'}" title="${d.ok?'Dokumen Valid':'Dokumen Bermasalah'}">
+                            <i class="fa-solid ${d.ok?'fa-file-pdf':'fa-triangle-exclamation'}"></i> ${d.n}
+                        </span>`).join('')}
+                    </div>
+                </td>
+                <td>${statusBadge(l.status)}</td>
+                <td>
+                    <div class="act-row">
+                        <button class="icon-btn" title="Tinjau Detail" onclick="reviewKYC('${l.id}')" style="color:var(--cyan);"><i class="fa-solid fa-eye"></i></button>
+                        ${l.status === 'pending' ? `
+                        <button class="icon-btn" title="Setujui" onclick="approveOne('${l.id}')" style="color:var(--success);"><i class="fa-solid fa-check"></i></button>
+                        <button class="icon-btn" title="Tolak" onclick="openReject('${l.id}')" style="color:var(--danger);"><i class="fa-solid fa-times"></i></button>
+                        ` : ''}
+                        <button class="icon-btn" title="Kirim Email" onclick="openEmail('${l.id}')" style="color:var(--warning);"><i class="fa-solid fa-envelope"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function statusBadge(s) {
+        if(s === 'pending') return '<span class="badge badge-pending"><i class="fa-solid fa-clock"></i> Pending Review</span>';
+        if(s === 'approved') return '<span class="badge badge-approved"><i class="fa-solid fa-check-circle"></i> Disetujui</span>';
+        if(s === 'rejected') return '<span class="badge badge-rejected"><i class="fa-solid fa-times-circle"></i> Ditolak</span>';
+    }
+
+    function setFilter(f, el) {
+        currentFilter = f;
+        document.querySelectorAll('.ftag').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        filterTable();
+    }
+
+    function filterTable() {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        const data = lawyers.filter(l => {
+            const match = (l.name + l.email + l.nia + l.org).toLowerCase().includes(term);
+            if (currentFilter === 'all') return match;
+            return match && l.status === currentFilter;
+        });
+        renderTable(data);
+    }
+
+    function reviewKYC(id) {
+        const l = lawyers.find(x => x.id === id);
+        const allDocsOk = l.docs.every(d => d.ok);
+        document.getElementById('kycContent').innerHTML = `
+            <div class="kyc-grid">
+                <div class="kyc-field"><label>Nama Lengkap</label><div class="val">${l.name}</div></div>
+                <div class="kyc-field"><label>Email</label><div class="val" style="font-size:0.8rem;">${l.email}</div></div>
+                <div class="kyc-field"><label>Nomor NIA</label><div class="val" style="font-family:'JetBrains Mono',monospace;">${l.nia}</div></div>
+                <div class="kyc-field"><label>Organisasi</label><div class="val">${l.org}</div></div>
+                <div class="kyc-field"><label>Spesialisasi</label><div class="val">${l.spec}</div></div>
+                <div class="kyc-field"><label>Pengalaman</label><div class="val">${l.exp}</div></div>
+                <div class="kyc-field" style="grid-column:1/-1"><label>Perguruan Tinggi</label><div class="val">${l.grad}</div></div>
+            </div>
+            <hr class="kyc-divider">
+            <p style="font-size:0.78rem; font-weight:700; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px;">Verifikasi Dokumen</p>
+            ${l.docs.map(d => `
+            <div class="doc-check">
+                <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:0.9rem;"></i>
+                <span class="doc-name">${d.n}</span>
+                <span class="doc-status ${d.ok ? 'doc-ok' : 'doc-warn'}">${d.ok ? '✓ Valid' : '⚠ Bermasalah'}</span>
+            </div>
+            `).join('')}
+            <hr class="kyc-divider">
+            <div style="padding:10px; border-radius:var(--radius-sm); ${allDocsOk ? 'background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);' : 'background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);'}">
+                <p style="font-size:0.82rem; font-weight:600; ${allDocsOk ? 'color:var(--success);' : 'color:var(--danger);'}">
+                    ${allDocsOk ? '✅ Semua dokumen terverifikasi. Profil siap untuk disetujui.' : '⚠️ Ada dokumen bermasalah. Harap tinjau sebelum menyetujui.'}
+                </p>
+            </div>
+        `;
+        document.getElementById('kycFooter').innerHTML = `
+            <button class="btn btn-ghost" onclick="closeModal('kycModal')">Tutup</button>
+            ${l.status === 'pending' ? `
+            <button class="btn btn-danger" onclick="closeModal('kycModal'); openReject('${l.id}')"><i class="fa-solid fa-times"></i> Tolak</button>
+            <button class="btn btn-success" onclick="closeModal('kycModal'); approveOne('${l.id}')"><i class="fa-solid fa-check"></i> Setujui Profil</button>
+            ` : ''}
+        `;
+        document.getElementById('kycModal').style.display = 'flex';
+    }
+
+    function approveOne(id) {
+        const l = lawyers.find(x => x.id === id);
+        if(!l) return;
+        if(confirm(`Setujui dan aktifkan profil advokat "${l.name}" di platform?`)) {
+            l.status = 'approved';
+            updatePendingCount();
+            filterTable();
+            showToast('success', `✅ "${l.name}" berhasil diverifikasi dan diaktifkan sebagai Advokat!`);
+        }
+    }
+
+    function openReject(id) {
+        activeRejectId = id;
+        const l = lawyers.find(x => x.id === id);
+        document.querySelectorAll('input[name="rejectReason"]').forEach(r => r.checked = false);
+        document.getElementById('rejectNote').value = '';
+        document.getElementById('rejectModal').style.display = 'flex';
+    }
+
+    function submitReject() {
+        const selected = document.querySelector('input[name="rejectReason"]:checked');
+        if(!selected) { showToast('warning', '⚠️ Pilih alasan penolakan terlebih dahulu!'); return; }
+        const l = lawyers.find(x => x.id === activeRejectId);
+        if(!l) return;
+        l.status = 'rejected';
+        closeModal('rejectModal');
+        updatePendingCount();
+        filterTable();
+        showToast('danger', `❌ "${l.name}" ditolak. Email notifikasi dikirim otomatis.`);
+    }
+
+    function openEmail(id) {
+        activeEmailId = id;
+        const l = lawyers.find(x => x.id === id);
+        document.getElementById('emailTo').textContent = `${l.name} <${l.email}>`;
+        document.getElementById('emailBody').value = `Yth. ${l.name},\n\nKami ingin menginformasikan perkembangan verifikasi dokumen KYC Anda di Justice AI Platform.\n\nHormat kami,\nTim Administrator Justice AI`;
+        document.getElementById('emailModal').style.display = 'flex';
+    }
+
+    function sendEmail() {
+        const subj = document.getElementById('emailSubject').value;
+        if(!subj.trim()) { showToast('warning', 'Isi subjek email!'); return; }
+        closeModal('emailModal');
+        const l = lawyers.find(x => x.id === activeEmailId);
+        showToast('info', `📧 Email berhasil dikirim ke ${l?.email || 'advokat'}!`);
+    }
+
+    function approveAllPending() {
+        const pendingList = lawyers.filter(l => l.status === 'pending');
+        if(!pendingList.length) { showToast('warning', 'Tidak ada advokat yang masih Pending!'); return; }
+        if(confirm(`Setujui semua ${pendingList.length} advokat yang masih berstatus Pending sekaligus?`)) {
+            pendingList.forEach(l => l.status = 'approved');
+            updatePendingCount();
+            filterTable();
+            showToast('success', `✅ ${pendingList.length} advokat berhasil diverifikasi sekaligus!`);
+        }
+    }
+
+    function updatePendingCount() {
+        const count = lawyers.filter(l => l.status === 'pending').length;
+        document.getElementById('statPending').textContent = count;
+        const badge = document.getElementById('pendingBadge');
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+
+    function exportPending() {
+        const pending = lawyers.filter(l => l.status === 'pending');
+        const rows = [['ID','Nama','Email','NIA','Org','Spesialisasi']];
+        pending.forEach(l => rows.push([l.id, l.name, l.email, l.nia, l.org, l.spec]));
+        const csv = rows.map(r => r.join(',')).join('\n');
+        const blob = new Blob([csv], {type:'text/csv'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'pending_kyc_lawyers.csv';
+        a.click();
+        showToast('success', '📥 File CSV pending KYC berhasil diunduh!');
+    }
+
+    function toggleAll(cb) {
+        document.querySelectorAll('#lawyerTableBody input[type=checkbox]').forEach(c => c.checked = cb.checked);
+    }
+
+    function refreshPage() {
+        showToast('info', '🔄 Memuat data antrian KYC terbaru...');
+        filterTable();
+    }
+
+    function confirmLogout() {
+        if(confirm('Akhiri sesi Admin?')) window.location.href = '../../../auth/login.html';
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.style.display='none'; }));
+
+    function showToast(type, msg) {
+        const t = document.getElementById('toast');
+        t.className = `toast ${type}`;
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // INIT
+    renderTable(lawyers);
+</script>
+</body>
+</html>

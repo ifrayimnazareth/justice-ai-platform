@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Perkara - Dashboard Hakim Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/judge.css">
+    <style>
+        .archive-row { display: grid; grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr 120px; gap: var(--space-md); padding: 14px 16px; background: var(--bg-main); border-radius: var(--radius-md); margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.06); font-size: 0.87rem; align-items: center; transition: all var(--transition-fast); }
+        .archive-row:hover { box-shadow: var(--shadow-sm); background: var(--bg-alt); }
+        .verdict-menang { background: rgba(56,161,105,0.1); color: var(--success); padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+        .verdict-kalah { background: rgba(229,62,62,0.1); color: var(--danger); padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+        .verdict-sebagian { background: rgba(214,158,46,0.1); color: var(--secondary-dark); padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Court</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Workspace Hakim</div>
+            <a href="dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <a href="cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Kasus Aktif</span></a>
+            <a href="sidang/jadwal.html" class="menu-item"><i class="fa-regular fa-calendar"></i><span>Jadwal Sidang</span></a>
+            <a href="cases/putusan.html" class="menu-item"><i class="fa-solid fa-gavel"></i><span>Buat Putusan</span></a>
+            <a href="arsip.html" class="menu-item active"><i class="fa-solid fa-box-archive"></i><span>Arsip Perkara</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari arsip perkara..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?auto=format&fit=crop&q=80&w=150" alt="Hakim" class="avatar">
+                    <div class="user-info"><span class="user-name">Dr. H. Suyudi, S.H., M.H.</span><span class="user-role">Hakim Ketua - PN Jakarta Selatan</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Arsip Perkara</h1><p>Riwayat semua perkara yang telah diselesaikan dengan putusan final.</p></div>
+                <button class="btn btn-primary"><i class="fa-solid fa-download"></i> &nbsp; Export Arsip</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-box-archive"></i></div><div class="stat-details"><h3>1,248</h3><p>Total Perkara Diarsip</p></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-check-circle"></i></div><div class="stat-details"><h3>892</h3><p>Putusan Final</p></div></div>
+                <div class="stat-card"><div class="stat-icon gold"><i class="fa-solid fa-clock"></i></div><div class="stat-details"><h3>14 hr</h3><p>Rata-rata Durasi Perkara</p></div></div>
+                <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-scale-balanced"></i></div><div class="stat-details"><h3>89%</h3><p>Tingkat Kepuasan</p></div></div>
+            </div>
+
+            <div style="display:flex;gap:var(--space-sm);margin:var(--space-xl) 0 var(--space-md);">
+                <input type="text" class="form-input" style="flex:1;" placeholder="Cari nomor perkara, nama para pihak...">
+                <select class="form-select" style="width:160px;"><option>Semua Jenis</option><option>Perdata</option><option>Pidana</option><option>TUN</option><option>Niaga</option></select>
+                <input type="number" class="form-input" style="width:100px;" placeholder="Tahun" value="2025">
+                <button class="btn btn-outline"><i class="fa-solid fa-search"></i> Cari</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.5fr 2fr 1fr 1fr 1fr 120px;gap:var(--space-md);padding:10px 16px;font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">
+                <div>No. Perkara</div><div>Judul Perkara</div><div>Jenis</div><div>Durasi</div><div>Putusan</div><div>Aksi</div>
+            </div>
+
+            <div class="archive-row">
+                <div style="font-weight:700;color:var(--primary-color);font-family:monospace;font-size:0.82rem;">123/Pdt.G/2025/PN.Jkt.Sel</div>
+                <div><div style="font-weight:600;">PT. Maju Jaya vs CV. Sentosa</div><div style="font-size:0.75rem;color:var(--text-muted);">Sengketa Kontrak Pengadaan</div></div>
+                <div><span style="background:rgba(49,130,206,0.1);color:var(--info);padding:3px 8px;border-radius:var(--radius-full);font-size:0.75rem;">Perdata</span></div>
+                <div style="color:var(--text-muted);">8 bulan</div>
+                <div><span class="verdict-menang">Dikabulkan</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Buka</button></div>
+            </div>
+
+            <div class="archive-row">
+                <div style="font-weight:700;color:var(--primary-color);font-family:monospace;font-size:0.82rem;">567/Pid.Sus/2025/PN.Jkt.Sel</div>
+                <div><div style="font-weight:600;">Kasus Korupsi APBD – Terdakwa M. Sihombing</div><div style="font-size:0.75rem;color:var(--text-muted);">Tindak Pidana Korupsi</div></div>
+                <div><span style="background:rgba(229,62,62,0.1);color:var(--danger);padding:3px 8px;border-radius:var(--radius-full);font-size:0.75rem;">Pidana</span></div>
+                <div style="color:var(--text-muted);">14 bulan</div>
+                <div><span class="verdict-menang" style="background:rgba(229,62,62,0.1);color:var(--danger);">Bersalah</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Buka</button></div>
+            </div>
+
+            <div class="archive-row">
+                <div style="font-weight:700;color:var(--primary-color);font-family:monospace;font-size:0.82rem;">45/G/2025/PTUN-JKT</div>
+                <div><div style="font-weight:600;">CV. Berkah vs Gubernur DKI Jakarta</div><div style="font-size:0.75rem;color:var(--text-muted);">Gugatan SK Pencabutan Izin</div></div>
+                <div><span style="background:rgba(214,158,46,0.1);color:var(--secondary-dark);padding:3px 8px;border-radius:var(--radius-full);font-size:0.75rem;">TUN</span></div>
+                <div style="color:var(--text-muted);">5 bulan</div>
+                <div><span class="verdict-sebagian">Sebagian</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Buka</button></div>
+            </div>
+
+            <div class="archive-row">
+                <div style="font-weight:700;color:var(--primary-color);font-family:monospace;font-size:0.82rem;">89/Pdt.G/2025/PN.Jkt.Sel</div>
+                <div><div style="font-weight:600;">Warisan Keluarga Sutanto – Sengketa Tanah</div><div style="font-size:0.75rem;color:var(--text-muted);">Perdata – Harta Warisan</div></div>
+                <div><span style="background:rgba(49,130,206,0.1);color:var(--info);padding:3px 8px;border-radius:var(--radius-full);font-size:0.75rem;">Perdata</span></div>
+                <div style="color:var(--text-muted);">11 bulan</div>
+                <div><span class="verdict-kalah">Ditolak</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i> Buka</button></div>
+            </div>
+
+            <div style="text-align:center;padding:var(--space-xl) 0;">
+                <button class="btn btn-outline"><i class="fa-solid fa-rotate"></i> Muat Lebih Banyak</button>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../assets/js/core/app.js"></script>
+</body>
+</html>

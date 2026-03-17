@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skema Akses Level Data - Justice Admin</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Permissions Matrix Table */
+        .perm-grid { background-color: var(--bg-alt); border-radius: var(--radius-lg); padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .perm-grid h3 { margin: 0 0 20px 0; font-size: 1.1rem; color: #58a6ff; display: flex; align-items: center; gap: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px; }
+
+        .matrix-table { width: 100%; border-collapse: collapse; }
+        .matrix-table th { padding: 15px; border-bottom: 2px solid rgba(255,255,255,0.1); color: #cbd5e1; font-weight: bold; text-align: center; }
+        .matrix-table th:first-child { text-align: left; width: 30%; }
+        
+        .matrix-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: center; vertical-align: middle; }
+        .matrix-table td:first-child { text-align: left; font-family: monospace; color: #94a3b8; font-size: 0.9rem; }
+        
+        /* Checkbox Styling */
+        .custom-checkbox { position: relative; display: inline-block; width: 22px; height: 22px; }
+        .custom-checkbox input { opacity: 0; width: 0; height: 0; }
+        .chk-mark { position: absolute; top: 0; left: 0; height: 22px; width: 22px; background-color: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .custom-checkbox input:checked ~ .chk-mark { background-color: #58a6ff; border-color: #58a6ff; }
+        .chk-mark:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 11px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        .custom-checkbox input:checked ~ .chk-mark:after { display: block; }
+        .custom-checkbox input:disabled ~ .chk-mark { opacity: 0.3; cursor: not-allowed; }
+
+        .p-group { margin-top: 30px; }
+        .guard-line { display: flex; align-items: center; justify-content: space-between; padding: 10px; background-color: rgba(248, 81, 73, 0.05); border: 1px solid rgba(248, 81, 73, 0.2); border-radius: 6px; margin-top: 20px; }
+        .guard-line p { margin: 0; color: #f85149; font-size: 0.8rem; font-family: monospace; display: flex; align-items: center; gap: 8px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Admin</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Keamanan & Otoritas</p>
+                <a href="roles.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-users-gear"></i> Konfigurasi Roles (RBAC)</a>
+                <a href="permissions.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-key"></i> Hak Akses Level Data</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Akses Root</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-shield-cat"></i> Level Database & Middleware Guards</div>
+                <button class="btn btn-primary" onclick="alert('Parameter berhasil disimpan di tabel Master Security SIPP API.');"><i class="fa-solid fa-save"></i> Tulis ke Konfigurasi Server</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tabel Restriksi Fungsionalitas API</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Hati-hati. Mengalokasikan izin pada `write:vault` ke role Admin KYC berpotensi melanggar privasi Klien.</p>
+                    </div>
+                </div>
+
+                <div class="perm-grid p-group">
+                    <h3><i class="fa-solid fa-database"></i> Domain Modul Keuangan Escrow</h3>
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>API Endpoint Identifier</th>
+                                <th>KYC Admin</th>
+                                <th>Financial Auditor</th>
+                                <th>Mahkamah / Hakim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fa-solid fa-code"></i> read:ledger_full</td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" checked><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa-solid fa-code"></i> write:execute_refund</td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" checked><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa-solid fa-code"></i> override:escrow_hold</td>
+                                <td><label class="custom-checkbox"><input type="checkbox" disabled><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" checked><span class="chk-mark"></span></label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="perm-grid p-group">
+                    <h3><i class="fa-solid fa-vault" style="color: #a855f7;"></i> Domain Berankas & Decryption Key (Vault)</h3>
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>API Endpoint Identifier</th>
+                                <th>KYC Admin</th>
+                                <th>Financial Auditor</th>
+                                <th>Mahkamah / Hakim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fa-solid fa-code"></i> read:forensic_file</td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox"><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" checked><span class="chk-mark"></span></label></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa-solid fa-code"></i> read:passphrase_key</td>
+                                <td><label class="custom-checkbox"><input type="checkbox" disabled><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" disabled><span class="chk-mark"></span></label></td>
+                                <td><label class="custom-checkbox"><input type="checkbox" disabled><span class="chk-mark"></span></label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="guard-line">
+                        <p><i class="fa-solid fa-triangle-exclamation"></i> read:passphrase_key secara logik dilarang untuk semua staf. Kunci asimetris hanya dimiliki sisi *Client-Browser* (Zero Knowledge Rule).</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Halaman - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+    <style>
+        .page-row { display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr 120px; gap: var(--space-md); padding: 14px 16px; background: var(--bg-main); border-radius: var(--radius-md); margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.06); font-size: 0.87rem; align-items: center; }
+        .page-row:hover { box-shadow: var(--shadow-sm); background: var(--bg-alt); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Konten</div>
+            <a href="articles.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Artikel</span></a>
+            <a href="categories.html" class="menu-item"><i class="fa-solid fa-tags"></i><span>Kategori</span></a>
+            <a href="pages.html" class="menu-item active"><i class="fa-solid fa-file-alt"></i><span>Halaman</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari halaman..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Manajemen Halaman</h1><p>Kelola halaman statis platform Justice AI.</p></div>
+                <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> &nbsp; Tambah Halaman</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 120px;gap:var(--space-md);padding:10px 16px;font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">
+                <div>Judul Halaman</div><div>URL / Slug</div><div>Terakhir Diperbarui</div><div>Status</div><div>Aksi</div>
+            </div>
+
+            <div class="page-row">
+                <div><div style="font-weight:600;">Tentang Kami</div><div style="font-size:0.75rem;color:var(--text-muted);">Profil dan visi misi platform</div></div>
+                <div style="color:var(--text-muted);font-family:monospace;font-size:0.82rem;">/tentang-kami</div>
+                <div style="color:var(--text-muted);">15 Jan 2026</div>
+                <div><span style="background:rgba(56,161,105,0.1);color:var(--success);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Aktif</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-edit"></i></button><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i></button></div>
+            </div>
+            <div class="page-row">
+                <div><div style="font-weight:600;">Syarat & Ketentuan</div><div style="font-size:0.75rem;color:var(--text-muted);">ToS platform untuk semua pengguna</div></div>
+                <div style="color:var(--text-muted);font-family:monospace;font-size:0.82rem;">/syarat-ketentuan</div>
+                <div style="color:var(--text-muted);">1 Feb 2026</div>
+                <div><span style="background:rgba(56,161,105,0.1);color:var(--success);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Aktif</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-edit"></i></button><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i></button></div>
+            </div>
+            <div class="page-row">
+                <div><div style="font-weight:600;">Kebijakan Privasi</div><div style="font-size:0.75rem;color:var(--text-muted);">Perlindungan data pengguna</div></div>
+                <div style="color:var(--text-muted);font-family:monospace;font-size:0.82rem;">/kebijakan-privasi</div>
+                <div style="color:var(--text-muted);">1 Feb 2026</div>
+                <div><span style="background:rgba(56,161,105,0.1);color:var(--success);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Aktif</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-edit"></i></button><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i></button></div>
+            </div>
+            <div class="page-row">
+                <div><div style="font-weight:600;">FAQ - Pertanyaan Umum</div><div style="font-size:0.75rem;color:var(--text-muted);">Panduan penggunaan platform</div></div>
+                <div style="color:var(--text-muted);font-family:monospace;font-size:0.82rem;">/faq</div>
+                <div style="color:var(--text-muted);">10 Mar 2026</div>
+                <div><span style="background:rgba(56,161,105,0.1);color:var(--success);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Aktif</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-edit"></i></button><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-eye"></i></button></div>
+            </div>
+            <div class="page-row">
+                <div><div style="font-weight:600;">Hubungi Kami</div><div style="font-size:0.75rem;color:var(--text-muted);">Kontak dan dukungan platform</div></div>
+                <div style="color:var(--text-muted);font-family:monospace;font-size:0.82rem;">/hubungi-kami</div>
+                <div style="color:var(--text-muted);">5 Mar 2026</div>
+                <div><span style="background:rgba(214,158,46,0.1);color:var(--secondary-dark);padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">Draft</span></div>
+                <div style="display:flex;gap:4px;"><button class="btn btn-outline" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-edit"></i></button><button class="btn btn-primary" style="padding:5px 8px;font-size:0.75rem;"><i class="fa-solid fa-paper-plane"></i></button></div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

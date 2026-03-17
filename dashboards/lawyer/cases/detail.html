@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Kasus (Firma) - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Two Column Layout */
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        
+        /* Case Info Panel */
+        .case-card { background-color: var(--bg-alt); border-radius: var(--radius-lg); padding: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .case-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .case-meta { font-family: monospace; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px; display: flex; gap: 20px; }
+        
+        .case-desc { line-height: 1.8; color: #e2e8f0; font-size: 1.05rem; }
+        .case-desc h4 { color: #58a6ff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; margin-top: 30px; }
+
+        /* Document Upload Zone mini */
+        .upload-mini { border: 2px dashed rgba(88, 166, 255, 0.4); border-radius: var(--radius-md); padding: 20px; text-align: center; background-color: rgba(88, 166, 255, 0.05); cursor: pointer; transition: 0.2s; margin-top: 15px; }
+        .upload-mini:hover { background-color: rgba(88, 166, 255, 0.1); border-color: #58a6ff; }
+        .upload-mini i { color: #58a6ff; font-size: 1.5rem; margin-bottom: 10px; }
+        
+        /* Doc List */
+        .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 10px; }
+        .doc-item i { color: #58a6ff; font-size: 1.5rem; }
+        .doc-item div { flex: 1; margin-left: 15px; }
+        .doc-item div h5 { margin: 0; color: white; display: flex; align-items: center; gap: 10px; }
+        .doc-item div p { margin: 0; font-size: 0.8rem; color: #94a3b8; font-family: monospace; }
+        .btn-act { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .btn-act:hover { background-color: white; color: black; }
+
+        /* Sidebar summary */
+        .sidebar-card { background-color: #0f172a; border-radius: var(--radius-md); padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+        .sidebar-card h3 { margin: 0 0 15px 0; font-size: 1rem; color: white; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+
+        .client-mini { display: flex; align-items: center; gap: 15px; }
+        .client-mini div:first-child { width: 40px; height: 40px; background-color: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        .side-stats { margin-top: 20px; }
+        .s-val { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; }
+        .s-val span:first-child { color: #94a3b8; }
+        .s-val span:last-child { color: white; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Perkara (Dockets)</p>
+                <a href="list.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-gavel"></i> Analisa Kasus</a>
+                <a href="draft-maker.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-brain"></i> AI Legal Drafting</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-folder-open"></i> Akses Bersama Vault Klien (B/L)</div>
+                <button class="btn btn-outline" style="border-radius: 4px; padding: 5px 15px; font-size: 0.85rem;"><i class="fa-solid fa-brain"></i> Minta Analisis Probabilitas Menang</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tinjauan Pledoi Sengketa Bisnis</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Melihat status persidangan, riwayat bukti, dan ringkasan dari Hakim E-Court.</p>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    
+                    <!-- Kiri: Penjelasan Kasus & Dokumen -->
+                    <div class="case-card">
+                        <span class="case-status"><i class="fa-solid fa-spinner fa-spin"></i> PRE-TRIAL / MEDIASI</span>
+                        <h2>Sengketa Utang-Piutang PT Maju & CV Abadi</h2>
+                        
+                        <div class="case-meta">
+                            <span><i class="fa-solid fa-hashtag"></i> SG-2026/XI/109</span>
+                            <span><i class="fa-solid fa-scale-balanced"></i> Perdata & Arbitrase</span>
+                            <span><i class="fa-solid fa-calendar"></i> Tenggat: 15 Apr 2026</span>
+                        </div>
+
+                        <div class="case-desc">
+                            Kasus perselisihan gagal bayar (wanprestasi) oleh CV Abadi atas invoice Rp 1.4 Milyar. Fakta bahwa pembelaan mereka menggunakan alasan inflasi harus kita patahkan di hadapan majelis hakim sesuai Yurisprudensi No. 23K/Pdt/2009. Prioritas: Amankan bukti transaksi sebelum sesi WSS dengan Register MA.
+                            
+                            <h4><i class="fa-solid fa-vault"></i> Lemari Alat Bukti (Shared Vault)</h4>
+                            <p style="font-size: 0.85rem; color: #94a3b8;">Berikut adalah file tersandi yang diotorisasi Klien untuk Anda buka menggunakan kunci sesi Lawyer.</p>
+                            
+                            <div class="doc-item">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <div>
+                                    <h5>Invoice #INV-250812 (Asli) <span style="background-color: rgba(34, 197, 94, 0.1); color: #4ade80; font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(34, 197, 94, 0.3);">E-Meterai Valid</span></h5>
+                                    <p>Decrypted by Kunci Klien &bull; 01 Mar 26</p>
+                                </div>
+                                <button class="btn-act"><i class="fa-solid fa-eye"></i> Analisa</button>
+                            </div>
+
+                            <div class="doc-item">
+                                <i class="fa-solid fa-image"></i>
+                                <div>
+                                    <h5>Catatan Log Web WhatsApp</h5>
+                                    <p>Terkode AES-GCM (Aman) &bull; 05 Mar 26</p>
+                                </div>
+                                <button class="btn-act"><i class="fa-solid fa-eye"></i> Analisa</button>
+                            </div>
+
+                            <div class="upload-mini">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <div style="color: white; font-weight: bold; margin-bottom: 5px;">Unggah Draf Gugatan Resmi dari Anda</div>
+                                <div style="font-size: 0.8rem; color: #94a3b8;">File format .docx atau .pdf. Dokumen akan langsung otomatis dienkripsi sebelum dibagikan ke Vault Klien.</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Kanan: Sidebar Klien & Detail Finansial -->
+                    <div>
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-user"></i> Prinsipal Klien</h3>
+                            <div class="client-mini">
+                                <div>AW</div>
+                                <div>
+                                    <div style="font-weight: bold; color: white;">Anisa Wulandari</div>
+                                    <div style="font-size: 0.8rem; color: #94a3b8;">anisa.wul34@gmail.com</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.2); margin-top: 15px;"><i class="fa-solid fa-message"></i> Mulai Telekonferensi Darurat</button>
+                        </div>
+
+                        <div class="sidebar-card">
+                            <h3><i class="fa-solid fa-money-bill-transfer"></i> Rincian Tagihan Eksekutif</h3>
+                            <div class="side-stats">
+                                <div class="s-val"><span>Retainer Disepakati</span> <span style="font-family: monospace;">Rp 150.000.000</span></div>
+                                <div class="s-val"><span>PPN 11% Faktur</span> <span style="font-family: monospace;">Rp 16.500.000</span></div>
+                                <div class="s-val" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px;">
+                                    <span>Telah Dibayar (Escrow)</span> <span style="color: #4ade80; font-family: monospace; font-weight: bold;">Rp 75.000.000</span>
+                                </div>
+                                <div class="s-val" style="color: #facc15;">
+                                    <span>Piutang Sisa Termin</span> <span style="font-family: monospace; font-weight: bold;">Rp 75.000.000</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline" style="width: 100%; justify-content: center; background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); margin-top: 15px;"><i class="fa-solid fa-file-invoice"></i> Terbitkan Invoice Termin Ke-2</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

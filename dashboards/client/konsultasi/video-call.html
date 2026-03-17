@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Konsultasi Video (E-Litigasi) - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../../assets/css/main.css">
+    <style>
+        body {
+            background-color: #0d1117; /* GitHub dark bg reference */
+            color: #c9d1d9;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: var(--font-body);
+        }
+
+        .video-call-header {
+            height: 60px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .meeting-info { display: flex; align-items: center; gap: 15px; }
+        .recording-badge {
+            background-color: rgba(248, 81, 73, 0.1);
+            color: #ff7b72;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(248, 81, 73, 0.4);
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ff7b72;
+            border-radius: 50%;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(248, 81, 73, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
+        }
+
+        .encryption-badge { color: #3fb950; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+
+        .main-workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .video-grid {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .primary-video {
+            flex: 1;
+            background-color: #000;
+            border-radius: var(--radius-lg);
+            border: 1px solid #30363d;
+            overflow: hidden;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-overlay-name {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            padding: 8px 15px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lawyer-badge { background-color: #3b82f6; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        .client-video {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 240px;
+            height: 160px;
+            background-color: #161b22;
+            border-radius: var(--radius-md);
+            border: 2px solid #58a6ff;
+            overflow: hidden;
+            background-image: url('https://ui-avatars.com/api/?name=Budi+Santoso&background=1f2937&color=fff&size=200');
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .client-video:hover { transform: scale(1.05); cursor: move; }
+
+        /* Sidemenu / Chat / AI Assist */
+        .side-panel {
+            width: 350px;
+            background-color: #161b22;
+            border-left: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #8b949e;
+            border-bottom: 2px solid transparent;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .panel-tab.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+        .panel-tab:hover:not(.active) { color: #c9d1d9; }
+
+        .chat-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+
+        .chat-message { display: flex; flex-direction: column; max-width: 85%; }
+        .msg-other { align-self: flex-start; }
+        .msg-self { align-self: flex-end; }
+
+        .msg-bubble { padding: 10px 15px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; }
+        .msg-other .msg-bubble { background-color: #21262d; border: 1px solid #30363d; border-top-left-radius: 0; }
+        .msg-self .msg-bubble { background-color: #1f3a5f; color: #c9d1d9; border-top-right-radius: 0; }
+
+        .msg-time { font-size: 0.75rem; color: #8b949e; margin-top: 5px; }
+        .msg-other .msg-time { align-self: flex-start; }
+        .msg-self .msg-time { align-self: flex-end; }
+
+        /* AI Transcription Area */
+        .transcription-ai {
+            background-color: rgba(88, 166, 255, 0.05);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #c9d1d9;
+            border-left: 3px solid #58a6ff;
+        }
+
+        .msg-input-area { padding: 15px; border-top: 1px solid #30363d; display: flex; gap: 10px; }
+        .msg-input {
+            flex: 1;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: var(--radius-full);
+            padding: 10px 15px;
+            color: white;
+            font-family: var(--font-body);
+        }
+
+        .msg-input:focus { outline: none; border-color: #58a6ff; }
+
+        /* Meeting Controls Bottom */
+        .controls-bar {
+            height: 80px;
+            background-color: #161b22;
+            border-top: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #30363d;
+            background-color: #21262d;
+            color: #c9d1d9;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover { background-color: #30363d; }
+        
+        .btn-danger { background-color: rgba(248, 81, 73, 0.1); color: #ff7b72; border-color: rgba(248, 81, 73, 0.4); }
+        .btn-danger:hover { background-color: rgba(248, 81, 73, 0.2); }
+        
+        .btn-end { background-color: #da3633; color: white; border-color: #da3633; border-radius: 25px; width: auto; padding: 0 25px; font-weight: 600; font-size: 1rem; }
+        .btn-end:hover { background-color: #b32d2a; }
+
+        .btn-vault { background-color: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.4); border-radius: 25px; width: auto; padding: 0 20px; font-size: 0.9rem; font-weight: 500;}
+        .btn-vault:hover { background-color: rgba(168, 85, 247, 0.2); }
+    </style>
+</head>
+<body>
+
+    <header class="video-call-header">
+        <div class="meeting-info">
+            <div style="font-weight: 600; font-size: 1.1rem;">Konsultasi Hukum: Sengketa Tanah Waris</div>
+            <div style="color: #8b949e; font-size: 0.9rem; border-left: 1px solid #30363d; padding-left: 15px;">Durasi Sisa: <span style="color: #58a6ff; font-family: monospace; font-size: 1rem;">42:15</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="encryption-badge"><i class="fa-solid fa-lock"></i> AES-256 E2E Enkripsi Aktif</div>
+            <div class="recording-badge">
+                <div class="recording-dot"></div> Perekaman Cloud Aktif (Disetujui Klien)
+            </div>
+        </div>
+    </header>
+
+    <div class="main-workspace animate-fade-in">
+        
+        <!-- Video Area -->
+        <main class="video-grid">
+            <div class="primary-video">
+                <!-- AI Subtitle Display (Live Caption) -->
+                <div style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); text-align: center; width: 80%;">
+                    <div style="background-color: rgba(0,0,0,0.7); display: inline-block; padding: 10px 20px; border-radius: 8px; font-size: 1.1rem; line-height: 1.5; border: 1px solid rgba(255,255,255,0.1);">
+                        <span style="color: #58a6ff;">[Advokat Farhan]:</span> "Jadi terkait akta yang Bapak tunjukkan di Brankas tadi, secara hukum perdata posisi Bapak sebenarnya..."
+                    </div>
+                </div>
+
+                <div class="video-overlay-name">
+                    <i class="fa-solid fa-microphone"></i> 
+                    Farhan Dirgantara, S.H. <span class="lawyer-badge">PERADI</span>
+                </div>
+            </div>
+            
+            <div class="client-video">
+                <div style="position: absolute; bottom: 10px; left: 10px; background-color: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 4px; font-size: 0.8rem;">
+                    Anda (Klien)
+                </div>
+            </div>
+        </main>
+
+        <!-- Side Panel -->
+        <aside class="side-panel">
+            <div class="panel-tabs">
+                <button class="panel-tab active"><i class="fa-regular fa-comment-dots"></i> Pesan Masuk</button>
+                <button class="panel-tab"><i class="fa-solid fa-robot"></i> Ringkasan AI</button>
+            </div>
+
+            <div class="chat-area">
+                
+                <div class="transcription-ai">
+                    <div style="font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-bolt" style="color: #facc15;"></i> Analisa AI Real-time
+                    </div>
+                    Bot mendeteksi pembahasan "Akta Notaris Bodong". 
+                    <a href="#" style="color: #58a6ff; text-decoration: none; display: block; margin-top: 5px;">> Buka Pasal 263 KUHP (Pemalsuan Surat)</a>
+                </div>
+
+                <div class="chat-message msg-self">
+                    <div class="msg-bubble">Selamat Pagi Pak Farhan, saya sudah buka hak akses dokumen PDF di Vault saya ya.</div>
+                    <div class="msg-time">10:02 AM</div>
+                </div>
+
+                <div class="chat-message msg-other">
+                    <div class="msg-bubble">Selamat Pagi Pak Budi. Baik, saya sedang mengecek dokumen sertifikat BPN-nya di server log sekarang.</div>
+                    <div class="msg-time">10:04 AM</div>
+                </div>
+                
+                <div class="chat-message msg-other">
+                    <div class="msg-bubble" style="background-color: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3);">
+                        <i class="fa-solid fa-file-pdf" style="color: #c084fc;"></i> Advokat Farhan meminta izin akses ke "Bukti-Transfer-Bank.jpg".
+                        <div style="margin-top: 10px;">
+                            <button style="background: #3fb950; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">Izinkan</button>
+                            <button style="background: transparent; border: 1px solid #8b949e; color: #8b949e; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.8rem; margin-left: 5px;">Tolak</button>
+                        </div>
+                    </div>
+                    <div class="msg-time">10:15 AM - Vault System</div>
+                </div>
+
+            </div>
+
+            <div class="msg-input-area">
+                <input type="text" class="msg-input" placeholder="Ketik pesan rahasia...">
+                <button class="control-btn" style="width: 40px; height: 40px; border-radius: 50%; color: #58a6ff; background-color: #0d1117;"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Controls Bottom -->
+    <footer class="controls-bar">
+        <button class="control-btn" title="Matikan Mikrofon"><i class="fa-solid fa-microphone"></i></button>
+        <button class="control-btn" title="Matikan Kamera"><i class="fa-solid fa-video"></i></button>
+        <button class="control-btn" title="Bagikan Layar / Dokumen"><i class="fa-solid fa-display"></i></button>
+        
+        <div style="width: 1px; height: 30px; background-color: #30363d; margin: 0 10px;"></div>
+        
+        <button class="control-btn btn-vault" title="Buka Brankas Terenkripsi">
+            <i class="fa-solid fa-vault"></i> Buka Brankas
+        </button>
+        
+        <button class="control-btn btn-end">
+            <i class="fa-solid fa-phone-slash" style="margin-right: 8px;"></i> Akhiri Sesi
+        </button>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Sinkron - Justice AI Lawyer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Calendar Layout */
+        .calendar-wrapper { display: flex; gap: 30px; }
+        
+        /* Mini Sidebar for Calendar */
+        .cal-sidebar { width: 300px; flex-shrink: 0; }
+        
+        .cal-mini { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; }
+        .cal-mini-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .cal-mini-header h3 { margin: 0; font-size: 1rem; color: white; }
+        .cal-mini-header i { cursor: pointer; color: #94a3b8; transition: 0.2s; }
+        .cal-mini-header i:hover { color: white; }
+        
+        .cal-grid-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 0.8rem; }
+        .cal-grid-mini .day-name { color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .cal-grid-mini .day { padding: 8px 0; border-radius: 4px; cursor: pointer; color: #cbd5e1; }
+        .cal-grid-mini .day:hover { background-color: rgba(255,255,255,0.05); }
+        .cal-grid-mini .day.active { background-color: #58a6ff; color: white; font-weight: bold; }
+        .cal-grid-mini .day.has-event { border-bottom: 2px solid #facc15; }
+        
+        .event-filter { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 20px; }
+        .event-filter h3 { margin: 0 0 15px 0; font-size: 1rem; color: white; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        
+        .filter-opt { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: #cbd5e1; cursor: pointer; }
+        .filter-opt input { cursor: pointer; accent-color: #58a6ff; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot-court { background-color: #f85149; }
+        .dot-meet { background-color: #58a6ff; }
+        .dot-task { background-color: #4ade80; }
+
+        /* Main Schedule Area */
+        .schedule-area { flex: 1; min-height: 600px; background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); display: flex; flex-direction: column; overflow: hidden; }
+        
+        .sch-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); background-color: rgba(0,0,0,0.2); }
+        .sch-header h2 { margin: 0; font-size: 1.2rem; color: white; font-family: var(--font-heading); }
+        .sch-btn-group { display: flex; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+        .sch-btn-group button { background: none; border: none; padding: 8px 15px; color: #94a3b8; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; font-weight: bold; transition: 0.2s; }
+        .sch-btn-group button:last-child { border-right: none; }
+        .sch-btn-group button:hover { background-color: rgba(255,255,255,0.05); color: white; }
+        .sch-btn-group button.active { background-color: rgba(88, 166, 255, 0.1); color: #58a6ff; }
+        
+        /* Time Slots - Agenda View */
+        .agenda-list { padding: 20px 30px; flex: 1; overflow-y: auto; }
+        
+        .time-slot { display: flex; margin-bottom: 20px; }
+        .time-lbl { width: 80px; font-family: monospace; font-weight: bold; color: #64748b; padding-top: 15px; text-align: right; padding-right: 15px; border-right: 2px solid rgba(255,255,255,0.05); }
+        
+        .events-col { flex: 1; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .event-card { padding: 15px 20px; border-radius: 8px; border-left: 4px solid; position: relative; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; cursor: pointer; }
+        .event-card:hover { transform: translateX(5px); }
+        .event-card h4 { margin: 0 0 5px 0; color: white; font-size: 1rem; }
+        .event-card p { margin: 0; font-size: 0.85rem; }
+        .event-card .meta { display: flex; gap: 15px; margin-top: 5px; font-family: monospace; font-size: 0.8rem; }
+        
+        .court-event { background-color: rgba(248, 81, 73, 0.1); border-left-color: #f85149; }
+        .court-event p { color: #ff7b72; }
+        .court-event .meta { color: #f85149; }
+        
+        .meet-event { background-color: rgba(88, 166, 255, 0.1); border-left-color: #58a6ff; }
+        .meet-event p { color: #79c0ff; }
+        .meet-event .meta { color: #58a6ff; }
+        
+        .btn-act { background: none; border: 1px solid; border-radius: 4px; padding: 6px 12px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; white-space: nowrap; font-weight: bold; }
+        .court-event .btn-act { border-color: rgba(248, 81, 73, 0.4); color: #f85149; }
+        .court-event .btn-act:hover { background-color: #f85149; color: white; }
+        .meet-event .btn-act { border-color: rgba(88, 166, 255, 0.4); color: #58a6ff; }
+        .meet-event .btn-act:hover { background-color: #58a6ff; color: white; }
+
+        .current-time-line { position: absolute; left: 0; right: 0; border-top: 1px dashed #facc15; z-index: 10; pointer-events: none; }
+        .current-time-line::before { content: ''; position: absolute; left: -5px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background-color: #facc15; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Waktu</p>
+                <a href="calendar.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-calendar-days"></i> Kalender Sidang & Klien</a>
+                <a href="availability.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-clock"></i> Setting Jam Sibuk/Luang</a>
+            </div>
+            
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Akses Cepat</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-rotate"></i> Syncing dengan Mahkamah Agung & Google Calendar</div>
+                <button class="btn btn-primary" style="padding: 6px 15px; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Buat Janji Konsultasi Baru</button>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tinjauan Agenda Harian (Roster)</h1>
+                    </div>
+                </div>
+
+                <div class="calendar-wrapper">
+                    
+                    <div class="cal-sidebar">
+                        <div class="cal-mini">
+                            <div class="cal-mini-header">
+                                <h3>Maret 2026</h3>
+                                <div>
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                    <i class="fa-solid fa-chevron-right" style="margin-left: 10px;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="cal-grid-mini">
+                                <div class="day-name">S</div><div class="day-name">S</div><div class="day-name">R</div><div class="day-name">K</div><div class="day-name">J</div><div class="day-name">S</div><div class="day-name">M</div>
+                                <!-- Dummy Calendar layout for March 2026 approx -->
+                                <div class="day">1</div><div class="day">2</div><div class="day has-event">3</div><div class="day">4</div><div class="day">5</div><div class="day">6</div><div class="day">7</div>
+                                <div class="day">8</div><div class="day">9</div><div class="day has-event">10</div><div class="day">11</div><div class="day has-event">12</div><div class="day">13</div><div class="day">14</div>
+                                <div class="day">15</div><div class="day">16</div><div class="day active has-event">17</div><div class="day">18</div><div class="day">19</div><div class="day has-event">20</div><div class="day">21</div>
+                                <div class="day">22</div><div class="day">23</div><div class="day">24</div><div class="day">25</div><div class="day">26</div><div class="day">27</div><div class="day">28</div>
+                                <div class="day">29</div><div class="day">30</div><div class="day">31</div>
+                            </div>
+                        </div>
+
+                        <div class="event-filter">
+                            <h3>Filter Tampilan</h3>
+                            <label class="filter-opt"><input type="checkbox" checked><span class="dot dot-court"></span> Sidang E-Court PN/PT M.A.</label>
+                            <label class="filter-opt"><input type="checkbox" checked><span class="dot dot-meet"></span> Konsultasi Video Klien (Justice App)</label>
+                            <label class="filter-opt"><input type="checkbox" checked><span class="dot dot-task"></span> Tenggat Waktu (Deadline) AI Draft</label>
+                        </div>
+                    </div>
+
+                    <div class="schedule-area">
+                        <div class="sch-header">
+                            <h2>Daftar Acara Hari Ini <span style="font-weight: normal; color: #94a3b8; font-size: 1rem;">(17 Maret 2026)</span></h2>
+                            <div class="sch-btn-group">
+                                <button>Bulan</button>
+                                <button>Minggu</button>
+                                <button class="active">Agenda (List)</button>
+                            </div>
+                        </div>
+
+                        <div class="agenda-list">
+                            
+                            <div class="time-slot" style="position: relative;">
+                                <div class="time-lbl">09:00</div>
+                                <div class="events-col">
+                                    <div class="event-card court-event">
+                                        <div>
+                                            <h4>Sidang Pleno: PT Maju Nusantara Raya</h4>
+                                            <p>Register: SG-2026/XI/109 (Panitera Pengganti: Bpk. Haryo)</p>
+                                            <div class="meta">
+                                                <span><i class="fa-solid fa-location-dot"></i> Teleconference PN Jakarta Pusat</span>
+                                                <span><i class="fa-regular fa-clock"></i> 09:30 - 11:30</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-act"><i class="fa-solid fa-scale-balanced" style="margin-right: 5px;"></i> Masuk Ruang Sidang</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Current Time Indicator Mock -->
+                            <div class="time-slot" style="position: relative;">
+                                <div class="current-time-line" style="top: 35px;"></div>
+                                <div class="time-lbl">12:00</div>
+                                <div class="events-col" style="justify-content: center; padding-top: 15px;">
+                                    <div style="font-size: 0.85rem; color: #64748b; font-style: italic;"><i class="fa-solid fa-mug-hot"></i> Jeda Istirahat Otomatis Sistem</div>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time-lbl">14:00</div>
+                                <div class="events-col">
+                                    <div class="event-card meet-event">
+                                        <div>
+                                            <h4>Konsultasi Hukum Perorangan (Anisa Wulandari)</h4>
+                                            <p>Topik: Review Kontrak Perjanjian Beli Rumah & Sengketa Tanah</p>
+                                            <div class="meta">
+                                                <span><i class="fa-solid fa-video"></i> Justice E2EE Room A2</span>
+                                                <span><i class="fa-regular fa-clock"></i> 14:00 - 15:00</span>
+                                                <span><i class="fa-solid fa-wallet"></i> Rp 850.000 / Jam (Escrowed)</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-act"><i class="fa-solid fa-phone" style="margin-right: 5px;"></i> Buka Room Klien</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-slot">
+                                <div class="time-lbl">16:00</div>
+                                <div class="events-col" style="padding-top: 10px;">
+                                    <div style="font-size: 0.85rem; color: #64748b; font-style: italic;">Tidak ada jadwal lanjutan...</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

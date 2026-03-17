@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil & KYC Advokat - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Profile Image */
+        .profile-hero { display: flex; align-items: flex-start; gap: 30px; background-color: var(--bg-alt); padding: 30px; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .profile-hero::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #58a6ff; }
+        
+        .avatar { width: 120px; height: 120px; border-radius: 50%; background-color: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: #58a6ff; flex-shrink: 0; overflow: hidden; }
+        
+        .p-info h2 { margin: 0 0 10px 0; font-size: 1.6rem; color: white; display: flex; align-items: center; gap: 10px; }
+        .p-info p { margin: 0 0 15px 0; color: #94a3b8; font-family: var(--font-body); }
+        
+        .badge-verified { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .badge-pro { background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+
+        .kpi-boxes { display: flex; gap: 15px; margin-top: 20px; }
+        .kpi-box { background-color: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; text-align: center; }
+        .kpi-box .val { font-size: 1.5rem; font-weight: bold; color: white; font-family: monospace; display: block; margin-bottom: 5px; }
+        .kpi-box .lbl { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: bold; }
+
+        /* Setup Panel */
+        .sec-panel { background-color: #0f172a; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 25px; }
+        .sec-panel h3 { margin: 0 0 20px 0; color: white; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; font-size: 1.1rem; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: bold; }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; max-width: 600px; background-color: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 6px; color: white; outline: none; font-family: var(--font-body); }
+        .input-group input:focus, .input-group textarea:focus { border-color: #58a6ff; }
+        
+        .action-btns { display: flex; gap: 15px; }
+        .form-row { display: flex; gap: 20px; max-width: 600px; }
+        .form-row .input-group { flex: 1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice Lawyer</a>
+            </div>
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Manajemen Praktik</p>
+                <a href="profile.html" style="display: block; color: #58a6ff; text-decoration: none; padding: 10px 0; border-left: 3px solid #58a6ff; padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-user-tie"></i> Profil Publik & KYC</a>
+                <a href="kyc-upload.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-id-badge"></i> Sertifikat (PERADI)</a>
+                <a href="earnings/income.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-wallet"></i> Saldo & Penarikan Fee</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-address-card"></i> Identitas Forensik Layanan Legal</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Pengaturan Resume Advokat</h1>
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('Profil berhasil diperbarui dan disinkronisasikan ke Katalog Pencarian Klien.');"><i class="fa-solid fa-save"></i> Simpan Perubahan</button>
+                </div>
+
+                <div class="profile-hero">
+                    <div class="avatar">
+                        <img src="https://ui-avatars.com/api/?name=Adv+Farhan&background=1e293b&color=58a6ff&size=120" alt="Avatar">
+                    </div>
+                    <div class="p-info">
+                        <h2>Adv. Farhan, S.H., M.H. <span class="badge-verified"><i class="fa-solid fa-check-circle"></i> PERADI Terverifikasi</span> <span class="badge-pro">Top Rated</span></h2>
+                        <p>Firma Hukum Independen &bull; DKI Jakarta &bull; Aktif sejak 2026</p>
+                        
+                        <div class="kpi-boxes">
+                            <div class="kpi-box">
+                                <span class="val" style="color: #4ade80;">94%</span>
+                                <span class="lbl">Tingkat Kesuksesan AI</span>
+                            </div>
+                            <div class="kpi-box">
+                                <span class="val">1,204</span>
+                                <span class="lbl">Jam Konsultasi Video</span>
+                            </div>
+                            <div class="kpi-box">
+                                <span class="val text-warning"><i class="fa-solid fa-star"></i> 4.9</span>
+                                <span class="lbl">Rating Klien (150+)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sec-panel">
+                    <h3><i class="fa-solid fa-pen-to-square" style="color: #58a6ff;"></i> Biodata Publik (Ditampilkan di Marketplace Klien)</h3>
+                    
+                    <div class="input-group">
+                        <label>Spesialisasi Hukum Utama</label>
+                        <select>
+                            <option>Hukum Pidana Korporasi</option>
+                            <option selected>Hukum Perikatan & Perdata (Wanprestasi)</option>
+                            <option>Hukum Kekayaan Intelektual</option>
+                            <option>Hukum Keluarga & Waris</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Tarif Konsultasi Video / Jam (IDR)</label>
+                            <input type="text" value="850.000">
+                        </div>
+                        <div class="input-group">
+                            <label>Nomor Keanggotaan Organisasi</label>
+                            <input type="text" value="PERADI-09.112.44A" disabled style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Ringkasan Eksekutif (Pengalaman & Track Record)</label>
+                        <textarea rows="4">Berpengalaman lebih dari 8 tahun dalam menangani sengketa bisnis dan investasi. Pernah memenangkan kasus arbitrase nilai hingga puluhan Milyar Rupiah. Pendekatan mediasi adalah strategi utama saya.</textarea>
+                    </div>
+                </div>
+
+                <div class="sec-panel" style="border-color: rgba(56, 189, 248, 0.3);">
+                    <h3 style="color: #58a6ff;"><i class="fa-solid fa-fingerprint"></i> Biometrik & Legalitas API</h3>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px;">Akun Anda dilindungi 2FA dan terhubung secara langsung pada database biometrik Dukcapil untuk jaminan *Anti-Impersonation* selama pendampingan E-Court Mahkamah Agung.</p>
+                    <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-passport"></i> Lihat Kredensial BAS Pengadilan Tinggi Tertaut</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

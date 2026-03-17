@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandi Master & Profil - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); color: var(--text-main); }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background-color: var(--bg-alt); border-right: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 70px; background-color: var(--bg-alt); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+        .content-area { padding: 40px; overflow-y: auto; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 30px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .page-header h1 { margin: 0; font-family: var(--font-heading); font-size: 1.8rem; }
+        
+        /* Upload Zone */
+        .upload-zone { border: 2px dashed rgba(88, 166, 255, 0.4); border-radius: var(--radius-lg); padding: 50px; text-align: center; background-color: rgba(88, 166, 255, 0.05); cursor: pointer; transition: 0.2s; }
+        .upload-zone:hover { background-color: rgba(88, 166, 255, 0.1); border-color: #58a6ff; }
+        .upload-zone i { font-size: 3rem; color: #58a6ff; margin-bottom: 15px; }
+        .upload-zone h3 { margin: 0 0 10px 0; color: white; font-family: var(--font-heading); }
+        .upload-zone p { margin: 0; font-size: 0.85rem; color: #94a3b8; }
+
+        /* File Grid */
+        .file-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .file-card { background-color: var(--bg-alt); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: 20px; position: relative; overflow: hidden; }
+        .file-card.locked { background-color: rgba(248, 81, 73, 0.05); border-color: rgba(248, 81, 73, 0.2); }
+        
+        .f-icon { width: 40px; height: 40px; background-color: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; margin-bottom: 15px; }
+        
+        .file-card.locked .f-icon { background-color: rgba(248, 81, 73, 0.2); color: #f85149; }
+        
+        .f-info h4 { margin: 0 0 5px 0; color: white; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .f-info p { margin: 0; font-size: 0.8rem; color: #94a3b8; font-family: monospace; }
+        
+        .btn-act { margin-top: 15px; display: block; width: 100%; text-align: center; background-color: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .btn-act:hover { background-color: white; color: black; }
+        .btn-act:hover { background-color: white; color: black; }
+        .file-card.locked .btn-act:hover { background-color: #f85149; color: white; border-color: #f85149; }
+
+        #fileUploadInput { display: none; }
+
+        @media screen and (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .topbar { padding: 0 20px; font-size: 0.9rem; text-align: center; justify-content: center; }
+            .content-area { padding: 20px; }
+            .file-grid { grid-template-columns: 1fr; }
+            .upload-zone { padding: 30px 15px; }
+            .upload-zone h3 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../dashboard.html" style="color: white; font-size: 1.2rem; font-weight: bold; text-decoration: none;"><i class="fa-solid fa-scale-unbalanced"></i> Justice App</a>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Penyimpanan Bukti</p>
+                <a href="identitas.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-id-card"></i> KTP & Legalitas KYC</a>
+                <a href="kasus.html" style="display: block; color: var(--primary-color); text-decoration: none; padding: 10px 0; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-left: -13px;"><i class="fa-solid fa-folder-open"></i> Brankas Perkara (AES)</a>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Navigasi Lain</p>
+                <a href="../../dashboard.html" style="display: block; color: #cbd5e1; text-decoration: none; padding: 10px 0;"><i class="fa-solid fa-house"></i> Dasbor Utama</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; color: #94a3b8;"><i class="fa-solid fa-vault"></i> Justice End-to-End Encrypted Cloud Storage</div>
+            </div>
+
+            <div class="content-area">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Tumpukan Alat Bukti Kasus</h1>
+                        <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">Hanya AI dan Pengacara Penerima Kuasa Anda yang bisa membaca file ini.</p>
+                    </div>
+                </div>
+
+                <div class="upload-zone" id="uploadZone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <h3>Tarik & Lepas PDF Gugatan/Kontrak ke Sini (Dropzone)</h3>
+                    <p>Format yang didukung: .PDF, .DOCX, .JPG. File akan langsung diacak sandinya.</p>
+                </div>
+                <!-- Hidden File Input -->
+                <input type="file" id="fileUploadInput" multiple>
+
+                <div class="file-grid" id="fileGrid">
+                    
+                    <div class="file-card animate-fade-in">
+                        <div class="f-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="f-info">
+                            <h4>Surat_Perjanjian_Beli.pdf</h4>
+                            <p>Diunggah: 14 Mar 2026 &bull; 2.4 MB</p>
+                        </div>
+                        <button class="btn-act" onclick="viewDoc('Surat_Perjanjian_Beli.pdf')"><i class="fa-solid fa-eye"></i> Baca Dokumen</button>
+                    </div>
+
+                    <div class="file-card locked animate-fade-in">
+                        <div class="f-icon"><i class="fa-solid fa-lock"></i></div>
+                        <div class="f-info">
+                            <h4 style="color: #f85149;">Rekening_Koran_Asli.pdf.aes</h4>
+                            <p>Berkas Disegel &bull; Khusus Pengadilan</p>
+                        </div>
+                        <button class="btn-act" style="border-color: rgba(248, 81, 73, 0.4); color: #f85149;" onclick="unlockDoc('Rekening_Koran_Asli.pdf.aes')"><i class="fa-solid fa-key"></i> Dekripsi Master Password</button>
+                    </div>
+
+                    <div class="file-card animate-fade-in">
+                        <div class="f-icon"><i class="fa-solid fa-image"></i></div>
+                        <div class="f-info">
+                            <h4>Bukti_Chat_WhatsApp.jpg</h4>
+                            <p>Diunggah: 10 Mar 2026 &bull; 1.1 MB</p>
+                        </div>
+                        <button class="btn-act" onclick="viewDoc('Bukti_Chat_WhatsApp.jpg')"><i class="fa-solid fa-eye"></i> Baca Pindai</button>
+                    </div>
+
+                </div>
+
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../../assets/js/core/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileUploadInput');
+            const fileGrid = document.getElementById('fileGrid');
+
+            // Memicu jendela pilihan file saat Dropzone diklik
+            uploadZone.addEventListener('click', () => fileInput.click());
+
+            // Drag and Drop (Tarik File)
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, preventDefaults, false);
+            });
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+            uploadZone.addEventListener('dragover', () => {
+                uploadZone.style.borderColor = '#58a6ff';
+                uploadZone.style.backgroundColor = 'rgba(88, 166, 255, 0.1)';
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.style.borderColor = '';
+                uploadZone.style.backgroundColor = '';
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                uploadZone.style.borderColor = '';
+                uploadZone.style.backgroundColor = '';
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    const sizeMB = (file.size / (1024*1024)).toFixed(2);
+                    const todayDate = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                    
+                    const isPDF = file.name.toLowerCase().endsWith('.pdf');
+                    const iconClass = isPDF ? 'fa-file-pdf' : 'fa-image';
+
+                    const originalInner = uploadZone.innerHTML;
+                    uploadZone.innerHTML = `<i class="fa-solid fa-shield-cat fa-beat-fade"></i><h3 style="color:#58a6ff;">Menyandikan ${file.name}...</h3><p>Mengamankan file dengan Algoritma AES-256...</p>`;
+
+                    setTimeout(() => {
+                        uploadZone.innerHTML = originalInner;
+
+                        const newCard = document.createElement('div');
+                        newCard.className = 'file-card animate-fade-in';
+                        newCard.innerHTML = `
+                            <div class="f-icon"><i class="fa-solid ${iconClass}"></i></div>
+                            <div class="f-info">
+                                <h4 title="${file.name}">${file.name}</h4>
+                                <p>Diunggah: ${todayDate} &bull; ${sizeMB} MB</p>
+                            </div>
+                            <button class="btn-act" onclick="viewDoc('${file.name}')"><i class="fa-solid fa-eye"></i> Baca Dokumen</button>
+                        `;
+
+                        // Letakkan file terbaru di urutan pertama list
+                        fileGrid.insertBefore(newCard, fileGrid.firstChild);
+                        alert(`Proteksi Sukses!\n\nBukti Kasus '${file.name}' telah dienkripsi dan diamankan ke database brankas perkara Anda.`);
+                    }, 2000); // 2 detik penundaan simulasi
+                }
+            }
+        });
+
+        // Global Window Function (Fungsi Dummy Pembuka File)
+        window.viewDoc = function(fileName) {
+            alert(`Memuat In-App Document Viewer untuk melihat isi file aman: [${fileName}].`);
+        }
+
+        window.unlockDoc = function(fileName) {
+            const masterPass = prompt(`SYSTEM ALERT!\n\nBerkas sangat rahasia ini [${fileName}] telah dikunci secara digital untuk mencegah bocornya data ke publik.\n\nMasukkan Master Password Brankas Anda untuk melakukan Dekripsi Lokal sebelum dapat mengunduh:`);
+            
+            if (masterPass) {
+                if (masterPass.trim().length > 3) {
+                    alert('Password Diterima. Kunci dekripsi AES-256 berhasil mencocokkan hash. File akan diunduh!');
+                } else {
+                    alert('Password Salah atau Terlalu Pendek. Akses Ditolak!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

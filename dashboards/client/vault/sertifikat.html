@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifikat Digital - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/client.css">
+    <style>
+        .cert-card { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 60%, var(--accent-color) 100%); border-radius: var(--radius-lg); padding: var(--space-2xl); color: white; position: relative; overflow: hidden; margin-bottom: var(--space-lg); }
+        .cert-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+        .cert-card::after { content: ''; position: absolute; bottom: -80px; left: -30px; width: 250px; height: 250px; border-radius: 50%; background: rgba(255,255,255,0.03); }
+        .cert-logo { font-size: 2rem; margin-bottom: var(--space-md); }
+        .cert-title { font-family: var(--font-heading); font-size: 1.4rem; font-style: italic; margin-bottom: 4px; }
+        .cert-sub { font-size: 0.85rem; opacity: 0.7; margin-bottom: var(--space-lg); }
+        .cert-name { font-size: 1.8rem; font-weight: 700; font-family: var(--font-heading); border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 12px; margin-bottom: 12px; }
+        .cert-desc { font-size: 0.88rem; opacity: 0.85; line-height: 1.8; }
+        .cert-footer { margin-top: var(--space-lg); display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.8rem; opacity: 0.7; }
+        .cert-qr { width: 70px; height: 70px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary-dark); font-size: 2rem; }
+        .cert-list-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); display: flex; align-items: center; gap: var(--space-lg); margin-bottom: var(--space-md); transition: all var(--transition-fast); }
+        .cert-list-card:hover { box-shadow: var(--shadow-md); }
+        .cert-type-icon { width: 50px; height: 50px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); }
+        .page-header h1 { margin: 0 0 5px 0; font-size: 1.5rem; }
+        .page-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        .search-wrapper { flex: 1; max-width: 500px; position: relative; }
+        .search-wrapper input { width: 100%; padding: 10px 15px 10px 40px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.1); outline: none; transition: all 0.2s; }
+        .search-wrapper input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(43,108,176,0.1); }
+        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
+
+        @media screen and (max-width: 900px) {
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .page-header button { width: 100%; }
+            .cert-grid { grid-template-columns: 1fr; }
+            .cert-card { padding: var(--space-lg); }
+            .cert-name { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-color);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">AI</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Ruang Aman</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+            <a href="identitas.html" class="menu-item"><i class="fa-solid fa-id-card"></i><span>Identitas Digital</span></a>
+            <a href="kasus.html" class="menu-item"><i class="fa-solid fa-folder-closed"></i><span>Dokumen Kasus</span></a>
+            <a href="kontak.html" class="menu-item"><i class="fa-solid fa-address-book"></i><span>Kontak Darurat</span></a>
+            <a href="sertifikat.html" class="menu-item active"><i class="fa-solid fa-certificate"></i><span>Sertifikat</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="certSearchTerm" placeholder="Cari by nama sertifikat atau nomor...">
+            </div>
+            <div class="topbar-actions">
+                <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=1a365d&color=fff" alt="User" class="avatar" id="userAvatar">
+                    <div class="user-info"><span class="user-name" id="userNameLabel">Budi Santoso</span><span class="user-role">Klien</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div>
+                     <h1>Sertifikat Digital</h1>
+                     <p>Sertifikat penyelesaian dan pengakuan pencapaian hukum dari Justice AI.</p>
+                </div>
+                <button class="btn btn-primary" onclick="downloadAll()"><i class="fa-solid fa-download"></i> &nbsp; Download Semua</button>
+            </div>
+
+            <div class="cert-grid">
+                <div>
+                    <!-- Featured Cert -->
+                    <div class="cert-card">
+                        <div class="cert-logo"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <div class="cert-title">Sertifikat Penyelesaian Perkara</div>
+                        <div class="cert-sub">Justice AI Platform – Divisi Hukum Digital</div>
+                        <div style="font-size:0.85rem;opacity:0.7;margin-bottom:4px;">Dengan bangga menyatakan bahwa</div>
+                        <div class="cert-name" id="userNameCert">Budi Santoso</div>
+                        <div class="cert-desc">Telah berhasil menyelesaikan proses konsultasi dan mediasi hukum melalui platform Justice AI dengan hasil yang memuaskan. Sertifikat ini dikeluarkan sebagai bukti partisipasi aktif dan pencapaian resolusi yang sukses.</div>
+                        <div class="cert-footer">
+                            <div>
+                                <div>No. Sertifikat: <span style="font-family:monospace">JAI-CERT-2026-0089</span></div>
+                                <div>Diterbitkan: 15 Februari 2026</div>
+                            </div>
+                            <div class="cert-qr"><i class="fa-solid fa-qrcode"></i></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--space-md);">
+                        <button class="btn btn-primary" style="flex:1;" onclick="downloadSelected('JAI-CERT-2026-0089')"><i class="fa-solid fa-download"></i> Download PDF</button>
+                        <button class="btn btn-outline" style="flex:1;" onclick="shareCert()"><i class="fa-solid fa-share-nodes"></i> Bagikan Link</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom:var(--space-md);">Semua Sertifikat (3)</h3>
+
+                    <div class="cert-list-card">
+                        <div class="cert-type-icon" style="background:linear-gradient(135deg,rgba(56,161,105,0.1),rgba(56,161,105,0.05));color:var(--success);"><i class="fa-solid fa-handshake"></i></div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700;margin-bottom:3px;">Sertifikat Mediasi Berhasil</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);">No. JAI-MED-2026-0045 &bull; 15 Feb 2026</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;" onclick="downloadSelected('Sertif Mediasi')"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="cert-list-card">
+                        <div class="cert-type-icon" style="background:linear-gradient(135deg,rgba(26,54,93,0.08),rgba(26,54,93,0.04));color:var(--primary-color);"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700;margin-bottom:3px;">Sertifikat Edukasi Hukum Dasar</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);">No. JAI-EDU-2026-0012 &bull; 1 Feb 2026</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;" onclick="downloadSelected('Sertif Edukasi')"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="cert-list-card">
+                        <div class="cert-type-icon" style="background:linear-gradient(135deg,rgba(214,158,46,0.1),rgba(214,158,46,0.05));color:var(--secondary-color);"><i class="fa-solid fa-certificate"></i></div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700;margin-bottom:3px;">Sertifikat Penyelesaian Perkara</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);">No. JAI-CERT-2026-0089 &bull; 15 Feb 2026</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <button class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;" onclick="downloadSelected('Sertif Penyelesaian')"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="../../../assets/js/core/app.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDIYkKAlRLu5kTUiB9yICRDaR5UNAVPKXg",
+        authDomain: "justice-ai-b0fd0.firebaseapp.com",
+        projectId: "justice-ai-b0fd0",
+        storageBucket: "justice-ai-b0fd0.firebasestorage.app",
+        messagingSenderId: "762124315437",
+        appId: "1:762124315437:web:eb6ef47c2aeeaef10041a4",
+        measurementId: "G-6S9KY8X3R3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const displayName = user.displayName || user.email.split('@')[0];
+            const userNameLabel = document.getElementById('userNameLabel');
+            const userNameCert = document.getElementById('userNameCert');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            if (userNameLabel) userNameLabel.textContent = displayName;
+            
+            // Nama Google Otomatis Tercetak Indah Pada Kartu Sertifikat!
+            if (userNameCert) userNameCert.textContent = displayName;
+            
+            if (userAvatar && user.photoURL) userAvatar.src = user.photoURL.replace("s96-c", "s200-c"); 
+        }
+    });
+
+    // Fitur Pencarian Judul/Nomor Sertifikat
+    document.getElementById('certSearchTerm').addEventListener('input', function(e) {
+        let keyword = e.target.value.toLowerCase();
+        let cards = document.querySelectorAll('.cert-list-card');
+        
+        cards.forEach(card => {
+            let textKumpulan = card.innerText.toLowerCase();
+            if(textKumpulan.includes(keyword)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    // Fungsi Global Aktifitas Sertifikat
+    window.downloadAll = function() {
+        alert("Melakukan kompresi algoritma ke dalam satu file ZIP...");
+        setTimeout(() => alert("Berhasil! Semua 3 sertifikat sah Anda telah terunduh ke perangkat lokal."), 1500);
+    }
+    
+    window.downloadSelected = function(docTitle) {
+        alert(`Sedang mengkonversi dan mensahkan hash dokumen PDF untuk: [${docTitle}]. Memulai unduhan...`);
+    }
+
+    window.shareCert = function() {
+        alert("Tautan QR Digital dan Link Verifikasi Anda: https://justice-ai.id/verify/JAI-CERT-2026-0089\n\n(Tautan tersalin ke clipboard!)");
+    }
+</script>
+</body>
+</html>

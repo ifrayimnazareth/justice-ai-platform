@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Keuangan - Admin Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/admin.css">
+    <style>
+        .report-card { background: var(--bg-main); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-xl); }
+        .chart-placeholder { background: linear-gradient(135deg,rgba(26,54,93,0.04),rgba(0,181,216,0.06)); border-radius: var(--radius-md); border: 2px dashed rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: var(--text-muted); }
+        .month-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.88rem; }
+        .month-row:last-child { border-bottom: none; }
+        .bar-inline { height: 8px; background: var(--bg-alt); border-radius: var(--radius-full); flex: 1; margin: 0 12px; overflow: hidden; }
+        .bar-inline-fill { height: 100%; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); }
+        .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+        .kpi-card { background: var(--bg-main); border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); padding: var(--space-lg); text-align: center; }
+        .kpi-value { font-size: 2rem; font-weight: 700; color: var(--primary-color); font-family: var(--font-heading); }
+        .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+        .kpi-change { font-size: 0.82rem; font-weight: 600; margin-top: 6px; }
+        .change-up { color: var(--success); }
+        .change-down { color: var(--danger); }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" style="background-color: var(--primary-dark);">
+            <a href="../../../public/index.html" class="logo" style="font-size:1.5rem; color:white;">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span style="color:var(--secondary-light);">Admin</span>
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-label">Manajemen</div>
+            <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+            <a href="../cases/list.html" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Kasus</span></a>
+            <div class="menu-label">Keuangan</div>
+            <a href="transactions.html" class="menu-item"><i class="fa-solid fa-credit-card"></i><span>Transaksi</span></a>
+            <a href="invoices.html" class="menu-item"><i class="fa-solid fa-file-invoice"></i><span>Invoice</span></a>
+            <a href="taxes.html" class="menu-item"><i class="fa-solid fa-percent"></i><span>Pajak</span></a>
+            <a href="reports.html" class="menu-item active"><i class="fa-solid fa-chart-pie"></i><span>Laporan Keuangan</span></a>
+        </div>
+        <div style="padding: 20px;"><a href="../../../auth/login.html" class="btn btn-outline" style="width:100%;border-color:var(--danger);color:var(--danger);">Keluar</a></div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari laporan..."></div>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150" alt="Admin" class="avatar">
+                    <div class="user-info"><span class="user-name">Admin Suprianto</span><span class="user-role">Super Administrator</span></div>
+                </div>
+            </div>
+        </header>
+        <div class="content-area animate-fade-in">
+            <div class="page-header">
+                <div class="page-title"><h1>Laporan Keuangan Platform</h1><p>Ringkasan pendapatan, komisi, dan performa finansial Justice AI Platform.</p></div>
+                <div style="display:flex;gap:8px;">
+                    <select class="form-select" style="width:160px;"><option>2026</option><option>2025</option><option>2024</option></select>
+                    <button class="btn btn-primary"><i class="fa-solid fa-download"></i> &nbsp; Export PDF</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value">Rp 12.4M</div>
+                    <div class="kpi-label">Total Pendapatan Platform (YTD)</div>
+                    <div class="kpi-change change-up"><i class="fa-solid fa-arrow-up"></i> +34% vs tahun lalu</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">Rp 8.7M</div>
+                    <div class="kpi-label">Komisi Advokat Dibayarkan (YTD)</div>
+                    <div class="kpi-change change-up"><i class="fa-solid fa-arrow-up"></i> +28% vs tahun lalu</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">Rp 3.7M</div>
+                    <div class="kpi-label">Pendapatan Bersih Platform (YTD)</div>
+                    <div class="kpi-change change-up"><i class="fa-solid fa-arrow-up"></i> +51% vs tahun lalu</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);margin-bottom:var(--space-xl);">
+                <div class="report-card">
+                    <h3 style="margin-bottom:var(--space-lg);">Pendapatan Bulanan 2026</h3>
+                    <div class="chart-placeholder" style="height:200px;">
+                        <i class="fa-solid fa-chart-bar" style="font-size:2rem;"></i>
+                        <span>Grafik Pendapatan (Integrasi Chart.js)</span>
+                    </div>
+                    <div style="margin-top: var(--space-lg);">
+                        <div class="month-row"><span style="width:60px;">Jan</span><div class="bar-inline"><div class="bar-inline-fill" style="width:70%;"></div></div><span style="font-weight:600;">Rp 1.8M</span></div>
+                        <div class="month-row"><span style="width:60px;">Feb</span><div class="bar-inline"><div class="bar-inline-fill" style="width:85%;"></div></div><span style="font-weight:600;">Rp 2.1M</span></div>
+                        <div class="month-row"><span style="width:60px;">Mar</span><div class="bar-inline"><div class="bar-inline-fill" style="width:95%;"></div></div><span style="font-weight:600;">Rp 2.4M</span></div>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <h3 style="margin-bottom:var(--space-lg);">Distribusi Pendapatan per Kategori</h3>
+                    <div class="chart-placeholder" style="height:200px;">
+                        <i class="fa-solid fa-chart-pie" style="font-size:2rem;"></i>
+                        <span>Grafik Pie (Integrasi Chart.js)</span>
+                    </div>
+                    <div style="margin-top: var(--space-lg);">
+                        <div class="month-row"><span>Biaya Konsultasi</span><div class="bar-inline"><div class="bar-inline-fill" style="width:55%;background:linear-gradient(90deg,var(--info),var(--accent-color));"></div></div><span style="font-weight:600;">45%</span></div>
+                        <div class="month-row"><span>Komisi Kasus</span><div class="bar-inline"><div class="bar-inline-fill" style="width:40%;background:linear-gradient(90deg,var(--secondary-dark),var(--secondary-color));"></div></div><span style="font-weight:600;">35%</span></div>
+                        <div class="month-row"><span>Langganan AI</span><div class="bar-inline"><div class="bar-inline-fill" style="width:25%;background:linear-gradient(90deg,var(--success),#68d391);"></div></div><span style="font-weight:600;">20%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-lg);">
+                    <h3>Ringkasan Keuangan Tahunan</h3>
+                    <button class="btn btn-outline" style="padding:6px 14px;font-size:0.85rem;"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:0.88rem;">
+                    <thead>
+                        <tr style="border-bottom:2px solid rgba(0,0,0,0.1);">
+                            <th style="text-align:left;padding:10px;color:var(--text-muted);">Kategori</th>
+                            <th style="text-align:right;padding:10px;color:var(--text-muted);">Q1 2026</th>
+                            <th style="text-align:right;padding:10px;color:var(--text-muted);">Target Q1</th>
+                            <th style="text-align:right;padding:10px;color:var(--text-muted);">Pencapaian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <td style="padding:12px 10px;font-weight:600;">Total Pendapatan</td>
+                            <td style="text-align:right;padding:12px 10px;color:var(--primary-color);font-weight:700;">Rp 6,300,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;">Rp 5,500,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;"><span style="color:var(--success);font-weight:700;">114.5%</span></td>
+                        </tr>
+                        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <td style="padding:12px 10px;font-weight:600;">Komisi Dikembalikan</td>
+                            <td style="text-align:right;padding:12px 10px;color:var(--danger);font-weight:700;">Rp 4,410,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;">Rp 3,850,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;"><span style="color:var(--success);font-weight:700;">114.5%</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px 10px;font-weight:700;color:var(--primary-dark);">Pendapatan Bersih Platform</td>
+                            <td style="text-align:right;padding:12px 10px;color:var(--primary-color);font-weight:700;font-size:1rem;">Rp 1,890,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;">Rp 1,650,000,000</td>
+                            <td style="text-align:right;padding:12px 10px;"><span style="color:var(--success);font-weight:700;">114.5%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="../../../assets/js/core/app.js"></script>
+</body>
+</html>

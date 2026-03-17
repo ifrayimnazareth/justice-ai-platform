@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Database Advokat - Admin Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; }
+
+        .dashboard-layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 280px;
+            background-color: #1e293b;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-menu { padding: 20px 0; overflow-y: auto; }
+        .menu-label {
+            padding: 10px 24px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: #cbd5e1;
+            text-decoration: none;
+            gap: 15px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .menu-item:hover { background-color: rgba(255,255,255,0.03); color: white; }
+        .menu-item.active { background-color: rgba(56, 161, 105, 0.1); color: #4ade80; border-right: 3px solid #4ade80; }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: #1e293b;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .content-area { padding: 40px; }
+
+        .header-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Stats Row */
+        .admin-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card-mini {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        .stat-info h3 { font-size: 1.5rem; margin: 0 0 5px 0; color: white; }
+        .stat-info p { font-size: 0.8rem; margin: 0; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .data-table-container {
+            background-color: #1e293b;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .table-controls {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .search-box { position: relative; width: 300px; }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.1);
+            background-color: rgba(0,0,0,0.2);
+            color: white;
+            font-family: var(--font-body);
+        }
+
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b; }
+
+        .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .admin-table th {
+            padding: 15px 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .admin-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover { background-color: rgba(255,255,255,0.01); }
+
+        .lawyer-profile-snippet { display: flex; align-items: center; gap: 15px; }
+        .lawyer-profile-snippet img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+
+        .badge-status { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge-active { background-color: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-warning { background-color: rgba(234, 179, 8, 0.2); color: #facc15; }
+        .badge-banned { background-color: rgba(239, 68, 68, 0.2); color: #f87171; text-decoration: line-through; }
+
+        .action-btns { display: flex; gap: 8px; }
+        .btn-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: rgba(255,255,255,0.05);
+            color: #cbd5e1;
+        }
+
+        .btn-icon:hover { background-color: rgba(255,255,255,0.1); color: white; }
+
+        .star-rating { color: #facc15; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout animate-fade-in">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboard.html" class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-server" style="color: #4ade80;"></i> Root<span>Admin</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboard.html" class="menu-item"><i class="fa-solid fa-gauge-high"></i><span>Overview System</span></a>
+                
+                <div class="menu-label">Verifikasi Data (KYC)</div>
+                <a href="list.html" class="menu-item active"><i class="fa-solid fa-user-tie"></i><span>Mitra Advokat (Live)</span></a>
+                <a href="approval.html" class="menu-item"><i class="fa-solid fa-id-card-clip"></i><span>Validasi Lisensi / KYC</span></a>
+                <a href="../users/list.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Manajemen Klien</span></a>
+                
+                <div class="menu-label">Infrastruktur AI</div>
+                <a href="#" class="menu-item"><i class="fa-solid fa-microchip"></i><span>Model API Logs</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="font-weight: 600; font-family: var(--font-heading); color: #94a3b8;">Database Jaringan Mitra Pengacara Terverifikasi (Jabodetabek)</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="https://ui-avatars.com/api/?name=Root&background=ef4444&color=fff" style="width: 35px; border-radius: 50%;">
+                        <span style="font-weight: 600; font-size: 0.9rem;">Administrator</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="header-action">
+                    <div>
+                        <h2 style="margin: 0 0 5px 0; font-family: var(--font-heading);">Database Advokat Aktif</h2>
+                        <p style="color: #94a3b8; margin: 0; font-size: 0.95rem;">Tinjau performa advokat, cek keluhan klien (review), dan kontrol arus pembayaran <em>escrow</em>.</p>
+                    </div>
+                    <button class="btn btn-primary" style="background-color: #10b981; border-color: #10b981;"><i class="fa-solid fa-download"></i> Ekspor Laporan Pajak (XML)</button>
+                </div>
+
+                <div class="admin-stats-row">
+                    <div class="stat-card-mini">
+                        <div class="stat-icon" style="color: #38bdf8;"><i class="fa-solid fa-users-viewfinder"></i></div>
+                        <div class="stat-info"><h3>892</h3><p>Profil Publik (Marketplace)</p></div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-icon" style="color: #a855f7;"><i class="fa-solid fa-briefcase"></i></div>
+                        <div class="stat-info"><h3>1,420</h3><p>Kasus Aktif Dipegang</p></div>
+                    </div>
+                    <div class="stat-card-mini">
+                        <div class="stat-icon" style="color: #facc15;"><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <div class="stat-info"><h3>4.84</h3><p>Rata-rata Rating Platform</p></div>
+                    </div>
+                    <div class="stat-card-mini" style="border-left: 3px solid #ef4444;">
+                        <div class="stat-icon" style="color: #f87171;"><i class="fa-solid fa-gavel"></i></div>
+                        <div class="stat-info"><h3 style="color: #f87171;">12</h3><p>Laporan Etik Kasar (Klien)</p></div>
+                    </div>
+                </div>
+
+                <div class="data-table-container">
+                    <div class="table-controls">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Cari nama advokat, Firma, atau NIA...">
+                        </div>
+                        <div>
+                            <select style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px; border-radius: 5px; outline: none;">
+                                <option>A-Z (Terbaru)</option>
+                                <option>Rating Tertinggi</option>
+                                <option>Di Bawah Audit/Peringatan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Profil / Organisasi</th>
+                                <th>Spesialisasi Mayor</th>
+                                <th>Kinerja (Rating)</th>
+                                <th>Kasus Selesai</th>
+                                <th>Status Marketplace</th>
+                                <th>Tindakan (Action)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Row 1 -->
+                            <tr>
+                                <td>
+                                    <div class="lawyer-profile-snippet">
+                                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150">
+                                        <div>
+                                            <div style="font-weight: 600; color: white; margin-bottom: 2px;">Dirgantara, S.H., LL.M.</div>
+                                            <div style="font-size: 0.8rem; color: #94a3b8;"><i class="fa-solid fa-scale-balanced" style="font-size: 0.7rem;"></i> PERADI (NIA: 2011.X9)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span style="background-color: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Korporasi & Intektual</span></td>
+                                <td>
+                                    <div class="star-rating">
+                                        <i class="fa-solid fa-star"></i> 4.9 <span style="color: #64748b; font-size: 0.8rem;">(120 Ulasan)</span>
+                                    </div>
+                                </td>
+                                <td style="color: #4ade80; font-weight: 600;">89 Kasus</td>
+                                <td><span class="badge-status badge-active">Live (Bisa Disewa)</span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-icon" title="Edit Profil" style="color: #38bdf8;"><i class="fa-solid fa-pen"></i></button>
+                                        <button class="btn-icon" title="Log Transaksi Finansial" style="color: #10b981;"><i class="fa-solid fa-money-bill-transfer"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 2 -->
+                            <tr>
+                                <td>
+                                    <div class="lawyer-profile-snippet">
+                                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150">
+                                        <div>
+                                            <div style="font-weight: 600; color: white; margin-bottom: 2px;">Nadya Lestari, S.H.</div>
+                                            <div style="font-size: 0.8rem; color: #94a3b8;"><i class="fa-solid fa-scale-balanced" style="font-size: 0.7rem;"></i> KAI (NIA: 2018.A2)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span style="background-color: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Hukum Keluarga / Waris</span></td>
+                                <td>
+                                    <div class="star-rating" style="color: #fb923c;">
+                                        <i class="fa-solid fa-star"></i> 2.8 <span style="color: #f87171; font-size: 0.8rem;">(Peringatan AI)</span>
+                                    </div>
+                                </td>
+                                <td style="color: #cbd5e1;">4 Kasus</td>
+                                <td><span class="badge-status badge-warning">Dalam Investigasi CS</span></td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-icon" title="Tinjau Rekaman Video Call" style="color: #fca5a5;"><i class="fa-solid fa-video"></i></button>
+                                        <button class="btn-icon" title="Cabut Lisensi Sistem" style="background-color: rgba(239, 68, 68, 0.1); color: #f87171;"><i class="fa-solid fa-ban"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
