@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pemeriksaan Kontrak AI - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; padding: 40px; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent 40%); }
+
+        .upload-container {
+            max-width: 800px; width: 100%; background-color: #1e293b; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05); padding: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); text-align: center;
+        }
+
+        .upload-header h1 { font-family: var(--font-heading); margin: 0 0 10px 0; font-size: 2.2rem; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .upload-header h1 i { color: #38bdf8; }
+        .upload-header p { color: #94a3b8; margin: 0 0 40px 0; font-size: 1.1rem; }
+
+        .drag-drop-zone {
+            border: 2px dashed rgba(56, 189, 248, 0.3); border-radius: var(--radius-lg); background-color: rgba(0,0,0,0.2); padding: 60px 40px; transition: all 0.3s ease; position: relative; overflow: hidden; cursor: pointer;
+        }
+        
+        .drag-drop-zone:hover, .drag-drop-zone.dragover { border-color: #38bdf8; background-color: rgba(56, 189, 248, 0.05); }
+
+        .upload-icon { font-size: 4rem; color: #38bdf8; margin-bottom: 20px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+        .upload-text { font-size: 1.2rem; font-weight: 500; margin-bottom: 10px; color: white; }
+        .upload-desc { color: #64748b; font-size: 0.9rem; margin-bottom: 25px; }
+
+        .file-format-pills { display: flex; gap: 10px; justify-content: center; }
+        .format-pill { background-color: rgba(255,255,255,0.05); color: #cbd5e1; padding: 5px 12px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); }
+
+        .btn-browse { background-color: #38bdf8; color: #0f172a; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3); }
+        .btn-browse:hover { background-color: #0ea5e9; }
+
+        .security-badge { margin-top: 30px; display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 30px; color: #4ade80; font-size: 0.85rem; }
+
+        /* Scanning Animation (Hidden by Default) */
+        .scanning-ui { display: none; padding: 40px 0; }
+        .scanner-beam { width: 100%; height: 4px; background: linear-gradient(90deg, transparent, #38bdf8, transparent); position: absolute; top: 0; left: 0; animation: scan 2s infinite ease-in-out; box-shadow: 0 0 15px #38bdf8; }
+        @keyframes scan { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
+        
+        .progress-text { margin-top: 20px; color: #38bdf8; font-family: monospace; font-size: 1.1rem; letter-spacing: 1px; }
+        
+        .log-box { text-align: left; background: black; padding: 15px; border-radius: 6px; font-family: monospace; color: #22c55e; font-size: 0.8rem; margin-top: 20px; height: 120px; overflow-y: hidden; border: 1px solid #333; position: relative; }
+        .log-box::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to top, black, transparent); }
+
+    </style>
+</head>
+<body>
+
+    <div class="upload-container animate-fade-in" id="mainContainer">
+        
+        <div class="upload-header" id="uploadHeader">
+            <h1><i class="fa-solid fa-file-shield"></i> Validasi Kontrak Otomatis (OCR)</h1>
+            <p>Unggah draf Perjanjian/Kontrak Anda. AI kami akan mendeteksi celah hukum berbahaya (Loophole) dalam hitungan detik.</p>
+        </div>
+
+        <!-- State 1: Upload Zone -->
+        <div class="drag-drop-zone" id="dropZone" onclick="startScanningMock()">
+            <input type="file" style="display: none;" id="fileInput">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <div class="upload-text">Tarik & Lepaskan File Perjanjian ke Sini</div>
+            <div class="upload-desc">Atau klik untuk membuka File Explorer di komputer Anda</div>
+            
+            <button class="btn-browse" style="margin-bottom: 25px;"><i class="fa-solid fa-magnifying-glass"></i> Cari File</button>
+
+            <div class="file-format-pills">
+                <span class="format-pill">.PDF</span>
+                <span class="format-pill">.DOCX (Word)</span>
+                <span class="format-pill">.JPG (Kamera)</span>
+            </div>
+        </div>
+
+        <!-- State 2: Progress Zone -->
+        <div class="drag-drop-zone scanning-ui" id="scanningZone">
+            <div class="scanner-beam"></div>
+            <i class="fa-solid fa-microchip upload-icon" style="color: #38bdf8; animation: pulse 1.5s infinite;"></i>
+            <div class="upload-text" style="color: #38bdf8;">Sedang Mengekstrak Bahasa Hukum...</div>
+            
+            <div class="log-box" id="terminalLog">
+                > Initializing OCR Engine v4.2...<br>
+                > Parsing 24 pages of PDF format.<br>
+                > Bypassing Image Artifacts... [OK]<br>
+                > Extracting Lexical Tokens...
+            </div>
+            
+            <div class="progress-text">Menganalisis Klausul... 45%</div>
+        </div>
+
+        <div class="security-badge" id="secBadge">
+            <i class="fa-solid fa-lock"></i> File Tidak Disimpan ke Server (Diproses via RAM Lokal). 100% Rahasia Klien.
+        </div>
+
+    </div>
+
+    <script>
+        // Simulasi Transisi ke Hasil Analisis HTML
+        function startScanningMock() {
+            document.getElementById('dropZone').style.display = 'none';
+            document.getElementById('uploadHeader').style.display = 'none';
+            document.getElementById('secBadge').style.display = 'none';
+            document.getElementById('scanningZone').style.display = 'block';
+
+            let logs = [
+                "> Identifying 'Force Majeure' clauses...",
+                "> Cross-referencing KUHPerdata Pasal 1320 (Syarat Sahnya Perjanjian)...",
+                "> Warning: Unfair liability clause detected at Paragraph 4.2",
+                "> Finalizing legal risk score..."
+            ];
+
+            let terminal = document.getElementById('terminalLog');
+            let counter = 0;
+
+            let interval = setInterval(() => {
+                if(counter < logs.length) {
+                    terminal.innerHTML += "<br>" + logs[counter];
+                    counter++;
+                    // Update percentage
+                    document.querySelector('.progress-text').innerText = "Menganalisis Klausul... " + (45 + (counter * 12)) + "%";
+                } else {
+                    clearInterval(interval);
+                    document.querySelector('.progress-text').innerText = "Analisis Selesai! Mengalihkan...";
+                    setTimeout(() => {
+                        window.location.href = "hasil-analisis.html"; // Next simulated page
+                    }, 1000);
+                }
+            }, 800);
+        }
+    </script>
+
+</body>
+</html>

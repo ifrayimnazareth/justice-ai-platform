@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Analisis Ahli Hukum AI - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: var(--bg-main); font-family: var(--font-body); }
+
+        .analysis-topbar { background-color: var(--primary-color); color: white; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-md); position: sticky; top: 0; z-index: 50; }
+        .score-badge { background-color: var(--warning); color: #744210; font-weight: bold; font-size: 1.5rem; padding: 10px 20px; border-radius: var(--radius-lg); display: flex; align-items: center; gap: 10px; }
+        
+        .main-layout { display: flex; max-width: 1400px; margin: 0 auto; gap: 30px; padding: 40px; }
+
+        /* Document Viewer */
+        .doc-preview { flex: 1; background-color: var(--bg-alt); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        [data-theme="dark"] .doc-preview { border-color: rgba(255,255,255,0.1); }
+        
+        .doc-toolbar { background-color: var(--bg-main); padding: 15px 20px; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; }
+        [data-theme="dark"] .doc-toolbar { border-bottom-color: rgba(255,255,255,0.1); }
+        
+        .doc-content { padding: 40px; font-family: 'Times New Roman', serif; font-size: 1.1rem; line-height: 1.8; color: var(--text-main); background-color: white; flex: 1; overflow-y: auto; }
+        [data-theme="dark"] .doc-content { background-color: #f8fafc; color: #0f172a; } /* Keep Document white for reading */
+        
+        .highlight-danger { background-color: rgba(239, 68, 68, 0.2); border-bottom: 2px solid var(--danger); cursor: pointer; position: relative; }
+        .highlight-danger::after { content: "Klausul Berbahaya (Hold)"; position: absolute; bottom: 100%; left: 0; background: var(--danger); color: white; font-size: 0.7rem; padding: 2px 6px; font-family: var(--font-body); border-radius: 3px; display: none; }
+        .highlight-danger:hover::after { display: block; }
+
+        .highlight-warn { background-color: rgba(245, 158, 11, 0.3); border-bottom: 2px dashed var(--warning); cursor: pointer; }
+
+        /* AI Insights Panel */
+        .ai-insights { width: 450px; display: flex; flex-direction: column; gap: 20px; }
+
+        .insight-card { background-color: var(--bg-main); border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.1); padding: 25px; box-shadow: var(--shadow-sm); }
+        [data-theme="dark"] .insight-card { border-color: rgba(255,255,255,0.1); }
+        
+        .insight-card h3 { margin: 0 0 15px 0; font-family: var(--font-heading); font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        
+        .risk-item { border-left: 4px solid var(--danger); padding: 15px; background-color: rgba(239, 68, 68, 0.05); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 15px;}
+        .risk-item-warn { border-left-color: var(--warning); background-color: rgba(245, 158, 11, 0.05); }
+
+        .risk-item h4 { margin: 0 0 8px 0; font-size: 1.05rem; }
+        .risk-item p { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--text-muted); }
+
+        .ai-rewrite-btn { background-color: var(--primary-light); color: white; border: none; padding: 8px 15px; border-radius: var(--radius-sm); font-size: 0.85rem; cursor: pointer; font-family: var(--font-body); transition: background-color 0.2s; }
+        .ai-rewrite-btn:hover { background-color: var(--primary-color); }
+        
+        .ai-proposed { background-color: #f1f5f9; padding: 15px; border-radius: var(--radius-md); font-size: 0.9rem; margin-top: 10px; border: 1px solid #cbd5e1; display: none; }
+        [data-theme="dark"] .ai-proposed { background-color: #1e293b; border-color: #334155; color: #cbd5e1; }
+
+    </style>
+</head>
+<body>
+
+    <header class="analysis-topbar">
+        <div>
+            <h1 style="margin: 0; font-family: var(--font-heading); font-size: 1.5rem;"><i class="fa-solid fa-file-contract"></i> Laporan Analisis: Perjanjian Kerjasama Ventura (Draft.pdf)</h1>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Halaman: 1 dari 12 | Diunggah pada: 17 Mar 2026</p>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div class="score-badge">
+                Skor Risiko: TINGGI (68/100) <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <a href="chat-ai.html" class="btn btn-primary" style="background-color: white; color: var(--primary-color); border: none;"><i class="fa-solid fa-download"></i> Unduh PDF Laporan</a>
+        </div>
+    </header>
+
+    <div class="main-layout animate-fade-in">
+        
+        <!-- Document Pane -->
+        <main class="doc-preview">
+            <div class="doc-toolbar">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <button class="btn btn-outline" style="padding: 5px 15px; font-size: 0.85rem;"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</button>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-eye" style="color: var(--danger);"></i> 2 Celah Hukum Terdeteksi di Halaman ini</span>
+                </div>
+            </div>
+            
+            <div class="doc-content">
+                ... (Klausula Sebelumnya) ... <br><br>
+                <strong style="font-family: Arial; font-size: 1.2rem;">PASAL 4: PEMBATALAN PERJANJIAN DAN PENALTI</strong><br><br>
+                Dalam hal Pihak Kedua (Tergugat) lalai atau terlambat dalam memenuhi kewajiban pembayaran investasi sesuai tenggat waktu yang tercantum dalam Lampiran I,<br><br>
+                <span class="highlight-danger">Maka Pihak Pertama berhak sepenuhnya untuk menarik kembali seluruh aset tanpa proses pemberitahuan (Somasi) dan Pihak Kedua secara mutlak melepaskan haknya untuk menggugat di jalur hukum mana pun (Class Action Waiver). Semua biaya kerugian ditanggung 100% oleh Pihak Kedua tanpa audit panel.</span><br><br>
+                Selain itu, Pihak Kedua juga menyetujui bahwa 
+                <span class="highlight-warn">bunga denda harian atas keterlambatan adalah sebesar 5% (Lima Persen) dari sisa pokok investasi, yang dihitung harian secara bunga berbunga (Compound Interest) hingga lunas.</span>
+                <br><br>
+                ... (Klausula Selanjutnya) ...
+            </div>
+        </main>
+
+        <!-- AI Panel -->
+        <aside class="ai-insights">
+            
+            <div class="insight-card">
+                <h3 style="color: var(--danger);"><i class="fa-solid fa-shield-virus"></i> Temuan Sangat Kritis (Red Flag)</h3>
+                
+                <div class="risk-item">
+                    <h4>Pelepasan Hak Gugat Hukum (Pasal 4)</h4>
+                    <p>Klausul ini menetapkan bahwa Anda tidak bisa menuntut kerugian di pengadilan. Ini melanggar Hak Konstitusional dan bertentangan dengan <strong>Pasal 1337 KUHPerdata</strong> (Kausa yang halal/tidak bertentangan dengan ketertiban umum).</p>
+                    <button class="ai-rewrite-btn" onclick="document.getElementById('rewrite1').style.display='block';"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Minta Revisi Draft</button>
+                    
+                    <div class="ai-proposed" id="rewrite1">
+                        <strong>Usulan Redaksi Baru (Pihak Anda):</strong><br>
+                        "Dalam hal terjadi wanprestasi, kedua belah pihak sepakat mengutamakan musyawarah (30 hari). Apabila gagal, maka sengketata diselesaikan di Pengadilan Negeri setembat, dengan Pihak Kedua tetap memiliki hak penuh (standing in judicio) untuk membela diri."
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="insight-card">
+                <h3 style="color: var(--warning);"><i class="fa-solid fa-scale-unbalanced"></i> Temuan Bias Sepihak (Yellow Flag)</h3>
+                
+                <div class="risk-item risk-item-warn">
+                    <h4>Bunga Denda Mencekik (Predatory Interest)</h4>
+                    <p>Denda 5% per HARI sangat memberatkan dan menyerupai praktik lintah darat. Hakim sering membatalkan denda di atas 2-3% per BULAN dalam Putusan MA Niaga terkini.</p>
+                    <button class="ai-rewrite-btn" onclick="document.getElementById('rewrite2').style.display='block';"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Minta Revisi Draft</button>
+                    
+                    <div class="ai-proposed" id="rewrite2">
+                        <strong>Komentar Sanggahan untuk Pihak 1:</strong><br>
+                        "Kami memohon agar denda harian 5% diturunkan menjadi denda kewajaran Bank Indonesia (BI Rate Plus margin) maksimal 1.5% - 2% per BULAN untuk menjamin itikad baik (good faith) bisnis ini."
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-card" style="background-color: var(--primary-color); color: white; border: none;">
+                <h3 style="color: white;"><i class="fa-solid fa-user-tie"></i> Belum Yakin dengan Hasil AI?</h3>
+                <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 20px;">Lempar dokumen kontrak ini ke Pengacara Manusia (Review Paralegal Manusia) untuk opini Legal Drafting tingkat akhir.</p>
+                <a href="../dashboards/client/konsultasi/lawyer.html" class="btn btn-outline" style="border-color: white; color: white; width: 100%;"><i class="fa-solid fa-magnifying-glass"></i> Cari Advokat Perdata</a>
+            </div>
+
+        </aside>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asisten Chatbot Hukum AI - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: #0f172a; color: #f1f5f9; height: 100vh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
+
+        /* Top Bar */
+        .chat-topbar {
+            height: 70px; background-color: #1e293b; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10;
+        }
+
+        .chat-topbar .brand { display: flex; align-items: center; gap: 15px; font-weight: 600; font-family: var(--font-heading); font-size: 1.2rem; }
+        .chat-topbar .brand i { color: #3b82f6; font-size: 1.5rem; }
+
+        /* Chat Layout */
+        .chat-layout { display: flex; flex: 1; overflow: hidden; }
+
+        /* History Sidebar */
+        .chat-history-sidebar { width: 300px; background-color: rgba(30, 41, 59, 0.5); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
+        .history-btn { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .history-list { flex: 1; overflow-y: auto; padding: 15px; }
+
+        .history-item {
+            padding: 12px 15px; border-radius: var(--radius-md); color: #cbd5e1; font-size: 0.9rem; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .history-item:hover { background-color: rgba(255,255,255,0.05); }
+        .history-item.active { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border-left: 3px solid #3b82f6; }
+
+        /* Main Chat Area */
+        .main-chat-area { flex: 1; display: flex; flex-direction: column; background-color: transparent; }
+        
+        .chat-messages { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+
+        .chat-bubble-container { display: flex; gap: 15px; max-width: 80%; }
+        .chat-bubble-container.user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-bubble-container.ai { align-self: flex-start; }
+
+        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .user .chat-avatar { background-color: rgba(255,255,255,0.1); color: white; }
+        .ai .chat-avatar { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+        .chat-bubble { padding: 15px 20px; border-radius: var(--radius-lg); font-size: 0.95rem; line-height: 1.6; }
+        .user .chat-bubble { background-color: #3b82f6; color: white; border-top-right-radius: 0; }
+        .ai .chat-bubble { background-color: #1e293b; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); border-top-left-radius: 0; }
+
+        /* Citations/References */
+        .reference-box { background-color: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 6px; margin-top: 15px; font-size: 0.85rem; color: #94a3b8; }
+        .reference-box a { color: #3b82f6; text-decoration: none; display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+        .reference-box a:hover { text-decoration: underline; }
+
+        /* Input Area */
+        .chat-input-area { padding: 20px 40px; background-color: #0f172a; border-top: 1px solid rgba(255,255,255,0.05); }
+        .input-container {
+            display: flex; align-items: center; background-color: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 8px 15px; transition: border-color 0.3s;
+        }
+        .input-container:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+
+        .chat-input { flex: 1; background: transparent; border: none; padding: 12px; color: white; font-family: var(--font-body); font-size: 0.95rem; }
+        .chat-input:focus { outline: none; }
+
+        .chat-actions { display: flex; gap: 10px; }
+        .btn-action { background: none; border: none; color: #94a3b8; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; }
+        .btn-action:hover { background-color: rgba(255,255,255,0.05); color: white; }
+        .btn-send { background-color: #3b82f6; color: white; }
+        .btn-send:hover { background-color: #2563eb; color: white; }
+
+        .disclaimer { text-align: center; color: #64748b; font-size: 0.75rem; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <header class="chat-topbar">
+        <div class="brand">
+            <i class="fa-solid fa-microchip"></i> LexBot AI
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <select style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 15px; border-radius: 20px; outline: none; font-size: 0.85rem;">
+                <option>Model: Lex-General (Hukum Perdata)</option>
+                <option>Model: Lex-Criminal (Hukum Pidana)</option>
+                <option>Model: Lex-Business (Korporat)</option>
+            </select>
+            <a href="../dashboards/client/dashboard.html" class="btn btn-outline" style="padding: 6px 15px; font-size: 0.85rem;">Kembali ke Dasbor</a>
+        </div>
+    </header>
+
+    <div class="chat-layout animate-fade-in">
+        
+        <aside class="chat-history-sidebar">
+            <div class="history-btn">
+                <button id="btnNewChatSession" class="btn btn-primary" style="width: 100%; border-radius: 20px; display: flex; justify-content: center; gap: 10px;"><i class="fa-solid fa-plus"></i> Sesi Chat Baru</button>
+            </div>
+            <div class="history-list" id="chatHistoryContainer">
+                <div class="history-group">
+                    <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px; text-transform: uppercase;">Bulan Ini</div>
+                    <div class="history-item active">
+                        <i class="fa-regular fa-message"></i> <span style="flex: 1; overflow: hidden; text-overflow: ellipsis;">Sengketa Hak Cipta Software</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: #64748b;" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                    <div class="history-item">
+                        <i class="fa-regular fa-message"></i> <span style="flex: 1; overflow: hidden; text-overflow: ellipsis;">Perhitungan Waris Islam</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: #64748b;" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                    <div class="history-item">
+                        <i class="fa-regular fa-message"></i> <span style="flex: 1; overflow: hidden; text-overflow: ellipsis;">Pemutusan Kontrak Kerja (PHK)</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: #64748b;" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btnClearHistory" style="margin: 0 20px 20px; padding: 10px; background: transparent; border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;">
+                <i class="fa-solid fa-trash-can"></i> Hapus Semua Riwayat
+            </button>
+        </aside>
+
+        <main class="main-chat-area">
+            <div class="chat-messages" id="chatMessages">
+                
+                <!-- Initial AI Welcome -->
+                <div class="chat-bubble-container ai">
+                    <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="chat-bubble">
+                        Halo! Saya LexBot, asisten hukum AI terlatih dengan ribuan putusan Mahkamah Agung & KUHPerdata. Silakan ceritakan kronologi masalah hukum yang Anda hadapi.
+                    </div>
+                </div>
+
+                <!-- User Message -->
+                <div class="chat-bubble-container user">
+                    <div class="chat-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div class="chat-bubble">
+                        Mantan mitra bisnis saya diam-diam mematenkan source code aplikasi yang kami buat berdua atas namanya sendiri. Apakah saya bisa menuntutnya? Tidak ada kontrak tertulis sebelumnya, hanya kesepakatan lisan.
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="chat-bubble-container ai">
+                    <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="chat-bubble">
+                        Kasus yang Anda hadapi masuk dalam ranah <strong>Sengketa Hak Kekayaan Intelektual (HKI)</strong>, khususnya terkait Hak Cipta program komputer.
+                        <br><br>
+                        Meskipun tidak ada kontrak tertulis, Anda tetap dapat menuntut mitra Anda, karena Hukum Hak Cipta di Indonesia menganut prinsip "Deklaratif". Artinya, perlindungan hak cipta timbul secara otomatis sejak ciptaan diwujudkan (source code ditulis), bukan sejak didaftarkan.
+                        <br><br>
+                        Langkah yang dapat Anda ambil:
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Mengumpulkan bukti digital (commit log, riwayat email, chat, saksi mata) yang membuktikan Anda adalah kreator asli.</li>
+                            <li>Mengirimkan somasi (teguran hukum) untuk membatalkan paten/pendaftaran tersebut.</li>
+                            <li>Mengajukan Gugatan Pembatalan Pendaftaran Ciptaan ke Pengadilan Niaga.</li>
+                        </ol>
+                        
+                        <div class="reference-box">
+                            <div style="margin-bottom: 5px;"><strong>Dasar Hukum Terkait:</strong></div>
+                            <a href="#" target="_blank"><i class="fa-solid fa-book-bookmark"></i> Pasal 64 & 65 UU No. 28 Tahun 2014 Tentang Hak Cipta</a>
+                            <a href="#" target="_blank"><i class="fa-solid fa-gavel"></i> Yurisprudensi MA: Putusan No. 709 K/Pdt.Sus-HKI/2016</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <button id="btnUploadFile" class="btn-action" title="Lampirkan File (Dokumen, Foto, Video, dll)"><i class="fa-solid fa-paperclip"></i></button>
+                    <input type="file" id="hiddenFileInput" style="display: none;">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Kirim kronologi atau tanya pasal hukum..." autocomplete="off" onkeypress="handleEnter(event)">
+                    <div class="chat-actions">
+                        <button id="btnMicInput" class="btn-action" title="Gunakan Input Suara"><i class="fa-solid fa-microphone"></i></button>
+                        <button class="btn-action btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <div class="disclaimer">
+                    <i class="fa-solid fa-shield-halved"></i> LexBot AI bukan pengganti nasihat hukum resmi (Lawyer). Percakapan dienkripsi ujung-ke-ujung (E2EE) dan tidak disimpan untuk melatih model kami (Zero-Retention Policy).
+                </div>
+            </div>
+        </main>
+        
+    </div>
+
+    <script src="../assets/js/services/gemini-api.js"></script>
+    <script src="../assets/js/ai/ai-chat.js"></script>
+    
+    <script>
+        // Hapus Riwayat Chat Item (Inline handler)
+        function deleteHistoryItem(element) {
+            const historyItem = element.closest('.history-item');
+            if (historyItem) {
+                const group = historyItem.closest('.history-group');
+                historyItem.remove();
+                
+                // Cek jika grup kosong
+                if (group) {
+                    const items = group.querySelectorAll('.history-item');
+                    if (items.length === 0) {
+                        group.remove();
+                    }
+                }
+            }
+        }
+
+        // Hapus Semua Riwayat
+        document.getElementById('btnClearHistory')?.addEventListener('click', () => {
+            const confirmed = confirm("Apakah Anda yakin ingin menghapus semua riwayat percakapan hukum Anda?");
+            if (confirmed) {
+                const chatHistoryContainer = document.getElementById('chatHistoryContainer');
+                if (chatHistoryContainer) {
+                    chatHistoryContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b; font-size: 0.85rem;">Belum ada riwayat konsultasi.</div>';
+                }
+                
+                // Reset main chat area
+                const chatMessages = document.getElementById('chatMessages');
+                if(chatMessages) {
+                    chatMessages.innerHTML = '';
+                    const welcomeHtml = `Halo! Saya LexBot, asisten hukum AI terlatih dengan ribuan putusan Mahkamah Agung & KUHPerdata. Silakan ceritakan kronologi masalah hukum yang Anda hadapi pada sesi chat baru ini.`;
+                    // Calling the global exposed function from ai-chat.js
+                    if(window.LexBotUI && window.LexBotUI.appendMessage) {
+                        window.LexBotUI.appendMessage('ai', welcomeHtml, true);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

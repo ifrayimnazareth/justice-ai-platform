@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panggilan Suara Amal - Justice AI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: var(--font-body); display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; margin: 0; background-image: radial-gradient(circle at center, rgba(56, 189, 248, 0.05), #0d1117 60%); }
+
+        .call-card { width: 100%; max-width: 450px; background-color: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.6); padding: 40px 30px; text-align: center; position: relative; }
+
+        .top-encryption { display: inline-flex; align-items: center; gap: 8px; background-color: rgba(63, 185, 80, 0.1); color: #3fb950; font-family: monospace; font-size: 0.8rem; padding: 6px 15px; border-radius: 20px; border: 1px solid rgba(63, 185, 80, 0.3); margin-bottom: 30px; }
+
+        .caller-avatar { width: 140px; height: 140px; border-radius: 50%; box-shadow: 0 0 0 5px rgba(255,255,255,0.05), 0 0 30px rgba(56, 189, 248, 0.2); object-fit: cover; margin-bottom: 25px; animation: pulse-avatar 2s infinite; }
+        
+        @keyframes pulse-avatar {
+            0% { box-shadow: 0 0 0 0px rgba(56, 189, 248, 0.2); }
+            100% { box-shadow: 0 0 0 30px rgba(56, 189, 248, 0); }
+        }
+
+        .caller-name { font-family: var(--font-heading); font-size: 1.8rem; color: white; margin: 0 0 5px 0; }
+        .caller-status { color: #58a6ff; font-size: 1rem; letter-spacing: 1px; margin-bottom: 30px; }
+        
+        .timer { font-family: monospace; font-size: 1.5rem; color: #8b949e; letter-spacing: 2px; margin-bottom: 40px; }
+
+        .call-controls { display: flex; justify-content: center; gap: 20px; }
+
+        .btn-control { width: 60px; height: 60px; border-radius: 50%; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-control:hover { background-color: rgba(255,255,255,0.1); transform: translateY(-3px); }
+
+        .btn-end { background-color: #f85149; border-color: #f85149; box-shadow: 0 5px 15px rgba(248, 81, 73, 0.3); }
+        .btn-end:hover { background-color: #da3633; transform: translateY(-3px); }
+
+        /* Sound Wave Animation */
+        .waves-container { display: flex; justify-content: center; align-items: flex-end; gap: 4px; height: 30px; margin: 0 auto 30px auto; width: 150px; }
+        .wave { width: 4px; border-radius: 2px; background-color: #58a6ff; animation: sound-bars 1.2s infinite ease-in-out; }
+        
+        .wave:nth-child(1) { height: 20%; animation-delay: 0s; }
+        .wave:nth-child(2) { height: 60%; animation-delay: 0.1s; border-radius: 2px; background-color: #3fb950;}
+        .wave:nth-child(3) { height: 100%; animation-delay: 0.2s; border-radius: 2px; background-color: #fca5a5;}
+        .wave:nth-child(4) { height: 40%; animation-delay: 0.3s; }
+        .wave:nth-child(5) { height: 80%; animation-delay: 0.4s; }
+        .wave:nth-child(6) { height: 30%; animation-delay: 0.5s; background-color: #a855f7;}
+        .wave:nth-child(7) { height: 90%; animation-delay: 0.6s; }
+
+        @keyframes sound-bars {
+            0%, 100% { transform: scaleY(0.2); }
+            50% { transform: scaleY(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="call-card animate-fade-in">
+        <div class="top-encryption"><i class="fa-solid fa-lock"></i> E2E Voice Encryption Aktif</div>
+
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=300" class="caller-avatar">
+        
+        <h2 class="caller-name">Adv. Farhan, S.H.</h2>
+        <div class="caller-status">Terhubung - Mode Privat</div>
+
+        <!-- Audio Visualization -->
+        <div class="waves-container">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+
+        <div class="timer">14:02</div>
+
+        <div class="call-controls">
+            <button class="btn-control toggle-btn" title="Bisukan Mikrofon"><i class="fa-solid fa-microphone-slash"></i></button>
+            <button class="btn-control toggle-btn" title="Speaker Loud" style="background-color: rgba(56, 189, 248, 0.2); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);"><i class="fa-solid fa-volume-high"></i></button>
+            <button class="btn-control btn-end" onclick="window.location.href='chat-lawyer.html'" title="Akhiri Panggilan Secara Permanen"><i class="fa-solid fa-phone-slash"></i></button>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 0.75rem; color: #64748b;">
+            <i class="fa-solid fa-robot"></i> Rekaman audio ditangani secara aman oleh AI untuk perlindungan log Anda.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const isMuted = btn.style.backgroundColor === 'rgb(248, 81, 73)' || btn.style.backgroundColor === '#f85149';
+                    if(isMuted) {
+                        // Reset to original style based on its title
+                        if(btn.title === "Speaker Loud"){
+                            btn.style.backgroundColor = 'rgba(56, 189, 248, 0.2)';
+                            btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+                        } else {
+                            btn.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                            btn.style.borderColor = 'rgba(255,255,255,0.1)';
+                        }
+                    } else {
+                        // Turn Red
+                        btn.style.backgroundColor = '#f85149';
+                        btn.style.borderColor = '#f85149';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
