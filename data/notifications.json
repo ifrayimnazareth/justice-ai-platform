@@ -1,0 +1,32 @@
+[
+  {
+    "id": "NOTIF-7721A",
+    "penerimaId": "CLI-26019A8",
+    "jenis": "BERKAS_BARU",
+    "judul": "Draf Somasi Tersedia",
+    "pesan": "Advokat Farhan mengunggah DRAF_SOMASI_V2.pdf ke Brankas Anda.",
+    "isDibaca": false,
+    "waktuKirim": "2026-03-17T09:12:00Z",
+    "aksiUrl": "/dashboards/client/vault"
+  },
+  {
+    "id": "NOTIF-8288B",
+    "penerimaId": "CLI-26019A8",
+    "jenis": "TAGIHAN",
+    "judul": "Jatuh Tempo Pembayaran Escrow",
+    "pesan": "Invoice PAY-REQ-X9011AB (1 Jam Konsultasi) sudah dibayar dan tertahan di Escrow.",
+    "isDibaca": true,
+    "waktuKirim": "2026-03-16T14:35:00Z",
+    "aksiUrl": "/dashboards/client/billing"
+  },
+  {
+    "id": "NOTIF-LWY-1111",
+    "penerimaId": "LWY-90022XZ",
+    "jenis": "KLIEN_BARU",
+    "judul": "Permintaan Chat AI LexBot",
+    "pesan": "Klien Budi S. menaikkan eskalasi obrolan AI menjadi konsultasi langsung.",
+    "isDibaca": false,
+    "waktuKirim": "2026-03-17T11:20:00Z",
+    "aksiUrl": "/dashboards/lawyer/cases"
+  }
+]

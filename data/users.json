@@ -1,0 +1,52 @@
+[
+    {
+      "id": "CLI-26019A8",
+      "tipe": "C",
+      "email": "budi.santoso@gmail.com",
+      "namaLengkap": "Budi Santoso",
+      "telepon": "08129999XXXX",
+      "enkripsiAktif": true,
+      "tanggalGabung": "2026-01-20T10:00:00Z",
+      "status": "AKTIF",
+      "paketPremium": {
+          "status": false,
+          "validSampai": null
+      },
+      "saldoEscrow": 15000000 
+    },
+    {
+      "id": "LWY-90022XZ",
+      "tipe": "L",
+      "email": "farhan.lawyer@mail.com",
+      "namaLengkap": "Farhan Dirgantara, S.H.",
+      "telepon": "08191234YYYY",
+      "enkripsiAktif": true,
+      "tanggalGabung": "2025-08-11T14:30:00Z",
+      "status": "TERVERIFIKASI_KYC",
+      "spesialisasi": [
+          "Hukum Perdata Umum",
+          "Sengketa Agraria",
+          "Hukum Pidana Terpadu"
+      ],
+      "nomorIndukAdvokat": "2011.092.41",
+      "organisasi": "PERADI",
+      "honorVideoCall": 850000,
+      "rating": 4.8,
+      "saldoEscrow": 50000000
+    },
+    {
+      "id": "ADM-ROO-T11",
+      "tipe": "A",
+      "email": "root.admin@justice-ai.com",
+      "namaLengkap": "Chief Master Administrator",
+      "telepon": "-",
+      "enkripsiAktif": true,
+      "tanggalGabung": "2024-01-01T00:00:00Z",
+      "status": "SUPER_ADMIN",
+      "paketPremium": {
+          "status": true,
+          "validSampai": "9999-12-31"
+      },
+      "saldoEscrow": 0
+    }
+  ]

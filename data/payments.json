@@ -1,0 +1,24 @@
+[
+  {
+    "id": "PAY-REQ-X9011AB",
+    "klienId": "CLI-26019A8",
+    "advokatId": "LWY-90022XZ",
+    "jumlahIDR": 850000,
+    "untukPekerjaan": "Sesi Private Video Call (1 Jam) via Escrow",
+    "tglMasuk": "2026-03-16T14:30:00Z",
+    "jatuhTempo": "2026-03-17T14:30:00Z",
+    "status": "DIBAYAR_ESQROW",
+    "metode": "VA_MANDIRI"
+  },
+  {
+    "id": "PAY-RET-H9912YY",
+    "klienId": "CLI-26019A8",
+    "advokatId": "LWY-90022XZ",
+    "jumlahIDR": 15000000,
+    "untukPekerjaan": "Retainer Fee Penyelesaian Sengketa Tanah Luar Pengadilan",
+    "tglMasuk": "2026-03-20T09:00:00Z",
+    "jatuhTempo": "2026-03-23T09:00:00Z",
+    "status": "TIDAK_TERBAYAR",
+    "metode": "BELUM_DIPILIH"
+  }
+]

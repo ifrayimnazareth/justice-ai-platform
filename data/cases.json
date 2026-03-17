@@ -1,0 +1,42 @@
+[
+    {
+      "id": "CASE-SENG-2026-X1",
+      "clientId": "CLI-26019A8",
+      "lawyerId": "LWY-90022XZ",
+      "status": "AKTIF",
+      "kategori": "Sengketa Tanah",
+      "judul": "Penyerobotan Objek Agraria oleh Perusahaan Y",
+      "kronologiSingkat": "Tanah warisan 400 meter di Bogor diambil batas patok oleh pengembang.",
+      "nilaiSengketa": 450000000,
+      "tglDaftar": "2026-03-10",
+      "tahapan": "Somasi Pertama (Review Draf)",
+      "jadwalSidang": null,
+      "pengadilan": "Pengadilan Negeri Cibinong",
+      "aiWinProb": 75,
+      "dokumen": [
+        "VLT_109283_DRAF_SOMASI.pdf",
+        "VLT_109284_BUKTI_FOTO_PATOK.jpg",
+        "VLT_109285_AKTA_WARIS.pdf"
+      ]
+    },
+    {
+      "id": "CASE-HAKI-2026-B9",
+      "clientId": "CLI-79920Z1",
+      "lawyerId": "LWY-11005AB",
+      "status": "SELESAI",
+      "kategori": "Hak Cipta (HAKI)",
+      "judul": "Pencurian Source Code Startup Z by Mantan Co-Founder",
+      "kronologiSingkat": "Kode aplikasi berbasis blockchain diunggah dan diklaim personal via GitHub Repo tanpa izin PT.",
+      "nilaiSengketa": 1200000000,
+      "tglDaftar": "2025-11-05",
+      "tahapan": "Putusan Mahkamah Agung Niaga Berkekuatan Hukum Tetap (Inkracht)",
+      "jadwalSidang": "2026-01-20",
+      "pengadilan": "Pengadilan Niaga Jakarta Pusat",
+      "aiWinProb": 90,
+      "dokumen": [
+        "VLT_810292_SURAT_PERJANJIAN_COFOUNDER.pdf",
+        "VLT_810293_PUTUSAN_INKRACHT_MA.pdf",
+        "VLT_810294_SALINAN_GITHUB_COMMIT.png"
+      ]
+    }
+  ]

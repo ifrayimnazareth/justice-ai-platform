@@ -1,0 +1,30 @@
+FROM node:20-alpine AS build
+
+# Set working directory for Node.js build (if needed for API/Bundling later)
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Move to Nginx to serve the static front-end structure (HTML/CSS/JS)
+FROM nginx:alpine
+
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy HTML, CSS, JS, etc over to Nginx folder structure
+COPY ./public /usr/share/nginx/html/public
+COPY ./auth /usr/share/nginx/html/auth
+COPY ./dashboards /usr/share/nginx/html/dashboards
+COPY ./assets /usr/share/nginx/html/assets
+COPY ./courts /usr/share/nginx/html/courts
+COPY ./ai /usr/share/nginx/html/ai
+
+# Replace default Nginx config with our own for reverse-proxy API routing
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80 & 443
+EXPOSE 80 443
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
