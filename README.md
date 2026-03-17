@@ -67,3 +67,10 @@ Sistem ini akan mempersiapkan 4 kontainer yang saling berbicara.
 Sistem perangkat keras (WAF/Cloud) yang di-deploy nanti harus mematuhi **UU PDP Republik Indonesia (Undang-Undang Pelindungan Data Pribadi)**. Jangan pernah menggunakan *Cipher Block Chaining* (CBC) lama, tetap gunakan `AES-256-GCM` yang sudah diset di modul Enkripsi JavaScript. 
 
 Segala aktivitas log peretas (Brute-Force, SQL Injection) otomatis direkam dan dipotong di level API (*gateway config*).
+
+
+P.S. : dikarenakan aplikasi masih dalam pengembangan/belum sepenuhnya sempurna, saran saya untuk menjalankannya menggunakan ekstensi live server yang tersedia di beberapa kode editor, karena jika dijalankan melalui link deploy gitbub maka API akan otomatis memblokir API yang tercantum di aplikasi ini karena kami masih menaruh API key di frontend.
+web ini masih dalam tahap ujicoba, jika ingin membukanya, diharuskan menggunakan laptop atau komputer, dikarenakan belum mendukung responsifitas untuk all device
+
+English : Since the application is still under development and not yet fully functional, I recommend running it using the live server extension available in some code editors. This is because if you run it via the GitHub deployment link, the API will automatically block the API listed in this application, as we are currently storing the API key in the frontend.
+This website is still in the testing phase; if you wish to access it, you must use a laptop or computer, as it does not yet support responsiveness for all devices.
