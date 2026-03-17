@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi 2FA - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/auth.css">
+    <style>
+        .auth-page { min-height: 100vh; display: flex; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 50%, var(--accent-color) 100%); }
+        .auth-card { background: white; border-radius: var(--radius-2xl); padding: var(--space-3xl); width: 440px; margin: auto; box-shadow: 0 40px 80px rgba(0,0,0,0.3); }
+        .otp-inputs { display: flex; gap: 12px; justify-content: center; margin: var(--space-xl) 0; }
+        .otp-input { width: 56px; height: 64px; border: 2px solid rgba(0,0,0,0.12); border-radius: var(--radius-md); text-align: center; font-size: 1.5rem; font-weight: 700; font-family: var(--font-heading); outline: none; transition: all var(--transition-fast); }
+        .otp-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26,54,93,0.1); }
+        .method-card { border: 2px solid rgba(0,0,0,0.08); border-radius: var(--radius-md); padding: var(--space-md); display: flex; align-items: center; gap: var(--space-md); cursor: pointer; transition: all var(--transition-fast); margin-bottom: 10px; }
+        .method-card:hover { border-color: var(--primary-light); }
+        .method-card.selected { border-color: var(--primary-color); background: rgba(26,54,93,0.03); }
+        .method-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card">
+        <div style="text-align:center;margin-bottom:var(--space-xl);">
+            <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--primary-dark),var(--primary-color));border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem;color:white;">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;margin-bottom:8px;">Verifikasi Dua Langkah</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;">Kami telah mengirimkan kode OTP ke nomor <strong>+62 821-****-4567</strong></p>
+        </div>
+
+        <!-- OTP Area -->
+        <div id="otpSection">
+            <div class="otp-inputs">
+                <input type="text" class="otp-input" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')">
+                <input type="text" class="otp-input" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')">
+                <input type="text" class="otp-input" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')">
+                <input type="text" class="otp-input" maxlength="1" id="otp4" oninput="moveToNext(this, 'otp5')">
+                <input type="text" class="otp-input" maxlength="1" id="otp5" oninput="moveToNext(this, 'otp6')">
+                <input type="text" class="otp-input" maxlength="1" id="otp6">
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;margin-bottom:var(--space-md);" onclick="verifyOTP()">
+                <i class="fa-solid fa-check-circle"></i> Verifikasi Sekarang
+            </button>
+
+            <div style="text-align:center;font-size:0.85rem;color:var(--text-muted);">
+                Tidak menerima kode? 
+                <a href="#" style="color:var(--primary-color);font-weight:600;" onclick="resendOTP(event)">Kirim Ulang</a>
+                <span id="countdown" style="color:var(--text-muted);"> (59 detik)</span>
+            </div>
+        </div>
+
+        <!-- Alt Methods -->
+        <div style="margin-top:var(--space-xl);padding-top:var(--space-lg);border-top:1px solid rgba(0,0,0,0.08);">
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:var(--space-md);">Metode verifikasi lain:</p>
+            <div class="method-card" onclick="switchMethod('sms', this)">
+                <div class="method-icon" style="background:rgba(56,161,105,0.1);color:var(--success);"><i class="fa-solid fa-sms"></i></div>
+                <div><div style="font-weight:600;font-size:0.88rem;">SMS ke +62 821-****-4567</div><div style="font-size:0.76rem;color:var(--text-muted);">Aktif</div></div>
+            </div>
+            <div class="method-card" onclick="switchMethod('email', this)">
+                <div class="method-icon" style="background:rgba(49,130,206,0.1);color:var(--info);"><i class="fa-solid fa-envelope"></i></div>
+                <div><div style="font-weight:600;font-size:0.88rem;">Email ke a***@gmail.com</div><div style="font-size:0.76rem;color:var(--text-muted);">Alternatif</div></div>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-lg);">
+            <a href="login.html" style="font-size:0.85rem;color:var(--text-muted);">← Kembali ke Login</a>
+        </div>
+    </div>
+</div>
+<script>
+    function moveToNext(el, nextId) {
+        if (el.value.length >= 1 && nextId) document.getElementById(nextId).focus();
+    }
+    function verifyOTP() {
+        const otp = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id => document.getElementById(id).value).join('');
+        if (otp.length === 6) window.location.href = '../dashboards/client/dashboard.html';
+        else alert('Masukkan 6 digit kode OTP terlebih dahulu.');
+    }
+    function resendOTP(e) { e.preventDefault(); document.getElementById('countdown').textContent = ' (59 detik)'; startCountdown(); alert('Kode OTP baru telah dikirim!'); }
+    function switchMethod(method, el) { document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
+    let timer;
+    function startCountdown() {
+        clearInterval(timer);
+        let s = 59;
+        timer = setInterval(() => {
+            document.getElementById('countdown').textContent = ` (${s} detik)`;
+            if (--s < 0) { clearInterval(timer); document.getElementById('countdown').textContent = ''; }
+        }, 1000);
+    }
+    startCountdown();
+</script>
+</body>
+</html>

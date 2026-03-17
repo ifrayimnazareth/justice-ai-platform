@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analitik Prediksi Kemenangan Kasus - AI - Justice Platform</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/client.css">
+    <style>
+        .analyzer-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+        }
+
+        @media (max-width: 1024px) {
+            .analyzer-container { grid-template-columns: 1fr; }
+        }
+
+        .input-panel, .result-panel {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            background-color: var(--bg-alt);
+            color: var(--text-main);
+            resize: vertical;
+        }
+
+        [data-theme="dark"] .form-control { border-color: rgba(255,255,255,0.1); }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 181, 216, 0.2);
+        }
+
+        /* Circular Progress Setup */
+        .probability-ring-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2xl) 0;
+            position: relative;
+        }
+
+        .circular-chart {
+            display: block;
+            margin: 0 auto;
+            max-width: 250px;
+            max-height: 250px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: var(--bg-alt);
+            stroke-width: 3.8;
+        }
+
+        .circle {
+            fill: none;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            transform: translateY(0);
+            transition: stroke-dasharray 1.5s ease-out;
+        }
+
+        .success-rate { stroke: var(--success); }
+        .warning-rate { stroke: var(--warning); }
+        
+        .percentage {
+            fill: var(--text-main);
+            font-family: var(--font-heading);
+            font-size: 0.5em;
+            text-anchor: middle;
+            font-weight: bold;
+        }
+
+        .precedent-list {
+            margin-top: var(--space-lg);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: var(--space-lg);
+        }
+
+        [data-theme="dark"] .precedent-list { border-top-color: rgba(255,255,255,0.05); }
+
+        .precedent-item {
+            background-color: var(--bg-alt);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        .precedent-item h4 {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.9);
+            z-index: 10;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: var(--radius-lg);
+        }
+
+        [data-theme="dark"] .loading-overlay { background-color: rgba(15, 25, 43, 0.9); }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--bg-alt);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header" style="background-color: var(--primary-color);">
+                <a href="../dashboards/lawyer/dashboard.html" class="logo" style="font-size: 1.5rem; color: white;">
+                    <i class="fa-solid fa-arrow-left" style="font-size: 1rem;"></i> Justice<span style="color: var(--secondary-light);">Lawyer</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboards/lawyer/dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Kembali ke Dashboard</span></a>
+                <div class="menu-label">AI Tools</div>
+                <a href="chatbot.html" class="menu-item"><i class="fa-solid fa-robot"></i><span>Chatbot Resolusi</span></a>
+                <a href="win-probability.html" class="menu-item active"><i class="fa-solid fa-percent"></i><span>Analitik Kemenangan</span></a>
+                <a href="legal-drafting.html" class="menu-item"><i class="fa-solid fa-file-signature"></i><span>Auto Draft Gugatan</span></a>
+                <a href="contract-review.html" class="menu-item"><i class="fa-solid fa-magnifying-glass"></i><span>Review Celah Kontrak</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-search"></div>
+                <div class="topbar-actions">
+                    <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" class="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area animate-fade-in">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Kalkulator Probabilitas Kemenangan Kasus (AI)</h1>
+                        <p>Sistem akan memindai kemiripan kronologi Anda dengan jutaan database Yurisprudensi Mahkamah Agung RI untuk menakar peluang memenangkan perkara.</p>
+                    </div>
+                </div>
+
+                <div class="analyzer-container">
+                    <!-- Input Form -->
+                    <div class="input-panel">
+                        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-pen-to-square" style="color: var(--primary-color);"></i> Ekstraksi Kasus
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Kategori Masalah Hukum</label>
+                            <select class="form-control" id="caseCategory">
+                                <option value="perdata">Perdata - Gugatan Wanprestasi</option>
+                                <option value="pmh">Perdata - Perbuatan Melawan Hukum (PMH)</option>
+                                <option value="pidana">Pidana Khusus - Penggelapan</option>
+                                <option value="khi">Keluarga - Sengketa Waris</option>
+                                <option value="phi">Perselisihan Hubungan Industrial (PHI)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duduk Perkara (Kronologis Singkat)</label>
+                            <textarea class="form-control" rows="6" id="caseDescription" placeholder="Jelaskan secara singkat urutan kejadian... Contoh: Klien menandatangani perjanjian kerjasama pada tgl 12 Januari 2025, namun pihak kedua gagal memenuhi pesanan dan tidak mengembalikan DP..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bukti Yang Dimiliki Klien (Minimal 2)</label>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;"><input type="checkbox" checked> Surat Perjanjian Asli</label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;"><input type="checkbox" checked> Bukti Transfer Bank</label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;"><input type="checkbox"> Rekaman Video/CCTV</label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;"><input type="checkbox" checked> Bukti Chat WhatsApp (Tercetak)</label>
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;"><input type="checkbox"> Saksi Mata (>2 orang)</label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" onclick="runAnalysis()" style="width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 8px;">
+                            <i class="fa-solid fa-microchip"></i> Jalankan Prediksi Deep Learning
+                        </button>
+                    </div>
+
+                    <!-- Result Panel -->
+                    <div class="result-panel" style="position: relative;">
+                        
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <div class="spinner"></div>
+                            <h3 style="margin-top: 20px;">AI Sedang Memproses...</h3>
+                            <p style="color: var(--text-muted);">Memeriksa kecocokan dengan 2.450.120 Putusan MA.</p>
+                        </div>
+
+                        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-chart-column" style="color: var(--accent-color);"></i> Hasil Prediksi Algoritma
+                        </h3>
+
+                        <div class="probability-ring-container">
+                            <svg viewBox="0 0 36 36" class="circular-chart success-rate">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" id="resultRing" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <text x="18" y="20.35" class="percentage" id="resultText">--%</text>
+                            </svg>
+                        </div>
+
+                        <div style="text-align: center; margin-bottom: var(--space-lg);">
+                            <h2 style="font-size: 1.8rem; margin: 0; color: var(--success);" id="verdictTitle">Akurasi Kasus Tinggi</h2>
+                            <p style="color: var(--text-muted); font-size: 0.95rem;">Berdasarkan kelengkapan 3 bukti tertulis yang sah.</p>
+                        </div>
+
+                        <div class="precedent-list">
+                            <h4 style="margin-top: 0;">Preseden Putusan MA Tersimilar:</h4>
+                            
+                            <div class="precedent-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <h4>Putusan MA Nomor 123/Pdt.G/2023/PN.Jkt.Sel</h4>
+                                    <span style="color: var(--success); font-weight: bold;">(94% Mirip)</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;"><strong>Amar Putusan:</strong> Mengabulkan gugatan penggugat sebagian karena bukti transfer dan chat WA dianggap sah memenuhi unsur Pasal 1365 KUHPerdata.</p>
+                            </div>
+
+                            <div class="precedent-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <h4>Putusan MA Nomor 45/Pdt.G/2021/PN.Sby</h4>
+                                    <span style="color: var(--success); font-weight: bold;">(88% Mirip)</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;"><strong>Titik Lemah Kasus Serupa:</strong> Gugatan ditolak pada kasasi karena chat WA tidak divalidasi oleh alat bukti elektronik atau saksi notaris.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/core/app.js"></script>
+    <script>
+        function runAnalysis() {
+            var desc = document.getElementById("caseDescription").value;
+            if(desc.length < 20) {
+                alert("Mohon jelaskan kronologis dengan detail minimal 20 karakter.");
+                return;
+            }
+
+            var overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+
+            // Simulate Data Fetch / Processing for 2 seconds
+            setTimeout(function() {
+                overlay.style.display = 'none';
+                
+                // Animate Circle
+                // Set the dasharray to 82 out of 100
+                const ring = document.getElementById('resultRing');
+                ring.setAttribute('stroke-dasharray', '82, 100');
+                
+                // Set Text
+                document.getElementById('resultText').textContent = '82%';
+
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

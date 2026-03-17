@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexAI – Asistensi Hukum AI | Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        .lex-page { min-height: 100vh; background: linear-gradient(135deg, #0a192f, #1a365d); position: relative; overflow: hidden; }
+        .lex-page::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 30% 50%, rgba(0,181,216,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(214,158,46,0.1) 0%, transparent 50%); }
+        .lex-header { position: relative; z-index: 10; padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .lex-logo { font-size: 1.5rem; font-weight: 700; color: white; font-family: var(--font-heading); }
+        .lex-logo span { color: var(--accent-color); }
+        .lex-main { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 80px 40px 40px; }
+        .lex-hero-title { font-size: 3.5rem; font-weight: 700; color: white; font-family: var(--font-heading); margin-bottom: 20px; line-height: 1.2; }
+        .lex-hero-title .highlight { background: linear-gradient(135deg, var(--accent-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lex-hero-desc { font-size: 1.1rem; color: rgba(255,255,255,0.7); max-width: 600px; margin-bottom: 48px; line-height: 1.8; }
+        .lex-search-bar { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12); border-radius: 60px; padding: 8px 8px 8px 24px; display: flex; align-items: center; gap: 12px; max-width: 700px; width: 100%; margin-bottom: 24px; }
+        .lex-search-input { flex: 1; background: none; border: none; outline: none; color: white; font-size: 1rem; font-family: var(--font-body); }
+        .lex-search-input::placeholder { color: rgba(255,255,255,0.4); }
+        .lex-capabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 900px; margin-top: 60px; }
+        .cap-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 24px; text-align: left; transition: all var(--transition-normal); cursor: pointer; }
+        .cap-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(0,181,216,0.3); transform: translateY(-4px); }
+        .cap-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 14px; }
+        .cap-title { font-weight: 700; color: white; margin-bottom: 6px; font-size: 0.95rem; }
+        .cap-desc { font-size: 0.82rem; color: rgba(255,255,255,0.6); line-height: 1.7; }
+        .quick-prompts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 700px; }
+        .quick-prompt { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-full); padding: 8px 16px; font-size: 0.82rem; color: rgba(255,255,255,0.75); cursor: pointer; transition: all var(--transition-fast); }
+        .quick-prompt:hover { background: rgba(0,181,216,0.15); border-color: var(--accent-color); color: white; }
+    </style>
+</head>
+<body>
+<div class="lex-page">
+    <header class="lex-header">
+        <div class="lex-logo"><i class="fa-solid fa-robot"></i> Lex<span>AI</span></div>
+        <div style="display:flex;gap:12px;">
+            <a href="../../dashboards/lawyer/dashboard.html" class="btn" style="background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.15);padding:8px 18px;border-radius:var(--radius-full);font-size:0.85rem;">← Dashboard</a>
+            <button class="btn" style="background:linear-gradient(135deg,var(--accent-color),var(--primary-color));color:white;padding:8px 18px;border-radius:var(--radius-full);font-size:0.85rem;"><i class="fa-solid fa-plus"></i> Percakapan Baru</button>
+        </div>
+    </header>
+
+    <main class="lex-main">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,181,216,0.1);border:1px solid rgba(0,181,216,0.25);border-radius:var(--radius-full);padding:6px 16px;margin-bottom:24px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--accent-color);display:inline-block;animation:pulse 2s infinite;"></span>
+            <span style="font-size:0.82rem;color:var(--accent-color);">LexAI v3.0 – Powered by Justice AI Engine</span>
+        </div>
+
+        <h1 class="lex-hero-title">Asisten Hukum AI<br>yang <span class="highlight">Memahami Indonesia</span></h1>
+        <p class="lex-hero-desc">Analisis dokumen, riset yurisprudensi, draft kontrak, dan strategi litigasi – semua dengan kecerdasan buatan yang terlatih pada database hukum Indonesia terlengkap.</p>
+
+        <div class="lex-search-bar">
+            <i class="fa-solid fa-robot" style="color:var(--accent-color);font-size:1.1rem;"></i>
+            <input class="lex-search-input" type="text" id="lexInput" placeholder="Tanyakan masalah hukum Anda... (mis: 'Analisis kelemahan kontrak ini')" onkeypress="handleLexEnter(event)">
+            <button onclick="sendToLex()" style="background:linear-gradient(135deg,var(--primary-color),var(--accent-color));color:white;border:none;border-radius:50px;padding:10px 24px;font-size:0.88rem;cursor:pointer;font-weight:600;">Kirim <i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+
+        <div class="quick-prompts">
+            <div class="quick-prompt" onclick="fillPrompt('Analisis kontrak sewa ini dan temukan klausul berbahaya')"><i class="fa-solid fa-file-contract"></i> Analisis Kontrak</div>
+            <div class="quick-prompt" onclick="fillPrompt('Cari yurisprudensi MA tentang wanprestasi')"><i class="fa-solid fa-gavel"></i> Riset Yurisprudensi</div>
+            <div class="quick-prompt" onclick="fillPrompt('Buat draft surat gugatan perdata')"><i class="fa-solid fa-pen"></i> Draft Surat Gugatan</div>
+            <div class="quick-prompt" onclick="fillPrompt('Jelaskan perbedaan delik materil dan formil')"><i class="fa-solid fa-book"></i> Tanya Konsep Hukum</div>
+            <div class="quick-prompt" onclick="fillPrompt('Strategi terbaik untuk kasus sengketa tanah')"><i class="fa-solid fa-chess-knight"></i> Strategi Kasus</div>
+            <div class="quick-prompt" onclick="fillPrompt('Review UU Cipta Kerja terkait ketenagakerjaan')"><i class="fa-solid fa-landmark"></i> Review Regulasi</div>
+        </div>
+
+        <div class="lex-capabilities">
+            <div class="cap-card">
+                <div class="cap-icon" style="background:rgba(0,181,216,0.15);color:var(--accent-color);"><i class="fa-solid fa-file-circle-check"></i></div>
+                <div class="cap-title">Analisis Dokumen Hukum</div>
+                <div class="cap-desc">Unggah kontrak, putusan, atau dokumen hukum untuk dianalisis risiko, celah, dan rekomendasi perubahan.</div>
+            </div>
+            <div class="cap-card">
+                <div class="cap-icon" style="background:rgba(214,158,46,0.15);color:var(--secondary-color);"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="cap-title">Riset Yurisprudensi Otomatis</div>
+                <div class="cap-desc">Cari preseden kasus serupa dari 50.000+ database putusan MA, PN, PT, PTUN secara instan.</div>
+            </div>
+            <div class="cap-card">
+                <div class="cap-icon" style="background:rgba(56,161,105,0.15);color:var(--success);"><i class="fa-solid fa-pen-nib"></i></div>
+                <div class="cap-title">Drafting Dokumen</div>
+                <div class="cap-desc">Buat surat gugatan, memori banding, kontrak, atau legal opinion dengan bantuan AI dalam hitungan menit.</div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    function fillPrompt(text) { document.getElementById('lexInput').value = text; document.getElementById('lexInput').focus(); }
+    function sendToLex() {
+        const q = document.getElementById('lexInput').value.trim();
+        if(!q) return;
+        window.location.href = `chat.html?q=${encodeURIComponent(q)}`;
+    }
+    function handleLexEnter(e) { if(e.key === 'Enter') sendToLex(); }
+</script>
+</body>
+</html>

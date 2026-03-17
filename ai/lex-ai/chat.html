@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexAI Chat – Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: var(--font-body); }
+        .lex-layout { display: grid; grid-template-columns: 280px 1fr; height: 100vh; overflow: hidden; }
+        .lex-sidebar { background: #0f1b2d; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.06); }
+        .lex-sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .lex-brand { font-weight: 700; font-size: 1.2rem; color: white; font-family: var(--font-heading); }
+        .lex-brand span { color: var(--accent-color); }
+        .lex-new-btn { width: 100%; margin-top: 12px; padding: 10px; background: rgba(0,181,216,0.12); border: 1px dashed rgba(0,181,216,0.3); border-radius: var(--radius-md); color: var(--accent-color); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all var(--transition-fast); }
+        .lex-new-btn:hover { background: rgba(0,181,216,0.2); }
+        .lex-conversations { flex: 1; overflow-y: auto; padding: 12px; }
+        .conv-item { padding: 10px 12px; border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-fast); margin-bottom: 4px; }
+        .conv-item:hover { background: rgba(255,255,255,0.05); }
+        .conv-item.active { background: rgba(0,181,216,0.1); border-left: 3px solid var(--accent-color); }
+        .conv-title { font-size: 0.84rem; color: rgba(255,255,255,0.8); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conv-date { font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 3px; }
+        .conv-group-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); padding: 12px 12px 6px; }
+        .lex-chat-area { background: #f8fafc; display: flex; flex-direction: column; }
+        .lex-chat-top { background: white; border-bottom: 1px solid rgba(0,0,0,0.08); padding: 14px 24px; display: flex; align-items: center; gap: 12px; }
+        .lex-chat-messages { flex: 1; overflow-y: auto; padding: 32px 20%; display: flex; flex-direction: column; gap: 24px; }
+        .chat-msg { display: flex; gap: 14px; max-width: 100%; }
+        .chat-msg.user { flex-direction: row-reverse; }
+        .msg-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+        .ai-av { background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; }
+        .user-av { background: var(--secondary-color); color: white; }
+        .msg-content { background: white; border-radius: var(--radius-lg); padding: 16px 20px; font-size: 0.9rem; line-height: 1.8; box-shadow: var(--shadow-sm); max-width: 75%; border: 1px solid rgba(0,0,0,0.06); }
+        .chat-msg.user .msg-content { background: var(--primary-color); color: white; border-color: transparent; }
+        .msg-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .msg-action-btn { background: none; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--radius-full); padding: 4px 10px; font-size: 0.75rem; cursor: pointer; color: var(--text-muted); transition: all var(--transition-fast); }
+        .msg-action-btn:hover { background: rgba(0,0,0,0.04); }
+        .lex-input-area { background: white; border-top: 1px solid rgba(0,0,0,0.08); padding: 16px 20%; }
+        .lex-input-box { display: flex; align-items: flex-end; gap: 10px; background: #f9fafb; border: 1.5px solid rgba(0,0,0,0.1); border-radius: var(--radius-xl); padding: 12px 12px 12px 20px; transition: border-color var(--transition-fast); }
+        .lex-input-box:focus-within { border-color: var(--primary-color); background: white; }
+        .lex-textarea { flex: 1; border: none; background: none; outline: none; font-family: var(--font-body); font-size: 0.92rem; resize: none; max-height: 160px; min-height: 24px; }
+        .lex-send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--transition-fast); }
+        .lex-send-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+        .thinking { display: flex; gap: 4px; padding: 8px 0; }
+        .thinking-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color); animation: bounce 1.4s ease-in-out infinite; }
+        .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4;} 40%{transform:scale(1);opacity:1;} }
+    </style>
+</head>
+<body>
+<div class="lex-layout">
+    <!-- Sidebar -->
+    <div class="lex-sidebar">
+        <div class="lex-sidebar-header">
+            <div class="lex-brand"><i class="fa-solid fa-robot"></i> Lex<span>AI</span></div>
+            <button class="lex-new-btn" onclick="newChat()"><i class="fa-solid fa-plus"></i> Percakapan Baru</button>
+        </div>
+        <div class="lex-conversations">
+            <div class="conv-group-label">Hari Ini</div>
+            <div class="conv-item active">
+                <div class="conv-title">Analisis kontrak sewa komersial</div>
+                <div class="conv-date">17 Mar 2026, 10:30</div>
+            </div>
+            <div class="conv-item">
+                <div class="conv-title">Draft surat gugatan wanprestasi</div>
+                <div class="conv-date">17 Mar 2026, 09:15</div>
+            </div>
+            <div class="conv-group-label">Kemarin</div>
+            <div class="conv-item">
+                <div class="conv-title">Yurisprudensi sengketa tanah</div>
+                <div class="conv-date">16 Mar 2026, 15:42</div>
+            </div>
+            <div class="conv-item">
+                <div class="conv-title">Review UU Cipta Kerja ketenagakerjaan</div>
+                <div class="conv-date">16 Mar 2026, 11:20</div>
+            </div>
+            <div class="conv-group-label">Minggu Lalu</div>
+            <div class="conv-item">
+                <div class="conv-title">Strategi banding perkara pidana</div>
+                <div class="conv-date">10 Mar 2026, 14:05</div>
+            </div>
+        </div>
+        <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.06);">
+            <a href="../../../dashboards/lawyer/dashboard.html" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.5);font-size:0.82rem;text-decoration:none;">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="lex-chat-area">
+        <div class="lex-chat-top">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--primary-color),var(--accent-color));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;"><i class="fa-solid fa-robot"></i></div>
+            <div>
+                <div style="font-weight:700;font-size:0.95rem;">LexAI</div>
+                <div style="font-size:0.75rem;color:var(--success);"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--success);margin-right:4px;"></span>Aktif · Model: LexAI-Legal-ID v3.0</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+                <button class="btn btn-outline" style="padding:6px 14px;font-size:0.8rem;"><i class="fa-solid fa-download"></i> Export</button>
+                <button class="btn btn-outline" style="padding:6px 14px;font-size:0.8rem;"><i class="fa-solid fa-share-nodes"></i> Bagikan</button>
+            </div>
+        </div>
+
+        <div class="lex-chat-messages" id="chatMessages">
+            <div class="chat-msg">
+                <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <div class="msg-content">
+                        <strong>Selamat datang di LexAI!</strong> 🎯<br><br>
+                        Saya siap membantu Anda dengan berbagai tugas hukum, termasuk:<br><br>
+                        • <strong>Analisis Dokumen</strong> – Review kontrak, putusan, atau regulasi<br>
+                        • <strong>Riset Hukum</strong> – Yurisprudensi, doktrin, dan preseden kasus<br>
+                        • <strong>Drafting</strong> – Surat gugatan, kontrak, legal opinion<br>
+                        • <strong>Konsultasi Strategi</strong> – Pendekatan litigasi dan negosiasi<br><br>
+                        Apa yang bisa saya bantu hari ini?
+                    </div>
+                    <div class="msg-actions">
+                        <button class="msg-action-btn"><i class="fa-solid fa-copy"></i> Salin</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-msg user">
+                <div class="msg-avatar user-av"><i class="fa-solid fa-user-tie"></i></div>
+                <div class="msg-content">Analisis kontrak sewa komersial ini dan temukan klausul yang berpotensi merugikan klien saya sebagai penyewa.</div>
+            </div>
+            <div class="chat-msg" id="thinkingMsg" style="display:none;">
+                <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                <div class="msg-content"><div class="thinking"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div></div>
+            </div>
+            <div class="chat-msg">
+                <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <div class="msg-content">
+                        Berdasarkan kontrak sewa komersial yang Anda berikan, saya menemukan <strong>7 klausul berisiko tinggi</strong> yang perlu diperhatikan:<br><br>
+                        <strong>🔴 Risiko Tinggi:</strong><br>
+                        <strong>1. Pasal 8 – Kenaikan Sewa Sepihak</strong><br>
+                        Pemilik berhak menaikkan sewa "sesuai kondisi pasar" tanpa batas persentase dan tanpa notifikasi minimum. <em>Rekomendasi: Tambahkan klausa kenaikan maksimal 5% per tahun dengan notifikasi 3 bulan.</em><br><br>
+                        <strong>2. Pasal 15 – Pengakhiran Kontrak Mendadak</strong><br>
+                        Pemilik dapat mengakhiri kontrak dengan notifikasi 14 hari jika "dianggap perlu". Klausul ini terlalu umum dan memberikan kekuasaan penuh pada pemilik.<br><br>
+                        <strong>🟡 Risiko Sedang:</strong><br>
+                        <strong>3. Pasal 12 – Tanggungan Perbaikan</strong><br>
+                        Semua perbaikan menjadi tanggungan penyewa termasuk kerusakan struktural. Ini bertentangan dengan KUH Perdata Pasal 1587.<br><br>
+                        Apakah Anda ingin saya membuat versi kontrak yang telah direvisi dengan klausul yang lebih berimbang?
+                    </div>
+                    <div class="msg-actions">
+                        <button class="msg-action-btn"><i class="fa-solid fa-copy"></i> Salin</button>
+                        <button class="msg-action-btn"><i class="fa-solid fa-thumbs-up"></i> Berguna</button>
+                        <button class="msg-action-btn"><i class="fa-solid fa-pen"></i> Revisi</button>
+                        <button class="msg-action-btn"><i class="fa-solid fa-download"></i> Export Word</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lex-input-area">
+            <div class="lex-input-box">
+                <button id="btnLexUpload" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;font-size:1rem;" title="Lampirkan dokumen" onclick="document.getElementById('lexFileInput').click()"><i class="fa-solid fa-paperclip"></i></button>
+                <input type="file" id="lexFileInput" style="display:none;" accept=".pdf,.doc,.docx,.txt" onchange="handleLexFileUpload(event)">
+                <button id="btnLexMic" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;font-size:1rem;margin-right:5px;" title="Input Suara" onclick="toggleLexMic()"><i class="fa-solid fa-microphone"></i></button>
+                <textarea class="lex-textarea" id="lexChatInput" placeholder="Tanya LexAI... (Shift+Enter untuk baris baru)" rows="1" onkeypress="handleChatEnter(event)" oninput="autoResize(this)"></textarea>
+                <button class="lex-send-btn" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+            <div style="text-align:center;font-size:0.72rem;color:var(--text-muted);margin-top:10px;">
+                LexAI dapat membuat kesalahan. Selalu verifikasi dengan sumber hukum resmi. 
+                <a href="#" style="color:var(--primary-color);">Pelajari Cara Penggunaan</a>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="../../assets/js/services/gemini-api.js"></script>
+    <script>
+        async function sendChat() {
+            const input = document.getElementById('lexChatInput');
+            const msgs = document.getElementById('chatMessages');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // User message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg user';
+            userMsg.innerHTML = `<div class="msg-avatar user-av"><i class="fa-solid fa-user-tie"></i></div><div class="msg-content">${text}</div>`;
+            msgs.appendChild(userMsg);
+            input.value = '';
+            input.style.height = 'auto';
+
+            // Show thinking
+            const thinking = document.getElementById('thinkingMsg');
+            thinking.style.display = 'flex';
+            msgs.scrollTop = msgs.scrollHeight;
+
+            try {
+                // Call Gemini API
+                const response = await GeminiService.chat(text);
+                
+                thinking.style.display = 'none';
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-msg';
+                
+                // Format response (very basic markdown to html)
+                const formattedResponse = response
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+
+                aiMsg.innerHTML = `
+                    <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <div class="msg-content">${formattedResponse}</div>
+                        <div class="msg-actions">
+                            <button class="msg-action-btn" onclick="copyText(this)"><i class="fa-solid fa-copy"></i> Salin</button>
+                            <button class="msg-action-btn"><i class="fa-solid fa-thumbs-up"></i> Berguna</button>
+                        </div>
+                    </div>
+                `;
+                msgs.appendChild(aiMsg);
+            } catch (error) {
+                thinking.style.display = 'none';
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'chat-msg';
+                errorMsg.innerHTML = `<div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div><div class="msg-content" style="color:var(--danger)">Gagal memproses pesan: ${error.message}</div>`;
+                msgs.appendChild(errorMsg);
+            }
+            
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function copyText(btn) {
+            const content = btn.closest('.chat-msg').querySelector('.msg-content').innerText;
+            navigator.clipboard.writeText(content);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin';
+            setTimeout(() => btn.innerHTML = originalText, 2000);
+        }
+
+        function handleChatEnter(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+        function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+        function newChat() { 
+            const msgs = document.getElementById('chatMessages');
+            msgs.innerHTML = `
+                <div class="chat-msg">
+                    <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                    <div class="msg-content"><strong>Percakapan baru dimulai!</strong> Apa yang bisa saya bantu?</div>
+                </div>
+                <div class="chat-msg" id="thinkingMsg" style="display:none;">
+                    <div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div>
+                    <div class="msg-content"><div class="thinking"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div></div>
+                </div>`; 
+        }
+        
+        function handleLexFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const msgs = document.getElementById('chatMessages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg user';
+            userMsg.innerHTML = `<div class="msg-avatar user-av"><i class="fa-solid fa-user-tie"></i></div><div class="msg-content">Membagikan dokumen: <strong>${file.name}</strong></div>`;
+            msgs.appendChild(userMsg);
+            
+            const thinking = document.getElementById('thinkingMsg');
+            thinking.style.display = 'flex';
+            msgs.scrollTop = msgs.scrollHeight;
+
+            setTimeout(() => {
+                thinking.style.display = 'none';
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-msg';
+                aiMsg.innerHTML = `<div class="msg-avatar ai-av"><i class="fa-solid fa-robot"></i></div><div><div class="msg-content">Dokumen <strong>${file.name}</strong> telah saya baca. Silakan beritahu saya analisis seperti apa yang Anda harapkan dari dokumen ini.</div></div>`;
+                msgs.appendChild(aiMsg);
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 1000);
+        }
+
+        let lexMicRecognizing = false;
+        let lexRecognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            lexRecognition = new SpeechRecognition();
+            lexRecognition.lang = 'id-ID';
+            lexRecognition.onresult = (e) => {
+                document.getElementById('lexChatInput').value = e.results[0][0].transcript;
+                document.getElementById('btnLexMic').style.color = 'var(--text-muted)';
+                lexMicRecognizing = false;
+                sendChat();
+            };
+            lexRecognition.onerror = () => {
+                document.getElementById('btnLexMic').style.color = 'var(--text-muted)';
+                lexMicRecognizing = false;
+            };
+            lexRecognition.onend = () => {
+                document.getElementById('btnLexMic').style.color = 'var(--text-muted)';
+                lexMicRecognizing = false;
+            };
+        }
+
+        function toggleLexMic() {
+            if (!lexRecognition) return alert('Fitur input suara tidak didukung browser Anda.');
+            if (lexMicRecognizing) {
+                lexRecognition.stop();
+            } else {
+                lexRecognition.start();
+                lexMicRecognizing = true;
+                document.getElementById('btnLexMic').style.color = '#ef4444';
+            }
+        }
+        
+        // Handle URL parameters for initial question
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialQ = urlParams.get('q');
+            if (initialQ) {
+                document.getElementById('lexChatInput').value = initialQ;
+                sendChat();
+            }
+        };
+    </script>
+</body>
+</html>

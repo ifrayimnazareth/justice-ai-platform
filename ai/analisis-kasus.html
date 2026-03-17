@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Strategi Kasus – Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .analysis-container { max-width: 1000px; margin: 0 auto; padding: var(--space-xl); }
+        .input-section { background: white; border-radius: var(--radius-lg); padding: var(--space-2xl); border: 1px solid rgba(0,0,0,0.08); margin-bottom: var(--space-xl); box-shadow: var(--shadow-sm); }
+        .result-section { display: none; background: white; border-radius: var(--radius-lg); padding: var(--space-2xl); border: 1px solid rgba(0,0,0,0.08); box-shadow: var(--shadow-md); animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+        .logic-card { border-left: 4px solid var(--primary-color); background: #f8fafc; padding: 16px; margin-bottom: 16px; border-radius: 0 8px 8px 0; }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 { font-family: var(--font-heading); color: var(--primary-dark); margin-top: 24px; }
+        .markdown-content ul { padding-left: 20px; line-height: 1.8; }
+        .markdown-content p { line-height: 1.8; color: var(--text-main); }
+    </style>
+</head>
+<body style="background:var(--bg-alt);">
+    <nav style="background:white;border-bottom:1px solid rgba(0,0,0,0.08);padding:14px 32px;display:flex;align-items:center;gap:16px;">
+        <a href="../dashboards/lawyer/dashboard.html" style="color:var(--text-muted);font-size:0.85rem;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+        <span style="color:rgba(0,0,0,0.15);">|</span>
+        <div style="font-weight:700;color:var(--primary-color);font-family:var(--font-heading);"><i class="fa-solid fa-chess-knight"></i> AI Strategi & Analisis Kasus</div>
+    </nav>
+
+    <div class="analysis-container">
+        <div class="input-section">
+            <h2 style="margin-bottom:8px;">Analisis Strategi Hukum</h2>
+            <p style="color:var(--text-muted);margin-bottom:var(--space-xl);font-size:0.9rem;">Masukkan kronologi dan fakta kasus untuk mendapatkan analisis yuridis, strategi litigasi, dan prediksi peluang kemenangan.</p>
+            
+            <div class="form-group">
+                <label class="form-label">Deskripsi Fakta & Kronologi</label>
+                <textarea id="caseFacts" class="form-input" rows="10" placeholder="Contoh: Terjadi sengketa tanah warisan antara 3 bersaudara. Objek sengketa berada di... Tergugat memiliki sertifikat lama sedang Penggugat memiliki..." style="resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-top:var(--space-md);">
+                <div class="form-group">
+                    <label class="form-label">Posisi Anda</label>
+                    <select id="casePosition" class="form-select">
+                        <option value="Penggugat / Pemohon">Penggugat / Pemohon</option>
+                        <option value="Tergugat / Termohon">Tergugat / Termohon</option>
+                        <option value="Penasihat Hukum">Penasihat Hukum</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Prioritas Analisis</label>
+                    <select id="casePriority" class="form-select">
+                        <option value="Strategi Menang">Strategi Menang</option>
+                        <option value="Mitigasi Risiko">Mitigasi Risiko</option>
+                        <option value="Riset Yurisprudensi">Riset Yurisprudensi</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="analyzeBtn" class="btn btn-primary" style="width:100%;margin-top:var(--space-xl);padding:14px;font-size:1rem;" onclick="performAnalysis()">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> Mulai Analisis Mendalam
+            </button>
+        </div>
+
+        <div class="result-section" id="resultContainer">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-xl);padding-bottom:12px;border-bottom:2px solid #eee;">
+                <h3>Laporan Analisis Yuridis AI</h3>
+                <div>
+                    <button class="btn btn-outline" style="padding:6px 14px;font-size:0.82rem;"><i class="fa-solid fa-print"></i> Cetak</button>
+                    <button class="btn btn-outline" style="padding:6px 14px;font-size:0.82rem;"><i class="fa-solid fa-share-nodes"></i> Share</button>
+                </div>
+            </div>
+            <div class="markdown-content" id="analysisResultBody">
+                <!-- Result goes here -->
+            </div>
+            <div style="margin-top:var(--space-2xl);padding-top:var(--space-lg);border-top:1px solid #eee;font-size:0.8rem;color:var(--text-muted);font-style:italic;">
+                Laporan ini disusun secara otomatis oleh LexAI Engine berdasarkan fakta yang diberikan. Selalu verifikasi fakta hukum dengan dokumen otentik.
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/services/gemini-api.js"></script>
+    <script>
+        async function performAnalysis() {
+            const facts = document.getElementById('caseFacts').value.trim();
+            const position = document.getElementById('casePosition').value;
+            const priority = document.getElementById('casePriority').value;
+
+            if (!facts) {
+                alert("Silakan masukkan fakta kasus terlebih dahulu.");
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            const resultDiv = document.getElementById('resultContainer');
+            const resultBody = document.getElementById('analysisResultBody');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mesin Hukum Sedang Menganalisis...';
+            
+            const prompt = `
+                Analisis Kasus Hukum Sebagai ${position} dengan Fokus pada ${priority}.
+                
+                FAKTA KASUS:
+                ${facts}
+                
+                TUGAS ANDA:
+                1. Analisis Yuridis (Pasal-pasal yang relevan dalam hukum Indonesia).
+                2. Kekuatan dan Kelemahan posisi klien.
+                3. Strategi langkah hukum yang disarankan (Litigasi/Non-Litigasi).
+                4. Prediksi peluang keberhasilan (dalam persentase) berdasarkan argumen hukum.
+                5. Referensi Yurisprudensi (jika ada kasus serupa yang terkenal).
+                
+                Sajikan dalam format laporan profesional dengan Markdown.
+            `;
+
+            try {
+                // Call Gemini
+                // Note: We use the chat method as it has the expert system prompt
+                const response = await GeminiService.chat(prompt);
+                
+                // Show results
+                resultDiv.style.display = 'block';
+                
+                // Format response (basic markdown to html)
+                const formatted = response
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                    .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n\n/g, '<p></p>')
+                    .replace(/\n/g, '<br>');
+                
+                resultBody.innerHTML = formatted;
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                alert("Gagal melakukan analisis: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Mulai Analisis Mendalam';
+            }
+        }
+    </script>
+</body>
+</html>

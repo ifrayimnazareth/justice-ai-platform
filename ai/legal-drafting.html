@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penyusunan Dokumen Hukum – Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .draft-layout { display: grid; grid-template-columns: 350px 1fr; gap: var(--space-xl); height: calc(100vh - 100px); }
+        .draft-sidebar { background: white; border-radius: var(--radius-lg); padding: var(--space-xl); border: 1px solid rgba(0,0,0,0.08); overflow-y: auto; }
+        .draft-editor { background: white; border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; }
+        .editor-toolbar { padding: 12px 20px; border-bottom: 1px solid rgba(0,0,0,0.08); background: #f8fafc; display: flex; gap: 8px; }
+        .editor-content { flex: 1; padding: 40px; overflow-y: auto; font-family: 'Times New Roman', serif; line-height: 1.6; font-size: 1.1rem; outline: none; }
+        .type-card { padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08); margin-bottom: 8px; cursor: pointer; transition: all var(--transition-fast); }
+        .type-card:hover { border-color: var(--primary-color); background: rgba(26,54,93,0.02); }
+        .type-card.active { border-color: var(--primary-color); background: rgba(26,54,93,0.05); }
+    </style>
+</head>
+<body style="background:var(--bg-alt);">
+    <nav style="background:white;border-bottom:1px solid rgba(0,0,0,0.08);padding:14px 32px;display:flex;align-items:center;gap:16px;">
+        <a href="../dashboards/lawyer/dashboard.html" style="color:var(--text-muted);font-size:0.85rem;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+        <span style="color:rgba(0,0,0,0.15);">|</span>
+        <div style="font-weight:700;color:var(--primary-color);font-family:var(--font-heading);"><i class="fa-solid fa-pen-nib"></i> AI Legal Drafting</div>
+    </nav>
+
+    <div style="padding:var(--space-xl);">
+        <div class="draft-layout">
+            <div class="draft-sidebar">
+                <h3 style="margin-bottom:var(--space-lg);">Pengaturan Draft</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Jenis Dokumen</label>
+                    <div class="type-card active" onclick="selectType('Surat Gugatan Perdata', this)">
+                        <div style="font-weight:700;font-size:0.9rem;">Surat Gugatan Perdata</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);">Wanprestasi, PMH, dll.</div>
+                    </div>
+                    <div class="type-card" onclick="selectType('Perjanjian Kerjasama (MoU)', this)">
+                        <div style="font-weight:700;font-size:0.9rem;">Perjanjian Kerjasama (MoU)</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);">Bisnis, Kemitraan</div>
+                    </div>
+                    <div class="type-card" onclick="selectType('Memori Banding', this)">
+                        <div style="font-weight:700;font-size:0.9rem;">Memori Banding</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);">Litigasi Lanjutan</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:var(--space-xl);">
+                    <label class="form-label">Konteks / Detail Kasus</label>
+                    <textarea id="draftContext" class="form-input" rows="8" placeholder="Masukkan detail para pihak, objek sengketa, dan alasan hukum..." style="resize:none;font-size:0.85rem;"></textarea>
+                </div>
+
+                <button id="generateBtn" class="btn btn-primary" style="width:100%;margin-top:var(--space-xl);padding:12px;" onclick="generateDraft()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Draft dengan AI
+                </button>
+            </div>
+
+            <div class="draft-editor">
+                <div class="editor-toolbar">
+                    <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;"><i class="fa-solid fa-bold"></i></button>
+                    <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;"><i class="fa-solid fa-italic"></i></button>
+                    <button class="btn btn-outline" style="padding:6px 12px;font-size:0.8rem;"><i class="fa-solid fa-align-left"></i></button>
+                    <div style="flex:1;"></div>
+                    <button class="btn btn-outline" style="padding:6px 14px;font-size:0.82rem;"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                    <button class="btn btn-outline" style="padding:6px 14px;font-size:0.82rem;"><i class="fa-solid fa-file-word"></i> Export Word</button>
+                    <button class="btn btn-primary" style="padding:6px 14px;font-size:0.82rem;"><i class="fa-solid fa-save"></i> Simpan</button>
+                </div>
+                <div class="editor-content" id="editorBody" contenteditable="true">
+                    <div style="text-align:center;color:var(--text-muted);margin-top:100px;">
+                        <i class="fa-solid fa-file-signature" style="font-size:4rem;margin-bottom:20px;display:block;opacity:0.2;"></i>
+                        Draft dokumen akan muncul di sini setelah Anda menekan tombol "Buat Draft dengan AI".
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/services/gemini-api.js"></script>
+    <script>
+        let selectedDocType = "Surat Gugatan Perdata";
+
+        function selectType(type, el) {
+            selectedDocType = type;
+            document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        async function generateDraft() {
+            const context = document.getElementById('draftContext').value.trim();
+            if (!context) {
+                alert("Silakan masukkan konteks atau detail kasus terlebih dahulu.");
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            const editor = document.getElementById('editorBody');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sedang Menyusun...';
+            editor.innerHTML = '<div style="text-align:center;margin-top:100px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:3rem;color:var(--primary-color);margin-bottom:20px;display:block;"></i> AI sedang menyusun draft hukum formal Anda...</div>';
+
+            try {
+                const response = await GeminiService.createDraft(selectedDocType, context);
+                
+                // Simple markdown-to-html conversion for the editor
+                const formatted = response
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                
+                editor.innerHTML = formatted;
+            } catch (error) {
+                alert("Gagal membuat draft: " + error.message);
+                editor.innerHTML = '<div style="text-align:center;color:var(--danger);margin-top:100px;">Terjadi kesalahan saat menghubungi AI.</div>';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Draft dengan AI';
+            }
+        }
+    </script>
+</body>
+</html>

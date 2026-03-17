@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice AI - Legal Assistant</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/chatbot.css">
+</head>
+<body>
+
+    <div class="chat-layout">
+        <!-- Sidebar -->
+        <aside class="chat-sidebar">
+            <div style="padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                <a href="../dashboards/client/dashboard.html" class="logo" style="font-size: 1.4rem;">
+                    <i class="fa-solid fa-arrow-left" style="font-size: 1rem; margin-right: 5px;"></i> Justice<span>AI</span>
+                </a>
+            </div>
+
+            <button class="new-chat-btn" id="btnNewChat">
+                <i class="fa-solid fa-plus"></i> Konsultasi Baru
+            </button>
+
+            <div class="chat-history" id="chatHistoryContainer">
+                <div class="history-group">
+                    <div class="history-label">Hari Ini</div>
+                    <div class="history-item active">
+                        <i class="fa-solid fa-message"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">Sengketa Lahan Warisan</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: var(--text-muted);" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                </div>
+
+                <div class="history-group">
+                    <div class="history-label">Minggu Lalu</div>
+                    <div class="history-item">
+                        <i class="fa-solid fa-message"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">Draft Kontrak Freelance 2026</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: var(--text-muted);" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                    <div class="history-item">
+                        <i class="fa-solid fa-message"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">Prosedur Pailit Perusahaan</span>
+                        <i class="fa-solid fa-trash btn-delete-history" style="font-size: 0.8rem; cursor: pointer; color: var(--text-muted);" onclick="deleteHistoryItem(this)"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btnClearHistory" style="margin: 0 20px 10px; padding: 8px; background: transparent; border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; width: calc(100% - 40px);">
+                <i class="fa-solid fa-trash-can"></i> Hapus Semua Riwayat
+            </button>
+            
+            <div style="padding: 20px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                Batas Penggunaan: <br>
+                <div style="width: 100%; height: 6px; background-color: var(--bg-alt); border-radius: 3px; margin: 5px 0; overflow: hidden;">
+                    <div style="width: 40%; height: 100%; background-color: var(--accent-color);"></div>
+                </div>
+                15 / 50 Prompt Bulan Ini
+            </div>
+        </aside>
+
+        <!-- Main Chat Interface -->
+        <main class="chat-main">
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="chat-header-info">
+                    <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h2 style="font-size: 1.1rem; margin: 0; font-family: var(--font-body); display: flex; align-items: center; gap: 8px;">
+                            Justika Legal AI
+                            <span style="background-color: rgba(56, 161, 105, 0.1); color: #38a169; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">GPT-4 Legal Tuned</span>
+                        </h2>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Sistem Pakar Hukum Pidana & Perdata Nasional</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-outline" id="btnExportPDF" style="padding: 6px 15px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-download"></i> Ekspor PDF
+                    </button>
+                    <button id="theme-toggle" class="btn btn-outline" style="padding: 6px 12px; border: none;">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Chat Area -->
+            <div class="chat-messages" id="chat-box">
+                <!-- AI Welcoming Message -->
+                <div class="message ai animate-fade-in">
+                    <div class="msg-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="msg-bubble">
+                        <p>Halo, Budi. Saya adalah <strong>Justice AI</strong>, asisten hukum virtual Anda yang dilatih menggunakan Kitab Undang-Undang, Putusan Mahkamah Agung, dan Regulasi terbaru di Indonesia.</p>
+                        <p>Hari ini kita sedang membahas <strong>"Sengketa Lahan Warisan"</strong>. Apa pertanyaan spesifik yang ingin Anda ketahui atau dokumen apa yang ingin Anda unggah untuk analisa?</p>
+                        
+                        <div class="disclaimer-alert">
+                            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Peringatan Hukum:</strong> Hasil dari AI ini bersifat edukasi dan referensi (Legal Opinion). AI bukan pengganti dari Advokat resmi. Segala tindakan hukum yang Anda ambil harus atas pertimbangan pengacara berlisensi.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Message -->
+                <div class="message user animate-fade-in delay-1">
+                    <div class="msg-avatar">BS</div>
+                    <div class="msg-bubble">
+                        <p>Kakek saya meninggalkan sebidang tanah, tapi sertifikat aslinya dipegang oleh paman saya secara sepihak. Paman saya tidak mau membaginya dan mengklaim itu sudah dihibahkan secara lisan. Apakah hibah lisan tanah itu sah secara hukum? Bagaimana kami sisa ahli waris bisa menggugatnya?</p>
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="message ai animate-fade-in delay-2">
+                    <div class="msg-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="msg-bubble">
+                        <p>Berdasarkan Hukum Perdata dan Hukum Agraria (UUPA) yang berlaku di Indonesia terkait kasus Anda, berikut adalah analisis singkatnya:</p>
+                        
+                        <p><strong>1. Keabsahan Hibah Lisan atas Tanah</strong><br>
+                        Menurut <strong>Pasal 37 ayat (1) Peraturan Pemerintah Nomor 24 Tahun 1997 tentang Pendaftaran Tanah</strong>, peralihan hak atas tanah (termasuk Hibah) hanya dapat didaftarkan jika dibuktikan dengan <strong>Akta yang dibuat oleh Pejabat Pembuat Akta Tanah (PPAT)</strong>. Hibah tanah yang dilakukan secara lisan <strong>tidak memiliki kekuatan hukum yang sah</strong> untuk merubah kepemilikan sertifikat yang terdaftar di BPN.</p>
+
+                        <p>Paman Anda tidak dapat semata-mata mengklaim kepemilikan penuh tanpa adanya Akta Hibah yang di buat di depan PPAT atau Notaris saat kakek Anda masih hidup.</p>
+
+                        <p><strong>2. Langkah Hukum Ahli Waris</strong><br>
+                        Anda dan ahli waris sah lainnya dapat melakukan langkah berikut:</p>
+                        <ul style="margin-left: 20px; font-size: 0.95rem; line-height: 1.6;">
+                            <li><strong>Mengurus Surat Keterangan Waris (SKW):</strong> Bukti legal formil siapa saja yang berhak atas objek warisan.</li>
+                            <li><strong>Gugatan Perbuatan Melawan Hukum (PMH):</strong> Mengajukan gugatan perdata ke Pengadilan Negeri setempat berdasarkan <strong>Pasal 1365 KUHPerdata</strong> karena paman menguasai hak waris yang bukan seluruhnya miliknya.</li>
+                            <li><strong>Laporan Pidana (Alternatif Terakhir):</strong> Jika ada indikasi paman memalsukan dokumen untuk membalik nama sertifikat, Anda bisa melapor ke polisi berdasarkan Pasal 263 KUHP (Pemalsuan Surat) atau Pasal 372 KUHP (Penggelapan).</li>
+                        </ul>
+
+                        <p>Saya dapat membantu Anda membuat <strong>Draft Somasi Pertama (Teguran)</strong> kepada Paman Anda. Apakah Anda ingin saya membuatkannya sekarang?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-container">
+                <div class="suggestions">
+                    <div class="suggestion-chip">Ya, tolong buatkan draft Surat Somasi</div>
+                    <div class="suggestion-chip">Pasal berapa spesifiknya untuk penggelapan sertifikat?</div>
+                    <div class="suggestion-chip">Hubungkan saya dengan Pengacara Waris</div>
+                </div>
+
+                <div class="input-box">
+                    <button class="action-btn" title="Unggah File (Dokumen, Foto, Video, dll)" id="btnUploadDoc">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </button>
+                    <input type="file" id="hiddenDocInput" style="display: none;" accept="*/*">
+                    
+                    <textarea rows="1" placeholder="Tulis rincian masalah hukum Anda atau minta buatkan draft..." id="chat-input"></textarea>
+                    
+                    <button class="action-btn" title="Kirim Pesan Suara" id="btnVoiceInput">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button class="action-btn send-btn" id="send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/core/app.js"></script>
+    <script src="../assets/js/services/gemini-api.js"></script>
+    <!-- Script untuk Export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        // Auto-resize textarea logic & Scroll to bottom
+        const textarea = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const btnSend = document.getElementById('send-btn');
+        const btnUploadDoc = document.getElementById('btnUploadDoc');
+        const hiddenDocInput = document.getElementById('hiddenDocInput');
+        const btnVoiceInput = document.getElementById('btnVoiceInput');
+        const btnNewChat = document.getElementById('btnNewChat');
+        const btnExportPDF = document.getElementById('btnExportPDF');
+
+        // Initial Welcoming UI
+        const welcomeHtml = `
+            <div class="message ai animate-fade-in">
+                <div class="msg-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="msg-bubble">
+                    <p>Halo. Saya adalah <strong>Justice AI</strong>, asisten hukum virtual Anda.</p>
+                    <p>Apa pertanyaan spesifik yang ingin Anda ketahui atau dokumen apa yang ingin Anda unggah untuk analisa?</p>
+                    
+                    <div class="disclaimer-alert" style="margin-top: 15px; background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 10px; border-radius: 4px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> <strong>Peringatan Hukum:</strong> Hasil dari AI ini bersifat edukasi dan referensi (Legal Opinion). AI bukan pengganti dari Advokat resmi.
+                    </div>
+                </div>
+            </div>`;
+        
+        chatBox.innerHTML = welcomeHtml;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value === '') {
+                this.style.height = 'auto';
+            }
+        });
+
+        // Chat Controller Logic
+        function appendMessage(sender, text, isHtml = false) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender} animate-fade-in`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'msg-avatar';
+            avatar.innerHTML = sender === 'user' ? 'BS' : '<i class="fa-solid fa-robot"></i>';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'msg-bubble';
+            if (isHtml) bubble.innerHTML = text;
+            else bubble.textContent = text;
+
+            msgDiv.appendChild(avatar);
+            msgDiv.appendChild(bubble);
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return msgDiv;
+        }
+
+        async function sendMessage(text) {
+            if (!text) return;
+            appendMessage('user', text);
+            textarea.value = '';
+            textarea.style.height = 'auto';
+
+            const loadingHtml = `<div style="display:flex; gap:8px; align-items:center;">
+                                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 0.9rem;"></i> 
+                                    Menganalisis...
+                                 </div>`;
+            const loadingNode = appendMessage('ai', loadingHtml, true);
+
+            try {
+                let reply;
+                // Coba gunakan Gemini API jika tersedia, jika gagal gunakan Fallback cerdas
+                if (typeof GeminiService !== 'undefined') {
+                    reply = await GeminiService.chat(text);
+                } else {
+                    throw new Error("Modul Gemini tidak ditemukan.");
+                }
+                
+                // Markdown to HTML conversion sederhana
+                let formattedReply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                          .replace(/\n\n/g, '</p><p>')
+                                          .replace(/\n/g, '<br>')
+                                          .replace(/(\d+\.)\s/g, '<br><strong>$1</strong> ')
+                                          .replace(/(Pasal [0-9]+)/gi, '<span style="color: #38bdf8; font-weight: bold;">$1</span>');
+                chatBox.removeChild(loadingNode);
+                appendMessage('ai', `<p>${formattedReply}</p>`, true);
+            } catch (error) {
+                chatBox.removeChild(loadingNode);
+                console.warn("AI Service Error: ", error);
+                
+                // Dummy pintar jika server API terputus
+                const dummyResponse = `Berdasarkan referensi perundang-undangan di Indonesia, informasi yang Anda tanyakan memiliki rujukan hukum yang spesifik. <br><br><em>(Catatan Sistem: Saat ini koneksi API ke server Justice AI pusat sedang dialihkan/offline - <strong>${error.message}</strong>. Ini adalah balasan otomatis sistem darurat sementara koneksi dipulihkan).</em>`;
+                
+                appendMessage('ai', `<p>${dummyResponse}</p>`, true);
+            }
+        }
+
+        btnSend.addEventListener('click', () => sendMessage(textarea.value.trim()));
+        textarea.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(textarea.value.trim());
+            }
+        });
+
+        // Suggestion Chips
+        document.querySelectorAll('.suggestion-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                sendMessage(chip.textContent);
+            });
+        });
+
+        // New Chat
+        btnNewChat.addEventListener('click', () => {
+            chatBox.innerHTML = welcomeHtml;
+        });
+
+        // Hapus Riwayat Chat
+        const btnClearHistory = document.getElementById('btnClearHistory');
+        const chatHistoryContainer = document.getElementById('chatHistoryContainer');
+
+        function deleteHistoryItem(element) {
+            const historyItem = element.closest('.history-item');
+            if (historyItem) {
+                historyItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                historyItem.style.opacity = '0';
+                historyItem.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    historyItem.remove();
+                    // Cek jika grup kosong, hapus grupnya
+                    document.querySelectorAll('.history-group').forEach(group => {
+                        const items = group.querySelectorAll('.history-item');
+                        if (items.length === 0) {
+                            group.remove();
+                        }
+                    });
+                }, 300);
+            }
+        }
+
+        if (btnClearHistory && chatHistoryContainer) {
+            btnClearHistory.addEventListener('click', () => {
+                const confirmed = confirm("Apakah Anda yakin ingin menghapus semua riwayat percakapan hukum Anda?");
+                if (confirmed) {
+                    chatHistoryContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">Belum ada riwayat konsultasi.</div>';
+                    chatBox.innerHTML = welcomeHtml; // Reset tampilan obrolan utama juga 
+                }
+            });
+        }
+
+        // File Upload Handling
+        btnUploadDoc.addEventListener('click', () => hiddenDocInput.click());
+        hiddenDocInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            const fileUi = `
+                <div style="background-color: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); padding: 12px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 15px; margin-top: 5px; min-width: 250px;">
+                    <i class="fa-solid fa-file-pdf" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <div style="text-align: left;">
+                        <div style="font-weight: bold; font-size: 0.95rem; color: var(--text-main); line-height: 1.2;">${file.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">${fileSizeInMB} MB • Siap Dianalisis</div>
+                    </div>
+                </div>
+            `;
+            
+            appendMessage('user', `Tolong analisis dan periksa dokumen berikut ini:<br>${fileUi}`, true);
+            
+            const loadingNode = appendMessage('ai', `<div style="display:flex; gap:8px; align-items:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Membaca dan mengekstrak teks dari dokumen...</div>`, true);
+            
+            setTimeout(() => {
+                chatBox.removeChild(loadingNode);
+                appendMessage('ai', `<p>Baik, saya telah sukses menyerap struktur data dari dokumen <strong>${file.name}</strong>. Ada pasal khusus atau bagian mana yang ingin difokuskan untuk dianalisis hukum hari ini?</p>`, true);
+            }, 2500); // Simulasi delay membaca file (2.5 detik)
+            
+            hiddenDocInput.value = ''; // Reset input agar file yang sama bisa diupload ulang
+        });
+
+        // Ekspor PDF Handling
+        if (btnExportPDF) {
+            btnExportPDF.addEventListener('click', () => {
+                const element = document.getElementById('chat-box');
+                const opt = {
+                  margin:       1,
+                  filename:     'Konsultasi_Hukum_JusticeAI.pdf',
+                  image:        { type: 'jpeg', quality: 0.98 },
+                  html2canvas:  { scale: 2 },
+                  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                
+                // Tambahkan pesan loading sementara untuk export
+                const prevHtml = btnExportPDF.innerHTML;
+                btnExportPDF.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+                
+                html2pdf().set(opt).from(element).save().then(() => {
+                    btnExportPDF.innerHTML = prevHtml;
+                });
+            });
+        }
+
+        // Voice Recognition Handling
+        let recognizing = false, recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.lang = 'id-ID';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = () => { 
+                recognizing = true; 
+                btnVoiceInput.innerHTML = '<i class="fa-solid fa-microphone fa-beat-fade"></i>';
+                btnVoiceInput.style.color = '#ef4444'; 
+                textarea.placeholder = 'Mendengarkan suara Anda... (Bicara sekarang)'; 
+            };
+            recognition.onend = () => { 
+                recognizing = false; 
+                btnVoiceInput.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                btnVoiceInput.style.color = ''; 
+                textarea.placeholder = 'Tulis rincian masalah hukum Anda atau minta buatkan draft...'; 
+            };
+            recognition.onerror = (e) => { 
+                recognizing = false; 
+                btnVoiceInput.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                btnVoiceInput.style.color = ''; 
+                textarea.placeholder = 'Gagal mendengarkan jaringan / akses mikrofon diblokir.'; 
+                console.error("Speech Recognition Error:", e);
+            };
+            recognition.onresult = (e) => {
+                const transcript = e.results[0][0].transcript;
+                textarea.value = transcript;
+                setTimeout(() => { sendMessage(transcript); }, 600); // otomatis terkirim
+            };
+        }
+
+        btnVoiceInput.addEventListener('click', () => {
+            if (window.location.protocol === 'file:') {
+                alert("Peringatan: Fitur Mikrofon (Voice Input) diblokir oleh browser saat membuka file langsung (file:///...). Silakan jalankan menggunakan Web Server lokal (XAMPP / Node.js / Live Server) agar fitur suara dapat berfungsi.");
+                return;
+            }
+            if (!recognition) return alert('Browser Anda tidak mendukung input suara.');
+            recognizing ? recognition.stop() : recognition.start();
+        });
+    </script>
+</body>
+</html>

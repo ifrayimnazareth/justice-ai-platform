@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Contract Review & Risk Detection</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/client.css">
+    
+    <style>
+        .review-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+            height: calc(100vh - 120px);
+        }
+
+        @media (max-width: 1024px) {
+            .review-layout { grid-template-columns: 1fr; height: auto; }
+        }
+
+        /* Document Viewer */
+        .doc-viewer {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .doc-viewer { border-color: rgba(255,255,255,0.05); }
+
+        .doc-header {
+            padding: 15px 20px;
+            background-color: var(--bg-alt);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .doc-header { border-bottom-color: rgba(255,255,255,0.05); }
+
+        .doc-body {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+            background-color: #f8fafc; /* Keep paper color even in dark mode for reading contrast, or off-white */
+            color: #1a202c;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            position: relative;
+        }
+
+        [data-theme="dark"] .doc-body { background-color: #e2e8f0; }
+
+        /* Highlight classes for AI identified risks */
+        .highlight-danger {
+            background-color: rgba(229, 62, 62, 0.2);
+            border-bottom: 2px dashed #e53e3e;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .highlight-warning {
+            background-color: rgba(221, 107, 32, 0.2);
+            border-bottom: 2px dashed #dd6b20;
+            cursor: pointer;
+        }
+
+        .highlight-active {
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+            70% { box-shadow: 0 0 0 4px rgba(229, 62, 62, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
+        }
+
+        /* AI Insights Panel */
+        .insights-panel {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .insights-panel { border-color: rgba(255,255,255,0.05); }
+
+        .risk-score {
+            padding: var(--space-xl);
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.05) 0%, transparent 100%);
+        }
+
+        [data-theme="dark"] .risk-score { border-bottom-color: rgba(255,255,255,0.05); }
+
+        .gauge-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 8px solid var(--danger);
+            border-right-color: var(--bg-alt);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-family: var(--font-heading);
+            font-weight: bold;
+            color: var(--danger);
+            transform: rotate(-45deg); /* To make it look like a gauge */
+        }
+
+        .gauge-inner { transform: rotate(45deg); display: flex; flex-direction: column; }
+        .gauge-inner span { font-size: 0.8rem; font-family: var(--font-body); color: var(--text-muted); font-weight: normal; }
+
+        .insight-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md);
+        }
+
+        .insight-card {
+            background-color: var(--bg-alt);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .insight-card:hover { transform: translateX(5px); }
+        .insight-card.danger { border-left-color: var(--danger); }
+        .insight-card.warning { border-left-color: var(--warning); }
+        .insight-card.active { background-color: rgba(43, 108, 176, 0.05); border-left-color: var(--primary-light); }
+
+        .insight-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .insight-header h4 { margin: 0; font-size: 0.95rem; font-family: var(--font-body); display: flex; align-items: center; gap: 8px; }
+        
+        .badge-danger { background-color: rgba(229, 62, 62, 0.1); color: var(--danger); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .badge-warning { background-color: rgba(221, 107, 32, 0.1); color: var(--warning); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        .insight-card p { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 10px 0; line-height: 1.5; }
+        
+        .action-link { font-size: 0.8rem; color: var(--primary-light); font-weight: 500; text-decoration: none; }
+        .action-link:hover { text-decoration: underline; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Reused Sidebar (Assuming Client Dashboard context for this specific flow) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../dashboards/client/dashboard.html" class="logo" style="font-size: 1.5rem;">
+                    <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <a href="../dashboards/client/dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i><span>Kembali Dasbor</span></a>
+                <div class="menu-label">Pusat Analisis</div>
+                <a href="chatbot.html" class="menu-item"><i class="fa-solid fa-robot"></i><span>Chatbot Resolusi</span></a>
+                <a href="contract-review.html" class="menu-item active"><i class="fa-solid fa-magnifying-glass-chart"></i><span>Smart Contract Review</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-search"></div>
+                <div class="topbar-actions">
+                    <button id="theme-toggle" class="icon-btn"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline" id="btnExportPDF"><i class="fa-solid fa-file-pdf"></i> Ekspor Report AI</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='../dashboards/client/konsultasi/lawyer.html'"><i class="fa-solid fa-user-tie"></i> Sewa Pengacara untuk Revisi</button>
+                </div>
+            </header>
+
+            <div class="content-area animate-fade-in" style="padding-top: 15px;">
+                <h2 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-file-shield" style="color: var(--success);"></i> Hasil Analisis Klausal Berbahaya (AI OCR)
+                </h2>
+                
+                <div class="review-layout">
+                    
+                    <!-- Document Viewer -->
+                    <div class="doc-viewer">
+                        <div class="doc-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1rem; font-family: var(--font-body);">Draft_Perjanjian_Kerja_Waktu_Tertentu_PKWT_2026.pdf</h3>
+                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Diunggah: Tadi - 8 Halaman - Bahasa Indonesia</p>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="icon-btn" id="btnZoomIn" title="Perbesar Teks"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                <button class="icon-btn" id="btnZoomOut" title="Perkecil Teks"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="doc-body">
+                            <p style="text-align: center; font-weight: bold; margin-bottom: 30px;">BAB II<br>HAK DAN KEWAJIBAN PARA PIHAK</p>
+                            
+                            <p><strong>Pasal 4 Kewajiban Pihak Kedua (Pekerja)</strong></p>
+                            <p>1. PIHAK KEDUA berkewajiban untuk tunduk dan taat pada peraturan perusahaan PT. Teknologi Nusantara, baik yang tercantum dalan Perjanjian ini, SOP, maupun aturan lisan dari Atasan.</p>
+                            
+                            <p>2. PIHAK KEDUA bersedia ditempatkan di seluruh wilayah Republik Indonesia sesuai dengan keputusan mutlak PIHAK PERTAMA tanpa syarat penolakan.</p>
+
+                            <p>3. <span class="highlight-danger highlight-active" title="Klik untuk lihat detail di panel kanan">Apabila PIHAK KEDUA mengundurkan diri sebelum berakhirnya masa kontrak 2 (dua) tahun, maka PIHAK KEDUA wajib membayar ganti rugi penalty sebesar 10 (sepuluh) kali gaji rill bulan terakhir, dibayarkan seketika dan sekaligus.</span></p>
+
+                            <p>4. Selama masa kontrak, <span class="highlight-warning">PIHAK KEDUA dilarang melakukan pekerjaan sejenis, pekerjaan sampingan, asisten lepas, atau mendirikan usaha di bidang hukum maupun teknologi informasi dalam bentuk apapun</span> tanpa izin tertulis dari Direksi.</p>
+                            
+                            <p>5. PIHAK PERTAMA tidak menanggung biaya asuransi kesehatan swasta untuk pelanggaran SOP kerja jam lembur yang tidak ditentukan sebelumnya.</p>
+                            <br>
+                            <p style="text-align: center; font-weight: bold; margin-top: 20px; margin-bottom: 30px;">BAB III<br>PEMUTUSAN HUBUNGAN KERJA</p>
+                            <p><strong>Pasal 5</strong></p>
+                            <p>1. <span class="highlight-danger">PIHAK PERTAMA berhak melakukan Pemutusan Hubungan Kerja (PHK) secara sepihak setiap saat tanpa teguran atau Surat Peringatan (SP) sebelumnya, dan PIHAK KEDUA melepaskan haknya untuk menuntut pesangon atau kompensasi sisa kontrak</span> sesuai UU Ketenagakerjaan.</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights Panel -->
+                    <div class="insights-panel">
+                        <div class="risk-score">
+                            <h3 style="margin: 0 0 10px 0; font-family: var(--font-body);">Skor Risiko Klien</h3>
+                            <div class="gauge-circle">
+                                <div class="gauge-inner">
+                                    74
+                                    <span>Skor Tinggi</span>
+                                </div>
+                            </div>
+                            <p style="margin: 0; font-size: 0.9rem; color: var(--danger); font-weight: 500;">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Ditemukan 2 Klausul Sangat Batal Demi Hukum (Ilegal) dan 3 Klausul Memberatkan.
+                            </p>
+                        </div>
+
+                        <div class="insight-list">
+                            <!-- Insight 1 -->
+                            <div class="insight-card danger active">
+                                <div class="insight-header">
+                                    <h4><i class="fa-solid fa-gavel"></i> Penalti Resign Ilegal</h4>
+                                    <span class="badge-danger">Kritis</span>
+                                </div>
+                                <p><strong>Merujuk Pasal 4 Ayat 3:</strong> Denda 10x gaji menyalahi UU Cipta Kerja & UU No.13/2003 Jo. PP 35/2021.</p>
+                                <p style="background: white; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0; color: #4a5568;"><em>Rekomendasi Revisi AI:</em> Jika salah satu pihak mengakhiri kontrak, ia hanya wajib membayar ganti rugi sebesar upah pekerja sampai batas waktu berakhirnya jangka waktu PKWT (Sesuai UU).</p>
+                                <a href="#" class="action-link"><i class="fa-solid fa-wand-magic-sparkles"></i> Salin Rekomendasi Revisi</a>
+                            </div>
+
+                            <!-- Insight 2 -->
+                            <div class="insight-card danger">
+                                <div class="insight-header">
+                                    <h4><i class="fa-solid fa-scale-unbalanced"></i> Hilangnya Hak Kompensasi</h4>
+                                    <span class="badge-danger">Kritis</span>
+                                </div>
+                                <p><strong>Merujuk Pasal 5 Ayat 1:</strong> Melepaskan hak kompensasi sisa kontrak adalah batal demi hukum (Null and Void) berdasarkan ketentuan ketenagakerjaan mutlak RI.</p>
+                            </div>
+
+                            <!-- Insight 3 -->
+                            <div class="insight-card warning">
+                                <div class="insight-header">
+                                    <h4><i class="fa-solid fa-handcuffs"></i> Non-Compete Clause Lintas Batas</h4>
+                                    <span class="badge-warning">Memberatkan</span>
+                                </div>
+                                <p><strong>Merujuk Pasal 4 Ayat 4:</strong> Aturan pembatasan merintis usaha di bidang yang sama ("Klausul Non-Kompetisi") di Indonesia seringkali dianggap bertentangan dengan HAM kebebasan bekerja (Ps 27 UUD 45) jika batas waktu dan spesifikasinya tidak dijabarkan jelas (Maksimal 1-2 tahun pasca resign).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="../assets/js/core/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // UI Interactivity untuk menyorot klausal dan panel analisis
+            const highlights = document.querySelectorAll('.highlight-danger, .highlight-warning');
+            const insightCards = document.querySelectorAll('.insight-card');
+
+            // Fungsi helper untuk menghapus state aktif
+            function clearActives() {
+                highlights.forEach(h => h.classList.remove('highlight-active'));
+                insightCards.forEach(card => card.classList.remove('active'));
+            }
+
+            // Hubungkan Klik di Dokumen dengan Navigasi Insight Panel (Kanan)
+            highlights.forEach((hl, index) => {
+                hl.addEventListener('click', () => {
+                    clearActives();
+                    hl.classList.add('highlight-active');
+                    
+                    // Aktifkan kartu wawasan di kanan berdasarkan index yang diklik
+                    if(insightCards[index]) {
+                        insightCards[index].classList.add('active');
+                        // Opsional: Gulir panel wawasan agar kartu terlihat
+                        insightCards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                });
+            });
+
+            // Hubungkan Klik Sidebar Insight Panel (Kanan) dengan Dokumen (Kiri)
+            insightCards.forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    clearActives();
+                    card.classList.add('active');
+                    
+                    // Aktifkan sorotan di teks dokumen berdasarkan kartu
+                    if(highlights[index]) {
+                        highlights[index].classList.add('highlight-active');
+                        highlights[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+
+            // Action: Salin Rekomendasi Revisi
+            const copyBtns = document.querySelectorAll('.action-link');
+            copyBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Ambil teks italic rekomendasi
+                    const recText = btn.previousElementSibling.textContent;
+                    // Lakukan simulasi penyalinan clipboard
+                    navigator.clipboard.writeText(recText.replace('Rekomendasi Revisi AI: ', '')).then(() => {
+                        const originalHtml = btn.innerHTML;
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Disalin!';
+                        btn.style.color = 'var(--success)';
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                            btn.style.color = '';
+                        }, 2000);
+                    });
+                });
+            });
+
+            // Fitur Zoom In / Zoom Out Dokumen
+            const btnZoomIn = document.getElementById('btnZoomIn');
+            const btnZoomOut = document.getElementById('btnZoomOut');
+            const docBody = document.querySelector('.doc-body');
+            let currentZoom = 1;
+
+            if (btnZoomIn && btnZoomOut && docBody) {
+                btnZoomIn.addEventListener('click', () => {
+                    if (currentZoom < 1.4) {
+                        currentZoom += 0.1;
+                        docBody.style.transform = `scale(${currentZoom})`;
+                        docBody.style.transformOrigin = 'top center';
+                    }
+                });
+                btnZoomOut.addEventListener('click', () => {
+                    if (currentZoom > 0.7) {
+                        currentZoom -= 0.1;
+                        docBody.style.transform = `scale(${currentZoom})`;
+                        docBody.style.transformOrigin = 'top center';
+                    }
+                });
+            }
+
+            // Fitur Ekspor Report PDF AI
+            const btnExportPDF = document.getElementById('btnExportPDF');
+            if (btnExportPDF) {
+                btnExportPDF.addEventListener('click', () => {
+                    // Export target Element (Bisa spesifik ke content-area)
+                    const element = document.querySelector('.review-layout');
+                    
+                    const opt = {
+                        margin:       0.3,
+                        filename:     'Report_Analisis_Kontrak_LexBot.pdf',
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { scale: 2 },
+                        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+                    };
+                    
+                    // UI Loading State Feedback
+                    const originalText = btnExportPDF.innerHTML;
+                    btnExportPDF.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengekspor PDF...';
+                    btnExportPDF.disabled = true;
+
+                    // Mengamankan transisi scale jika sedang di zoom supaya PDF tidak terpotong
+                    const oldZoom = docBody.style.transform;
+                    if(oldZoom) docBody.style.transform = 'scale(1)';
+
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        btnExportPDF.innerHTML = originalText;
+                        btnExportPDF.disabled = false;
+                        if(oldZoom) docBody.style.transform = oldZoom;
+                    });
+                });
+            }
+            
+        });
+    </script>
+</body>
+</html>

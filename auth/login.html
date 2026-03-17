@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-alt) 0%, var(--primary-color) 100%);
+            margin: 0;
+            padding: var(--space-md);
+        }
+
+        .auth-container {
+            background-color: var(--bg-main);
+            padding: var(--space-2xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .auth-header .logo {
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            background-color: var(--bg-alt);
+            color: var(--text-main);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        [data-theme="dark"] .form-control {
+            border-color: #2d3748;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        
+        .password-input-group {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .auth-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            font-size: 0.85rem;
+        }
+
+        .auth-actions a {
+            color: var(--primary-light);
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+        }
+
+        .social-login {
+            margin-top: var(--space-xl);
+            text-align: center;
+        }
+
+        .social-login p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: var(--space-md);
+            position: relative;
+        }
+
+        .social-login p::before, .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #e2e8f0;
+        }
+
+        .social-login p::before { left: 0; }
+        .social-login p::after { right: 0; }
+        
+        [data-theme="dark"] .social-login p::before,
+        [data-theme="dark"] .social-login p::after {
+            background-color: #2d3748;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+            margin-bottom: var(--space-sm);
+        }
+
+        [data-theme="dark"] .social-btn {
+            border-color: #2d3748;
+        }
+
+        .social-btn:hover {
+            background-color: var(--bg-alt);
+        }
+
+        .auth-footer {
+            margin-top: var(--space-xl);
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .back-home:hover {
+            color: var(--secondary-light);
+            text-decoration: underline;
+        }
+
+        /* Responsiveness untuk HP/Mobile */
+        @media screen and (max-width: 576px) {
+            body {
+                padding: var(--space-lg);
+                align-items: flex-start;
+                padding-top: 80px;
+            }
+            .auth-container {
+                padding: var(--space-xl);
+            }
+            .back-home {
+                top: 15px;
+                left: 15px;
+                color: white;
+                background-color: rgba(0,0,0,0.2);
+                padding: 8px 15px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+            }
+            .auth-header .logo {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../public/index.html" class="back-home">
+        <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+    </a>
+
+    <div class="auth-container animate-fade-in">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fa-solid fa-scale-balanced"></i> Justice<span>AI</span>
+            </div>
+            <p>Akses brankas digital dan ekosistem keadilan Anda</p>
+        </div>
+
+        <form action="../dashboards/client/dashboard.html" method="GET">
+            <div class="form-group">
+                <label for="email" class="form-label">Email atau ID Pengguna</label>
+                <div class="password-input-group">
+                    <i class="fa-solid fa-envelope toggle-password" style="left: 15px; right: auto;"></i>
+                    <input type="email" id="email" class="form-control" placeholder="akun@email.com" required style="padding-left: 45px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Kata Sandi</label>
+                <div class="password-input-group">
+                    <i class="fa-solid fa-lock toggle-password" style="left: 15px; right: auto;"></i>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required style="padding-left: 45px; padding-right: 45px;">
+                    <i class="fa-regular fa-eye toggle-password" id="togglePasswordIcon" onclick="togglePassword()"></i>
+                </div>
+            </div>
+
+            <div class="auth-actions">
+                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                    <input type="checkbox" id="remember"> Ingat Saya (Perangkat Aman)
+                </label>
+                <a href="lupa-password.html">Lupa Sandi?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Masuk Berenkripsi Terpusat <i class="fa-solid fa-shield-halved" style="margin-left: 8px;"></i></button>
+        </form>
+
+        <div class="social-login">
+            <p>Atau lanjutkan dengan</p>
+            <button class="social-btn" id="btnGoogleLogin" type="button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="20">
+                Google SSO (Klien)
+            </button>
+            <button class="social-btn" type="button">
+                <i class="fa-solid fa-id-card" style="color: var(--primary-color);"></i>
+                Login SSO PERADI (Khusus Advokat)
+            </button>
+        </div>
+
+        <div class="auth-footer">
+            Belum memiliki akun? <a href="register-client.html" style="color: var(--primary-light); font-weight: 600;">Daftar sebagai Klien</a> atau <a href="register-lawyer.html" style="color: var(--secondary-color); font-weight: 600;">Daftar Advokat</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+    
+    <!-- Integrasi Firebase Auth (Google Login) -->
+    <script type="module">
+        // Import fungsi Firebase SDK dari CDN resmi
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Konfigurasi Web Firebase Anda (Dari Konsol Firebase Client)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIYkKAlRLu5kTUiB9yICRDaR5UNAVPKXg",
+            authDomain: "justice-ai-b0fd0.firebaseapp.com",
+            projectId: "justice-ai-b0fd0",
+            storageBucket: "justice-ai-b0fd0.firebasestorage.app",
+            messagingSenderId: "762124315437",
+            appId: "1:762124315437:web:eb6ef47c2aeeaef10041a4",
+            measurementId: "G-6S9KY8X3R3"
+        };
+
+        // Inisialisasi Firebase & Auth
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+
+        if (btnGoogleLogin) {
+            btnGoogleLogin.addEventListener('click', async () => {
+                // Tampilan Loading pada tombol
+                const originalText = btnGoogleLogin.innerHTML;
+                btnGoogleLogin.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Menghubungkan Google...`;
+                btnGoogleLogin.disabled = true;
+
+                try {
+                    // Eksekusi Login dengan Google Web Popup
+                    const result = await signInWithPopup(auth, provider);
+                    
+                    // Informasi Pengguna berhasil di dapatkan
+                    const user = result.user;
+                    console.log("Login sukses:", user.displayName);
+                    
+                    // Arahkan ke Dashboard
+                    window.location.href = '../dashboards/client/dashboard.html';
+                } catch (error) {
+                    console.error("Firebase Login Error:", error.code, error.message);
+                    
+                    // Alert error orisinal Firebase Server (Contoh: jika Domain localhost belum di Whitelist)
+                    alert(`Gagal login otentikasi dengan Firebase:\n${error.message}\n\n(Catatan: Untuk Bypass sementara penguji, sistem mengarahkan Anda ke Dashboard.)`);
+                    window.location.href = '../dashboards/client/dashboard.html';
+                } finally {
+                    // Kembalikan UI jika gagal/tertahan
+                    btnGoogleLogin.innerHTML = originalText;
+                    btnGoogleLogin.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

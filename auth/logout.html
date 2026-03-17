@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keluar Sesi Aman - Justice AI Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body {
+            background-color: var(--bg-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, rgba(0, 181, 216, 0.05) 0%, rgba(43, 108, 176, 0.02) 100%);
+            padding: var(--space-xl);
+        }
+
+        .logout-card {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-2xl);
+            border: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .logout-card { border-color: rgba(255,255,255,0.05); }
+
+        .secure-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(43, 108, 176, 0.1);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+            border: 4px solid var(--primary-light);
+            animation: lockShield 1.5s ease;
+        }
+
+        @keyframes lockShield {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .logout-card h2 {
+            margin: 0 0 10px 0;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+        }
+
+        .logout-card p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .security-badge {
+            background-color: rgba(56, 161, 105, 0.1);
+            color: var(--success);
+            padding: 8px 15px;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        [data-theme="dark"] .security-badge { background-color: rgba(56, 161, 105, 0.2); }
+
+        .btn-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="logout-card animate-fade-in">
+        <div class="secure-icon" id="shieldIcon">
+            <i class="fa-solid fa-lock" id="lockPath"></i>
+        </div>
+        
+        <h2>Mengamankan Brankas & Keluar</h2>
+        
+        <div class="security-badge">
+            <i class="fa-solid fa-shield-check"></i> <span>Cache Kunci Enkripsi Dihapus dari Memori</span>
+        </div>
+        
+        <p id="logoutMessage">Sesi Anda sedang diakhiri dengan aman. Kami sedang menutup koneksi token API ke mesin <strong>Zero-Knowledge Vault</strong> Anda.</p>
+
+        <div class="btn-action-group" id="actionButtons" style="display: none;">
+            <a href="login.html" class="btn btn-primary btn-lg" style="width: 100%;"><i class="fa-solid fa-arrow-right-to-bracket" style="margin-right: 8px;"></i> Masuk Kembali</a>
+            <a href="../public/index.html" class="btn btn-outline" style="width: 100%; border-color: rgba(0,0,0,0.1);">Halaman Utama Platform</a>
+        </div>
+        
+    </div>
+
+    <script>
+        // Simulate a secure logout process
+        setTimeout(() => {
+            const shield = document.getElementById('shieldIcon');
+            const message = document.getElementById('logoutMessage');
+            const buttons = document.getElementById('actionButtons');
+            const lock = document.getElementById('lockPath');
+
+            // Change icon attributes
+            shield.style.backgroundColor = 'rgba(56, 161, 105, 0.1)';
+            shield.style.color = 'var(--success)';
+            shield.style.borderColor = 'var(--success)';
+            lock.classList.remove('fa-lock');
+            lock.classList.add('fa-shield');
+
+            // Update text
+            message.innerHTML = "Anda telah berhasil <strong>keluar</strong> dari sesi aman Justice AI Platform.";
+            
+            // Show buttons
+            buttons.style.display = 'flex';
+            
+            // Optional: You would also clear tokens from localStorage/sessionStorage here in a real app
+            // localStorage.removeItem('justice_jwt_token');
+
+        }, 1500); // 1.5 second artificial delay to show "security" process
+    </script>
+</body>
+</html>

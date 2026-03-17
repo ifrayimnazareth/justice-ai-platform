@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akses Ditolak - Justice AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body {
+            background-color: var(--bg-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, rgba(229, 62, 62, 0.05) 0%, rgba(43, 108, 176, 0.02) 100%);
+            padding: var(--space-xl);
+        }
+
+        .unauth-card {
+            background-color: var(--bg-main);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            padding: var(--space-2xl);
+            border: 1px solid rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        [data-theme="dark"] .unauth-card { border-color: rgba(255,255,255,0.05); }
+
+        .lock-icon {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .unauth-card h2 {
+            margin: 0 0 10px 0;
+            color: var(--danger);
+            font-family: var(--font-heading);
+            font-size: 2rem;
+        }
+
+        .unauth-card p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .btn-action-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .code-block {
+            background-color: var(--bg-alt);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] .code-block { border-color: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <div class="unauth-card animate-fade-in">
+        <i class="fa-solid fa-user-lock lock-icon"></i>
+        
+        <h2>403 - Akses Ditolak</h2>
+        <p>Anda mencoba memasuki Area Yurisdiksi Terlarang. Halaman ini memerlukan level otorisasi <strong style="color: var(--text-main);">Hakim/Advokat</strong> atau sesi JWT Anda telah berakhir.</p>
+        
+        <div class="code-block">
+            ERR_AUTHORIZATION_REQUIRED (Privilege Violation)
+        </div>
+
+        <div class="btn-action-group">
+            <a href="login.html" class="btn btn-primary"><i class="fa-solid fa-key" style="margin-right: 5px;"></i> Autentikasi Ulang</a>
+            <a href="../public/index.html" class="btn btn-outline">Beranda Utama</a>
+        </div>
+    </div>
+
+</body>
+</html>
